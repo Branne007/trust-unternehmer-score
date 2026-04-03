@@ -1,432 +1,759 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KI im Unternehmen wirksam verankern | UnternehmerImpulse</title>
-  <meta
-    name="description"
-    content="Gefördertes 6-Monats-Projekt für Geschäftsführer und ausgewählte Mitarbeitende: KI sicher, strukturiert und mit echtem Nutzen im Unternehmen verankern."
-  />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    /* ── Ergänzende Styles (nur was style.css nicht abdeckt) ── */
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .testimonial-card {
+      padding: 1.5rem;
+      background: var(--color-white);
+      border: 1px solid rgba(0, 48, 91, 0.08);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+    }
+    .testimonial-quote {
+      font-size: 1.02rem;
+      font-style: italic;
+      color: var(--color-gray);
+      margin: 0 0 1.2rem;
+      line-height: 1.6;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .testimonial-photo {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .testimonial-name {
+      font-weight: 700;
+      color: var(--color-navy);
+      font-size: 0.95rem;
+    }
+    .testimonial-role {
+      font-size: 0.85rem;
+      color: var(--color-gray);
+    }
+    .trust-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(0, 48, 91, 0.08);
+      font-size: 0.95rem;
+      color: var(--color-gray);
+    }
+    .trust-bar strong {
+      font-size: 1.15rem;
+      color: var(--color-navy);
+    }
+
+    .usp-section {
+      background: var(--color-navy);
+      color: var(--color-white);
+    }
+    .usp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .usp-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+    .usp-feature {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+    .usp-feature-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(241, 132, 35, 0.2);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-orange);
+    }
+    .usp-feature h4 {
+      margin: 0 0 0.15rem;
+      font-size: 1.05rem;
+    }
+    .usp-feature p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.55;
+    }
+    .usp-visual {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+    .usp-visual h3 {
+      margin: 0 0 1rem;
+      font-size: 1.25rem;
+      text-align: center;
+    }
+    .usp-visual-item {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1rem;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: #5ecc89; }
+    .dot-yellow { background: var(--color-orange); }
+    .dot-blue { background: #6bb8d6; }
+
+    .inqa-process {
+      background: var(--color-white);
+      border: 1px solid rgba(0, 48, 91, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-top: 1.75rem;
+      box-shadow: var(--shadow-card);
+    }
+    .inqa-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+    }
+    .inqa-step:last-child { margin-bottom: 0; }
+    .inqa-step-num {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: var(--color-navy);
+      color: var(--color-orange);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .inqa-step h4 {
+      margin: 0 0 0.2rem;
+      font-size: 1.08rem;
+      color: var(--color-navy);
+    }
+    .inqa-step p {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--color-gray);
+      line-height: 1.6;
+    }
+    .inqa-badge {
+      display: inline-block;
+      background: var(--color-bg);
+      border-radius: 999px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.82rem;
+      color: var(--color-gray);
+      margin-top: 0.45rem;
+    }
+    .inqa-connector {
+      width: 2px;
+      height: 16px;
+      background: var(--color-border);
+      margin: -0.6rem 0 -0.6rem 21px;
+    }
+
+    .hint-box {
+      padding: 1.2rem 1.4rem;
+      border-radius: var(--radius-sm);
+      margin-top: 1.25rem;
+      background: var(--color-white);
+      border: 1px solid rgba(0, 48, 91, 0.08);
+      box-shadow: var(--shadow-card);
+    }
+    .hint-box.orange { border-left: 4px solid var(--color-orange); }
+    .hint-box.green { border-left: 4px solid #2e7d5b; }
+    .hint-box strong {
+      display: block;
+      color: var(--color-navy);
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .hint-box p {
+      margin: 0;
+      font-size: 0.98rem;
+      color: var(--color-gray);
+      line-height: 1.6;
+    }
+
+    .begleitung-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .begleitung-photo {
+      width: 200px;
+      height: 260px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+    }
+    .credential-tags {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .credential-tag {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--color-gray);
+      font-weight: 600;
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .cta-option {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+    .cta-option h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.45rem;
+      color: var(--color-white);
+    }
+    .cta-option .desc {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .cta-option .form-field label {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .cta-option .form-field input,
+    .cta-option .form-field textarea,
+    .cta-option .form-field select {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--color-white);
+    }
+    .cta-option .form-field input::placeholder,
+    .cta-option .form-field textarea::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .cta-option .form-field select option {
+      color: var(--color-text);
+      background: var(--color-white);
+    }
+    .cta-option .form-field input:focus,
+    .cta-option .form-field textarea:focus,
+    .cta-option .form-field select:focus {
+      border-color: var(--color-orange);
+    }
+    .cta-hint {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+    .gespraech-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .gespraech-icon {
+      width: 72px; height: 72px;
+      background: rgba(241, 132, 35, 0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      color: var(--color-orange);
+    }
+    .gespraech-steps {
+      text-align: left;
+      margin: 1.5rem 0;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .gespraech-step {
+      display: flex; align-items: center; gap: 0.7rem;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .gespraech-step-num {
+      width: 26px; height: 26px;
+      background: rgba(241, 132, 35, 0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--color-orange);
+      flex-shrink: 0;
+    }
+    .nutzen-icon {
+      width: 44px; height: 44px;
+      background: var(--color-navy);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.8rem;
+      color: var(--color-orange);
+    }
+    .phase-badge {
+      display: inline-block;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      padding: 0.15rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--color-gray);
+      margin-top: 0.6rem;
+    }
+
+    @media (max-width: 980px) {
+      .testimonial-grid, .usp-grid, .cta-grid { grid-template-columns: 1fr; }
+      .begleitung-grid { grid-template-columns: 1fr; text-align: center; }
+      .begleitung-photo { margin: 0 auto; }
+      .credential-tags { justify-content: center; }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand brand-logo" href="#">
-        <img src="bilder/UI-Logo-Claim-2fbg.png" alt="UnternehmerImpulse by Thomas Brandenburger" />
-      </a>
 
-      <a class="btn btn-outline" href="#reservierung">
-        Teilnahmeplatz reservieren
+  <!-- ══════ HEADER ══════ -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="#" class="brand-logo">
+        <img src="./bilder/UI-Logo-Claim-2fbg.png" alt="UnternehmerImpulse by Thomas Brandenburger">
       </a>
+      <a href="#reservierung" class="btn btn-primary">Unverbindlich Platz reservieren</a>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Aktuell für bis zu 5 Unternehmen</p>
+  <!-- ══════ HERO ══════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">INQA-gefördertes Projekt · Für bis zu 5 Unternehmen</span>
           <h1>KI im Unternehmen wirksam verankern</h1>
-          <p class="hero-text">
-            Ein gefördertes 6-Monats-Projekt für Geschäftsführer und ausgewählte
-            Mitarbeitende, die KI sicher, strukturiert und mit echtem Nutzen in
-            den Arbeitsalltag integrieren wollen.
-          </p>
-
+          <p class="hero-text">Ein gefördertes 6-Monats-Projekt für Geschäftsführer und ausgewählte Mitarbeitende, die KI sicher, strukturiert und mit echtem Nutzen in den Arbeitsalltag integrieren wollen.</p>
           <div class="hero-highlights">
-            <span>klare KI-Leitlinien statt Schatten-KI</span>
-            <span>offizieller Tool-Rahmen statt Wildwuchs</span>
-            <span>erste umgesetzte Anwendungsfälle statt Spielerei</span>
+            <span>✓ Klare KI-Leitlinien statt Schatten-KI</span>
+            <span>✓ Priorisierte Use-Case-Roadmap statt Wildwuchs</span>
+            <span>✓ Umgesetzte Anwendungsfälle statt Spielerei</span>
+            <span>✓ Gemeinsame Use-Case-Bibliothek statt Insellösungen</span>
           </div>
-
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#reservierung">
-              Teilnahmeplatz reservieren
-            </a>
-            <a class="btn btn-secondary" href="#investition">
-              Investition ansehen
-            </a>
+            <a href="#reservierung" class="btn btn-primary btn-large">Unverbindlich Platz reservieren →</a>
+            <a href="#gespraech" class="btn btn-secondary btn-large">Klärungsgespräch vereinbaren</a>
           </div>
-
           <div class="hero-note">
-            <strong>Projektwert: 14.400 €</strong><br />
-            Mit möglicher INQA-Förderung beträgt der Eigenanteil nur
-            <strong>2.880 €</strong>.<br />
-            Geplanter Projektstart: <strong>ab 04.05.2026</strong> – unmittelbar
-            nach Klärung der INQA-Förderfähigkeit.
+            <strong>Projektwert: 14.400 €</strong> — Mit möglicher INQA-Förderung beträgt der Eigenanteil nur <strong>2.880 €</strong>.<br>
+            Geplanter Start: <strong>ab Mai 2026</strong> · Erster Schritt: <strong>Gemeinsame INQA-Prüfung</strong>
           </div>
         </div>
-
-        <aside class="hero-card">
+        <div class="hero-card">
           <h2>Worum es konkret geht</h2>
           <ul>
-            <li>Sicherheit durch klare Leitlinien und Regeln</li>
-            <li>Ein offizieller KI-Tool-Rahmen für dein Unternehmen</li>
-            <li>3 bis 5 priorisierte Anwendungsfälle mit echtem Nutzen</li>
-            <li>Erste praktische Umsetzung im Arbeitsalltag</li>
-            <li>Austausch mit Mitarbeitenden aus anderen Unternehmen</li>
+            <li><strong>Sicherheit</strong> durch klare Leitlinien und Spielregeln</li>
+            <li>Ein offizieller <strong>KI-Tool-Rahmen</strong> für dein Unternehmen</li>
+            <li>Eine umfassende <strong>Use-Case-Roadmap</strong> – priorisiert nach Nutzen</li>
+            <li>Erste <strong>praktische Umsetzung</strong> im Arbeitsalltag</li>
+            <li>Aufbau einer gemeinsamen <strong>Use-Case-Bibliothek</strong></li>
           </ul>
-
           <div class="hero-card-meta">
-            <strong>Rahmen:</strong> 6 Monate<br />
-            <strong>Teilnehmer:</strong> Geschäftsführung und ausgewählte Mitarbeitende<br />
-            <strong>Start:</strong> geplant ab 04.05.2026
+            <strong>Rahmen:</strong> 6 Monate · <strong>Teilnehmer:</strong> Geschäftsführung + Mitarbeitende · <strong>Start:</strong> geplant ab Mai 2026
           </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container narrow">
-        <p class="section-tag">Ausgangssituation</p>
-        <h2>Warum dieses Projekt jetzt wichtig ist</h2>
-        <p>
-          In vielen Unternehmen wird KI bereits punktuell genutzt – oft jedoch
-          ohne klare Regeln, ohne abgestimmte Tools und ohne gemeinsame Richtung.
-          Dadurch entstehen Unsicherheiten, ineffiziente Experimente und die
-          Gefahr einer unkontrollierten Schatten-KI.
-        </p>
-        <p>
-          Typische Fragen sind: Welche Tools dürfen wir offiziell nutzen? Was ist
-          datenschutzkonform? Wo liegen die sinnvollsten Anwendungsfälle? Und wie
-          kommen wir vom Ausprobieren zur wirksamen Nutzung im Alltag?
-        </p>
-        <p>
-          Genau dafür schafft dieses Projekt einen klaren, praxistauglichen
-          Rahmen.
-        </p>
-      </div>
-    </section>
-
-    <section class="section section-alt">
-      <div class="container">
-        <p class="section-tag">Nutzen</p>
-        <h2>Was dein Unternehmen konkret gewinnt</h2>
-        <div class="card-grid three">
-          <article class="info-card">
-            <h3>Mehr Sicherheit</h3>
-            <p>
-              Klare Leitlinien und Spielregeln für den Umgang mit KI im
-              Unternehmen.
-            </p>
-          </article>
-          <article class="info-card">
-            <h3>Mehr Klarheit</h3>
-            <p>
-              Ein abgestimmter offizieller Tool-Rahmen und priorisierte
-              Anwendungsfälle statt Wildwuchs.
-            </p>
-          </article>
-          <article class="info-card">
-            <h3>Mehr Wirkung</h3>
-            <p>
-              Erste umgesetzte Use Cases mit echtem Praxisbezug statt bloßer
-              Theorie.
-            </p>
-          </article>
-          <article class="info-card">
-            <h3>Mehr Entlastung</h3>
-            <p>
-              Weniger Reibung, schnellere Vorbereitung und bessere Grundlagen für
-              klare Entscheidungen.
-            </p>
-          </article>
-          <article class="info-card">
-            <h3>Mehr Erfahrung</h3>
-            <p>
-              Mitarbeitende lernen durch Anwendung und durch Austausch mit
-              anderen Unternehmen.
-            </p>
-          </article>
-          <article class="info-card">
-            <h3>Mehr Verbindlichkeit</h3>
-            <p>
-              Ein klarer Rahmen über sechs Monate sorgt dafür, dass aus
-              Erkenntnissen konkrete Ergebnisse werden.
-            </p>
-          </article>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section">
-      <div class="container narrow">
-        <p class="section-tag">Ziel</p>
-        <h2>Das Ziel des Projekts</h2>
-        <p>
-          Das Projekt unterstützt dein Unternehmen dabei, KI nicht nur
-          auszuprobieren, sondern als sinnvolle und sichere Arbeitsweise im
-          Unternehmen zu verankern.
-        </p>
-        <ul class="check-list">
-          <li>klare Leitlinien für den sicheren Einsatz von KI</li>
-          <li>ein definierter und abgestimmter Tool-Rahmen</li>
-          <li>eine priorisierte Use-Case-Roadmap</li>
-          <li>erste praktisch umgesetzte Anwendungsfälle</li>
-          <li>mehr Sicherheit und Erfahrung im Team</li>
-          <li>eine tragfähige Grundlage für die weitere Entwicklung</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section section-alt">
-      <div class="container">
-        <p class="section-tag">Ablauf</p>
-        <h2>So läuft das Projekt ab</h2>
-        <p class="section-intro">
-          Das Projekt ist auf sechs Monate angelegt und verbindet gemeinsame
-          Live-Module, Austausch zwischen den beteiligten Unternehmen sowie
-          gezielte Arbeit an den konkreten Anwendungsfällen im eigenen
-          Unternehmen.
-        </p>
-
-        <div class="timeline">
-          <article class="timeline-item">
-            <div class="timeline-number">1</div>
-            <div class="timeline-content">
-              <h3>Standortbestimmung und Zielbild</h3>
-              <p>
-                Wir analysieren die Ausgangssituation, klären die wichtigsten
-                Engpässe und definieren die 3 bis 5 relevantesten
-                Anwendungsfälle für dein Unternehmen.
-              </p>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <div class="timeline-number">2</div>
-            <div class="timeline-content">
-              <h3>Orientierung und Sicherheit</h3>
-              <p>
-                Wir schaffen Sicherheit im Umgang mit KI – mit Blick auf
-                sinnvolle Nutzung, Datenschutz, EU AI Act und klare Spielregeln
-                im Unternehmen.
-              </p>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <div class="timeline-number">3</div>
-            <div class="timeline-content">
-              <h3>Umsetzung im Alltag</h3>
-              <p>
-                Jetzt wird gearbeitet: an echten Aufgaben, mit realen
-                Anwendungsfällen und mit dem klaren Ziel, erste produktive
-                Lösungen im Alltag nutzbar zu machen.
-              </p>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <div class="timeline-number">4</div>
-            <div class="timeline-content">
-              <h3>Integration und Verankerung</h3>
-              <p>
-                Zum Abschluss werden Standards, Verantwortlichkeiten und die
-                weitere Roadmap festgelegt, damit aus ersten Erfolgen eine
-                dauerhaft wirksame Arbeitsweise entsteht.
-              </p>
-            </div>
-          </article>
+  <!-- ══════ AUSGANGSSITUATION ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Ausgangssituation</span>
+      <h2>Warum dieses Projekt jetzt wichtig ist</h2>
+      <p class="section-intro">In vielen Unternehmen wird KI bereits punktuell genutzt – oft jedoch ohne klare Regeln, ohne abgestimmte Tools und ohne gemeinsame Richtung. Dadurch entstehen Unsicherheiten und die Gefahr einer unkontrollierten Schatten-KI.</p>
+      <div class="card-grid three" style="margin-top: 1.5rem;">
+        <div class="info-card">
+          <h3>Welche Tools dürfen wir nutzen?</h3>
+          <p>Mitarbeitende experimentieren mit verschiedenen KI-Tools – ohne zu wissen, was offiziell erlaubt, sicher und sinnvoll ist.</p>
+        </div>
+        <div class="info-card">
+          <h3>Was ist datenschutzkonform?</h3>
+          <p>EU AI Act, DSGVO, Betriebsgeheimnisse – die rechtlichen Anforderungen sind komplex und kaum jemand hat den vollen Überblick.</p>
+        </div>
+        <div class="info-card">
+          <h3>Vom Ausprobieren zum Alltag?</h3>
+          <p>Einzelne Experimente gibt es bereits – aber wie wird daraus eine wirksame, dauerhafte Arbeitsweise im Team?</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section">
-      <div class="container">
-        <p class="section-tag">Rahmen</p>
-        <h2>Praxisnah, verbindlich und effizient</h2>
-        <div class="split-grid">
+  <!-- ══════ ERGEBNISSE ══════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-tag">Ergebnisse</span>
+      <h2>Was dein Unternehmen nach 6 Monaten konkret hat</h2>
+      <p class="section-intro">Das Projekt unterstützt dein Unternehmen dabei, KI nicht nur auszuprobieren, sondern als sichere und wirksame Arbeitsweise dauerhaft zu verankern.</p>
+      <div class="card-grid three" style="margin-top: 1.5rem;">
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Klare Leitlinien</h3>
+          <p>Verbindliche Spielregeln für den sicheren Umgang mit KI – abgestimmt auf die Anforderungen deines Unternehmens.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <h3>Offizieller Tool-Rahmen</h3>
+          <p>Klarheit darüber, welche KI-Tools offiziell genutzt werden dürfen – datenschutzkonform und praxistauglich.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+          <h3>Use-Case-Roadmap</h3>
+          <p>Eine umfassende Übersicht möglicher Anwendungsfälle – priorisiert nach Nutzen und Machbarkeit für dein Unternehmen.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8l-4 4-4-4"/><path d="M12 12v6"/></svg></div>
+          <h3>Umgesetzte Anwendungsfälle</h3>
+          <p>Erste priorisierte Use Cases werden praktisch umgesetzt – mit echtem Praxisbezug und messbarem Ergebnis.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <h3>Erfahrung im Team</h3>
+          <p>Mitarbeitende lernen durch Anwendung und Austausch mit anderen Unternehmen – und bauen echte KI-Kompetenz auf.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+          <h3>Tragfähige Grundlage</h3>
+          <p>Standards, Verantwortlichkeiten und eine Roadmap für die weitere Entwicklung – damit aus ersten Erfolgen Dauerwirkung wird.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ USE-CASE-BIBLIOTHEK ══════ -->
+  <section class="section usp-section">
+    <div class="container">
+      <span class="section-tag" style="color: #ffd5b1;">Alleinstellungsmerkmal</span>
+      <h2 style="color: var(--color-white);">Die gemeinsame Use-Case-Bibliothek</h2>
+      <p class="section-intro" style="color: rgba(255,255,255,0.75);">Dieses Projekt geht über einzelne Unternehmen hinaus: Alle Teilnehmer bauen gemeinsam eine wachsende Sammlung von KI-Anwendungsfällen auf, auf die jeder zugreifen kann.</p>
+      <div class="usp-grid" style="margin-top: 1.5rem;">
+        <div class="usp-features">
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+            <div><h4>Branchenübergreifende Inspiration</h4><p>Anwendungsfälle aus verschiedenen Unternehmen – oft sind die besten Ideen übertragbar.</p></div>
+          </div>
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+            <div><h4>Priorisiert und dokumentiert</h4><p>Jeder Use Case mit Bewertung, Erfahrungsbericht und Umsetzungshinweisen.</p></div>
+          </div>
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></div>
+            <div><h4>Dauerhafter Zugang</h4><p>Die Bibliothek wächst über das Projekt hinaus und bleibt allen Teilnehmern zugänglich.</p></div>
+          </div>
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+            <div><h4>Voneinander lernen</h4><p>Regelmäßiger Austausch zu Erfahrungen, Stolpersteinen und Erfolgen.</p></div>
+          </div>
+        </div>
+        <div class="usp-visual">
+          <h3>Beispiele aus der Bibliothek</h3>
+          <div class="usp-visual-item"><span class="dot dot-green"></span> Angebotserstellung mit KI-Unterstützung</div>
+          <div class="usp-visual-item"><span class="dot dot-green"></span> Meeting-Protokolle automatisch aufbereiten</div>
+          <div class="usp-visual-item"><span class="dot dot-yellow"></span> Kundenkommunikation beschleunigen</div>
+          <div class="usp-visual-item"><span class="dot dot-yellow"></span> Wissensmanagement im Team aufbauen</div>
+          <div class="usp-visual-item"><span class="dot dot-blue"></span> Datenanalyse für Geschäftsentscheidungen</div>
+          <div class="usp-visual-item"><span class="dot dot-blue"></span> Onboarding neuer Mitarbeiter optimieren</div>
+          <div class="usp-visual-item" style="opacity:0.5; font-style:italic;">+ weitere aus deinem Unternehmen …</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ ABLAUF ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Ablauf</span>
+      <h2>So läuft das Projekt ab</h2>
+      <p class="section-intro">Vier Phasen über sechs Monate – von der Standortbestimmung bis zur dauerhaften Verankerung.</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-number">1</div>
+          <div class="timeline-content">
+            <h3>Motivation &amp; Standortbestimmung</h3>
+            <p>Möglichkeiten aufzeigen und Begeisterung für KI entfachen. Analyse der Ausgangssituation, Klärung der Engpässe und Erarbeitung der Use-Case-Roadmap mit allen relevanten Anwendungsfällen.</p>
+            <span class="phase-badge">Monat 1–2</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">2</div>
+          <div class="timeline-content">
+            <h3>Orientierung &amp; Sicherheit</h3>
+            <p>Sicherheit im Umgang mit KI schaffen – Datenschutz, EU AI Act, sinnvolle Nutzung und klare Spielregeln für das Unternehmen.</p>
+            <span class="phase-badge">Monat 2–3</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">3</div>
+          <div class="timeline-content">
+            <h3>Umsetzung im Alltag</h3>
+            <p>Priorisierte Anwendungsfälle werden praktisch umgesetzt – an echten Aufgaben, mit realen Ergebnissen im Tagesgeschäft.</p>
+            <span class="phase-badge">Monat 3–5</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">4</div>
+          <div class="timeline-content">
+            <h3>Integration &amp; Verankerung</h3>
+            <p>Standards, Verantwortlichkeiten und die weitere Roadmap werden festgelegt. Die Use-Case-Bibliothek wird finalisiert.</p>
+            <span class="phase-badge">Monat 5–6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ PROJEKTRAHMEN ══════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-tag">Projektrahmen</span>
+      <h2>Praxisnah, verbindlich und effizient</h2>
+      <div class="split-grid" style="margin-top: 1.5rem;">
+        <div>
+          <p>Das Projekt verbindet gemeinsame Live-Module für alle beteiligten Unternehmen mit gezielten Präsenzterminen im einzelnen Unternehmen.</p>
+          <p>So entsteht einerseits ein effizienter gemeinsamer Lern- und Umsetzungsrahmen, andererseits bleibt genug Raum für die konkrete Anwendung in deinem eigenen Unternehmenskontext.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Enthalten sind unter anderem</h3>
+          <ul>
+            <li>Interaktive Live-Module (online)</li>
+            <li>Moderierter Austausch zwischen den Unternehmen</li>
+            <li>Live-Q&amp;A zur Lösung konkreter Fragen</li>
+            <li>Zwei Präsenzworkshops je Unternehmen</li>
+            <li>Aufbau der gemeinsamen Use-Case-Bibliothek</li>
+            <li>Analyse, Transfer und Erfolgskontrolle</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ INVESTITION ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Investition</span>
+      <h2>Investition und Förderung</h2>
+      <div class="price-box">
+        <div class="price-main">
+          <div class="price-label">Projektwert</div>
+          <div class="price-value">14.400 €</div>
+        </div>
+        <div class="price-main">
+          <div class="price-label">Möglicher Eigenanteil mit INQA-Förderung</div>
+          <div class="price-value accent">2.880 €</div>
+        </div>
+      </div>
+      <p class="small-note">Ich unterstütze bei der Beantragung der Fördermittel und übernehme das komplette Reporting, damit der organisatorische Aufwand für dein Unternehmen möglichst gering bleibt.</p>
+
+      <div class="inqa-process">
+        <h3 style="margin: 0 0 0.4rem; font-size: 1.3rem; color: var(--color-navy);">Der INQA-Coaching-Prozess im Überblick</h3>
+        <p style="color: var(--color-gray); font-size: 1rem; margin: 0 0 1.5rem;">Das Förderprogramm INQA-Coaching folgt einem klar definierten Ablauf in drei Schritten:</p>
+        <div class="inqa-step">
+          <div class="inqa-step-num">1</div>
           <div>
-            <p>
-              Das Projekt verbindet gemeinsame Live-Module für alle beteiligten
-              Unternehmen mit gezielten Präsenzterminen im einzelnen
-              Unternehmen. So entsteht einerseits ein effizienter gemeinsamer
-              Lern- und Umsetzungsrahmen, andererseits bleibt genug Raum für die
-              konkrete Anwendung in deinem eigenen Unternehmenskontext.
-            </p>
+            <h4>Kostenlose Erstberatung bei der INQA-Beratungsstelle</h4>
+            <p>In einem unkomplizierten Gespräch mit der regionalen INQA-Beratungsstelle wird geprüft, ob dein Unternehmen die Fördervoraussetzungen erfüllt. Gemeinsam definieren wir das Coaching-Ziel. Sind alle Bedingungen erfüllt, erhält dein Unternehmen einen <strong>INQA-Coaching-Scheck</strong> – das ist der offizielle Startschuss.</p>
+            <span class="inqa-badge">Ich begleite dich durch diesen Schritt</span>
           </div>
-          <div class="feature-box">
-            <h3>Enthalten sind unter anderem</h3>
-            <ul>
-              <li>interaktive Live-Module</li>
-              <li>moderierter Austausch zwischen den Unternehmen</li>
-              <li>Live-Q&amp;A zur Lösung konkreter Fragen</li>
-              <li>zwei Präsenzworkshops je Unternehmen</li>
-              <li>Analyse, Transfer und Erfolgskontrolle</li>
-            </ul>
+        </div>
+        <div class="inqa-connector"></div>
+        <div class="inqa-step">
+          <div class="inqa-step-num">2</div>
+          <div>
+            <h4>Das Projekt – 6 Monate gemeinsam arbeiten</h4>
+            <p>Den INQA-Coaching-Scheck löst du bei mir als autorisiertem INQA-Coach ein. Dann arbeiten wir über 6 Monate an den vier Projektphasen: Standortbestimmung, Orientierung, Umsetzung und Verankerung. Deine Mitarbeitenden werden aktiv einbezogen und arbeiten an den Lösungen mit.</p>
+          </div>
+        </div>
+        <div class="inqa-connector"></div>
+        <div class="inqa-step">
+          <div class="inqa-step-num">3</div>
+          <div>
+            <h4>Abschlussgespräch und Erstattung</h4>
+            <p>Ca. 3–6 Monate nach dem Projektabschluss wertet die INQA-Beratungsstelle das Coaching mit dir aus. Für den dafür notwendigen Projektbericht stelle ich die Texte und Inhalte zur Verfügung – du übernimmst sie in das INQA-Berichtsformular. Bei erfolgreicher Auswertung werden die Fördermittel (80 % des Projektwerts) erstattet.</p>
+            <span class="inqa-badge">Ich begleite dich auch durch diesen Schritt</span>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="section section-alt">
-      <div class="container">
-        <p class="section-tag">Passung</p>
-        <h2>Für wen dieses Projekt geeignet ist</h2>
-        <div class="split-grid">
-          <article class="info-card">
-            <h3>Geeignet für</h3>
-            <ul>
-              <li>Unternehmen, die KI geordnet und wirksam einführen möchten</li>
-              <li>Geschäftsführer, die Wildwuchs und Unsicherheit vermeiden wollen</li>
-              <li>Teams, die konkrete Anwendungsfälle identifizieren und umsetzen möchten</li>
-              <li>Unternehmen, die den geförderten Rahmen aktiv nutzen wollen</li>
-            </ul>
-          </article>
-
-          <article class="info-card">
-            <h3>Weniger geeignet für</h3>
-            <ul>
-              <li>reine Neugier ohne Umsetzungsbereitschaft</li>
-              <li>den Wunsch nach bloßer Tool-Schulung</li>
-              <li>Unternehmen, die aktuell keine Zeitfenster für die praktische Mitarbeit haben</li>
-              <li>Organisationen, die nur unverbindlich „mal schauen“ wollen</li>
-            </ul>
-          </article>
-        </div>
+      <div class="hint-box orange">
+        <strong>Hinweis zur Finanzierung</strong>
+        <p>Dein Unternehmen geht bei den Projektkosten zunächst in Vorleistung. Die Abrechnung erfolgt während bzw. nach Abschluss des Projekts. Die INQA-Fördermittel (80 % des Projektwerts) werden nach der Auswertung durch die INQA-Beratungsstelle erstattet – erfahrungsgemäß 3–6 Monate nach Projektende. Nach Erstattung der Fördermittel beträgt dein Eigenanteil 2.880 €.</p>
       </div>
-    </section>
-
-    <section class="section" id="investition">
-      <div class="container narrow">
-        <p class="section-tag">Investition</p>
-        <h2>Investition und Förderung</h2>
-        <div class="price-box">
-          <div class="price-main">
-            <div class="price-label">Projektwert</div>
-            <div class="price-value">14.400 €</div>
-          </div>
-          <div class="price-main">
-            <div class="price-label">Möglicher Eigenanteil mit INQA-Förderung</div>
-            <div class="price-value accent">2.880 €</div>
-          </div>
-        </div>
-
-        <p>
-          Ich unterstütze bei der Beantragung der Fördermittel und übernehme das
-          komplette Reporting, damit der organisatorische Aufwand für dein
-          Unternehmen möglichst gering bleibt.
-        </p>
-        <p class="small-note">
-          Hinweis: Die Förderfähigkeit wird im Rahmen des Antrags geprüft.
-        </p>
+      <div class="hint-box green">
+        <strong>Dein Einstieg ist unverbindlich</strong>
+        <p>Die Platzreservierung hier auf der Seite ist kostenfrei und ohne Verpflichtung. Im nächsten Schritt prüfen wir gemeinsam mit der INQA-Beratungsstelle, ob die Fördervoraussetzungen erfüllt sind. Erst nach Erhalt des INQA-Coaching-Schecks entscheidest du verbindlich, ob das Projekt startet.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section section-alt">
-      <div class="container narrow">
-        <p class="section-tag">Begleitung</p>
-        <h2>Warum ich dieses Projekt begleite</h2>
-        <p>
-          Ich begleite Unternehmer, Geschäftsführer und Führungskräfte dabei,
-          neue Entwicklungen nicht nur zu verstehen, sondern wirksam in die
-          betriebliche Praxis zu übersetzen.
-        </p>
-        <p>
-          Im Mittelpunkt stehen dabei keine Technik-Spielereien, sondern klare
-          Leitlinien, realistische Prioritäten und konkrete Ergebnisse, die im
-          Alltag tatsächlich entlasten und weiterbringen.
-        </p>
-        <p>
-          Ich selbst habe rund 40 Jahre Führungserfahrung in verschiedenen
-          kleinen und mittleren Unternehmen. Deshalb kenne ich nicht nur die
-          Chancen neuer Technologien, sondern auch die Realität im betrieblichen
-          Alltag: volle Kalender, knappe Ressourcen, hohe Verantwortung und
-          wenig Zeit für Experimente.
-        </p>
-        <p>
-          Seit rund 12 Monaten beschäftige ich mich intensiv mit der konkreten
-          Nutzung von KI im Unternehmenskontext. Aktuell ergänze ich diese
-          praktische Arbeit durch eine Weiterbildung zum zertifizierten
-          KI-Strategieberater.
-        </p>
-        <p>
-          So entsteht ein Rahmen, der unternehmerische Erfahrung,
-          Umsetzungsnähe und einen klaren Projektaufbau verbindet –
-          praxistauglich für Geschäftsführung und Mitarbeitende.
-        </p>
-      </div>
-    </section>
-
-    <section class="section cta-section" id="reservierung">
-      <div class="container narrow">
-        <div class="cta-box left">
-          <p class="section-tag section-tag-light">Teilnahme reservieren</p>
-          <h2>Reserviere jetzt deinen Teilnahmeplatz</h2>
-          <p>
-            Aktuell ist das Projekt für bis zu 5 Unternehmen vorgesehen. Der
-            geplante Start ist unmittelbar nach Klärung der INQA-Förderfähigkeit,
-            vorgesehen ab <strong>04.05.2026</strong>.
-          </p>
-          <p>
-            Mit dem Absenden des Formulars reservierst du einen Teilnahmeplatz.
-            Danach melde ich mich für ein abschließendes Klärungsgespräch bei dir.
-          </p>
-
-          <form
-            class="reservation-form"
-            action="mailto:kontakt@thomas-brandenburger.de?subject=Reservierung%20Teilnahmeplatz%20KI-Projekt"
-            method="post"
-            enctype="text/plain"
-          >
-            <div class="form-grid">
-              <div class="form-field">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="Name" required />
-              </div>
-
-              <div class="form-field">
-                <label for="firma">Firma</label>
-                <input type="text" id="firma" name="Firma" required />
-              </div>
+  <!-- ══════ SOCIAL PROOF ══════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-tag">Stimmen</span>
+      <h2>Was Unternehmer über die Zusammenarbeit sagen</h2>
+      <div class="testimonial-grid" style="margin-top: 1.5rem;">
+        <div class="testimonial-card">
+          <p class="testimonial-quote">„Bevor ich strategisch wichtige Investitionen entschieden habe, habe ich sie konsequent auf den Prüfstand gestellt. Die Entscheidung war goldrichtig – ich arbeite wieder mehr am Unternehmen statt nur im Tagesgeschäft."</p>
+          <div class="testimonial-author">
+            <img class="testimonial-photo" src="./bilder/foto-arndt.jpg" alt="Arndt Nikolaus Loh">
+            <div>
+              <div class="testimonial-name">Arndt Nikolaus Loh</div>
+              <div class="testimonial-role">Theodor Stephan KG GmbH &amp; Co. KG, Burbach</div>
             </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">„Über das Netzwerk habe ich mehrere neue Kunden gewonnen und die Beiträge in kurzer Zeit mehr als 10-fach zurückbekommen. Das sind messbare Ergebnisse."</p>
+          <div class="testimonial-author">
+            <img class="testimonial-photo" src="./bilder/foto-florin.jpg" alt="Florin Zweidick">
+            <div>
+              <div class="testimonial-name">Florin Zweidick</div>
+              <div class="testimonial-role">Zweidick Werkzeugbau GmbH, Haiger</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">„Mein Team entscheidet heute über 80 % der Themen ohne mich. Das hat meinen Alltag massiv entlastet – und macht uns als Unternehmen deutlich schneller und stabiler."</p>
+          <div class="testimonial-author">
+            <img class="testimonial-photo" src="./bilder/foto-arnd.jpg" alt="Arnd Pfeiffer">
+            <div>
+              <div class="testimonial-name">Arnd Pfeiffer</div>
+              <div class="testimonial-role">Pfeiffer GmbH &amp; Co. KG, Asslar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--color-orange)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <strong>4.9</strong> Bestbewerteter Anbieter · verifiziert von Trustindex
+      </div>
+    </div>
+  </section>
 
+  <!-- ══════ BEGLEITUNG ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Begleitung</span>
+      <h2>Warum ich dieses Projekt begleite</h2>
+      <div class="begleitung-grid" style="margin-top: 1.5rem;">
+        <img class="begleitung-photo" src="./bilder/thomas-brandenburger.jpg" alt="Thomas Brandenburger">
+        <div>
+          <h3 style="margin: 0 0 0.6rem; font-size: 1.4rem; color: var(--color-navy);">Thomas Brandenburger</h3>
+          <p>Ich begleite Unternehmer, Geschäftsführer und Führungskräfte dabei, neue Entwicklungen nicht nur zu verstehen, sondern wirksam in die betriebliche Praxis zu übersetzen.</p>
+          <p>Mit rund 40 Jahren Führungserfahrung in verschiedenen kleinen und mittleren Unternehmen mit bis zu 500 Mitarbeitern kenne ich nicht nur die Chancen neuer Technologien, sondern auch die Realität im Alltag: volle Kalender, knappe Ressourcen, hohe Verantwortung und wenig Zeit für Experimente.</p>
+          <p>Seit über 12 Monaten beschäftige ich mich intensiv mit der konkreten Nutzung von KI im Unternehmenskontext. Aktuell ergänze ich diese praktische Arbeit durch eine Weiterbildung zum zertifizierten KI-Strategieberater.</p>
+          <div class="credential-tags">
+            <span class="credential-tag">Dipl.-Ing. Maschinenbau</span>
+            <span class="credential-tag">~40 Jahre Führungserfahrung</span>
+            <span class="credential-tag">KI-Strategieberater (i.A.)</span>
+            <span class="credential-tag">Zert. Business Coach</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ CTA / FORMULAR ══════ -->
+  <section class="section cta-section" id="reservierung">
+    <div class="container">
+      <span class="section-tag" style="color: #ffd5b1;">Nächster Schritt</span>
+      <h2 style="color: var(--color-white);">Jetzt unverbindlich starten – oder erst ein Klärungsgespräch führen</h2>
+      <p style="color: rgba(255,255,255,0.7); max-width: 52rem; margin-bottom: 2rem; font-size: 1.16rem;">Aktuell ist das Projekt für bis zu 5 Unternehmen vorgesehen. Im ersten Schritt prüfen wir gemeinsam die INQA-Förderfähigkeit für dein Unternehmen. Die verbindliche Entscheidung steht erst nach der Förderzusage an – <strong style="color: var(--color-white);">kein Risiko, keine Vorabkosten.</strong></p>
+      <div class="cta-grid">
+        <div class="cta-option">
+          <h3>Platz reservieren &amp; Förderung prüfen</h3>
+          <p class="desc">Mit der Reservierung starten wir den gemeinsamen Klärungsprozess: Ich melde mich bei dir, wir prüfen zusammen die INQA-Förderfähigkeit und du entscheidest erst nach der Förderzusage verbindlich.</p>
+          <!-- ═══ ENCHARGE: Ersetze dieses <form> durch deinen Encharge Native Form Embed-Code ═══ -->
+          <form id="reservierung-form">
+            <div class="form-grid">
+              <div class="form-field"><label for="name">Name *</label><input type="text" id="name" name="name" placeholder="Dein Name" required></div>
+              <div class="form-field"><label for="email">E-Mail *</label><input type="email" id="email" name="email" placeholder="deine@email.de" required></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-field"><label for="firma">Firma *</label><input type="text" id="firma" name="firma" placeholder="Dein Unternehmen" required></div>
+              <div class="form-field"><label for="telefon">Telefon</label><input type="tel" id="telefon" name="telefon" placeholder="+49 ..."></div>
+            </div>
             <div class="form-field">
               <label for="teilnehmer">Anzahl Teilnehmer</label>
-              <input
-                type="number"
-                id="teilnehmer"
-                name="Anzahl Teilnehmer"
-                min="1"
-                max="20"
-                required
-              />
+              <select id="teilnehmer" name="teilnehmer" style="width:100%; padding:0.9rem 1rem; border:1px solid rgba(255,255,255,0.2); border-radius:12px; font:inherit; background:rgba(255,255,255,0.08); color:var(--color-white);">
+                <option value="">Bitte wählen</option>
+                <option value="1-2">1–2 Personen</option>
+                <option value="3-5">3–5 Personen</option>
+                <option value="6-10">6–10 Personen</option>
+              </select>
             </div>
-
-            <div class="form-field">
-              <label for="themen">
-                Besondere Themenwünsche oder noch zu klärende Fragen
-              </label>
-              <textarea
-                id="themen"
-                name="Themenwünsche / Fragen"
-                rows="6"
-                placeholder="Welche Themen sind dir besonders wichtig? Welche Fragen sollen wir vorab klären?"
-              ></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-large">
-              Teilnahmeplatz reservieren
-            </button>
+            <div class="form-field"><label for="themen">Besondere Themenwünsche oder Fragen</label><textarea id="themen" name="themen" rows="3" placeholder="Optional: Was beschäftigt dich aktuell beim Thema KI?"></textarea></div>
+            <button type="submit" class="btn btn-primary btn-large" style="width:100%;">Unverbindlich Platz reservieren →</button>
+            <p class="cta-hint">Keine Kosten, keine Verpflichtung. Mit dem Absenden starten wir den gemeinsamen Prüfprozess. Ich melde mich zeitnah bei dir.</p>
           </form>
         </div>
+        <div class="cta-option" id="gespraech">
+          <div class="gespraech-center">
+            <div class="gespraech-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            </div>
+            <h3>Lieber erst ein Klärungsgespräch?</h3>
+            <p class="desc">Du hast noch Fragen oder möchtest vorab klären, ob das Projekt zu deinem Unternehmen passt? Lass uns in 20 Minuten sprechen – unverbindlich und offen.</p>
+            <div class="gespraech-steps">
+              <div class="gespraech-step"><span class="gespraech-step-num">1</span> Termin auswählen</div>
+              <div class="gespraech-step"><span class="gespraech-step-num">2</span> Kurzes Gespräch (ca. 20 Min.)</div>
+              <div class="gespraech-step"><span class="gespraech-step-num">3</span> Klare Empfehlung – ob und wie es passt</div>
+            </div>
+            <a href="mailto:kontakt@thomas-brandenburger.de?subject=Kl%C3%A4rungsgespr%C3%A4ch%20KI-Projekt" class="btn btn-secondary btn-large">Klärungsgespräch vereinbaren</a>
+            <p class="cta-hint" style="margin-top:1rem;">Oder direkt anrufen: <a href="tel:+4915125254853" style="color: var(--color-orange);">0151 252 548 53</a></p>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
+  <!-- ══════ FOOTER ══════ -->
   <footer class="site-footer">
-    <div class="container footer-inner">
+    <div class="footer-inner container">
+      <div><strong>UnternehmerImpulse</strong> by Thomas Brandenburger · TB UnternehmerImpulse eG</div>
       <div>
-        <strong>UnternehmerImpulse</strong><br />
-        by Thomas Brandenburger
-      </div>
-      <div>
-        <a href="mailto:kontakt@thomas-brandenburger.de">kontakt@thomas-brandenburger.de</a>
+        <a href="mailto:kontakt@thomas-brandenburger.de">kontakt@thomas-brandenburger.de</a> ·
+        <a href="https://unternehmercoaching-zentrum.de/datenschutz/">Datenschutz</a> ·
+        <a href="https://unternehmercoaching-zentrum.de/impressum/">Impressum</a>
       </div>
     </div>
   </footer>
+
 </body>
 </html>
