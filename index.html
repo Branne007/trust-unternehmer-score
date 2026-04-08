@@ -3,9 +3,435 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>unternehmer-score</title>
+  <title>Unternehmer-Score | Dein Quick Check</title>
+  <style>
+:root {
+  --color-navy: #00305b;
+  --color-orange: #f18423;
+  --color-gray: #54595f;
+  --color-text: #161616;
+  --color-white: #ffffff;
+  --color-bg: #f7f8fa;
+  --font-main: "Myriad Pro Condensed", "Arial Narrow", Arial, sans-serif;
+  --container-width: 1140px;
+  --container-narrow: 780px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-soft: 0 12px 30px rgba(0,48,91,0.08);
+  --shadow-card: 0 10px 24px rgba(0,48,91,0.06);
+  --space-2xl: 5rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; font-family:var(--font-main); color:var(--color-text); background:var(--color-white); line-height:1.55; }
+img { max-width:100%; display:block; }
+a { color:var(--color-navy); text-decoration:none; }
+.container { width:min(100% - 2rem, var(--container-width)); margin:0 auto; }
+.narrow { width:min(100%, var(--container-narrow)); margin:0 auto; }
+
+.site-header { position:sticky; top:0; z-index:20; background:rgba(255,255,255,0.96); border-bottom:1px solid rgba(0,48,91,0.08); backdrop-filter:blur(8px); }
+.header-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 0; }
+.brand-logo { font-size:1.4rem; font-weight:700; color:var(--color-navy); }
+.brand-logo span { color:var(--color-orange); }
+.header-nav { display:flex; gap:1.25rem; font-size:1rem; }
+.header-nav a:hover { color:var(--color-orange); }
+
+.hero { background:linear-gradient(135deg, rgba(0,48,91,0.98), rgba(0,48,91,0.88)); color:var(--color-white); padding:5rem 0 4rem; }
+.hero-grid { display:grid; grid-template-columns:1.2fr 0.8fr; gap:2.5rem; align-items:center; }
+.hero h1 { margin:0 0 1rem; font-size:clamp(2.5rem,5vw,4.2rem); line-height:0.98; letter-spacing:-0.02em; }
+.eyebrow { display:inline-block; margin:0 0 1rem; font-size:0.95rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--color-orange); }
+.hero-text { max-width:42rem; margin:0 0 1.5rem; font-size:1.25rem; color:rgba(255,255,255,0.92); }
+.hero-highlights { display:flex; flex-wrap:wrap; gap:0.75rem; margin:0 0 1.75rem; }
+.hero-highlights span { display:inline-flex; align-items:center; padding:0.55rem 0.85rem; border:1px solid rgba(255,255,255,0.16); border-radius:999px; font-size:0.98rem; color:rgba(255,255,255,0.96); background:rgba(255,255,255,0.06); }
+.hero-image { border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.25); }
+.hero-image img { width:100%; height:auto; }
+
+.btn { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:0.85rem 1.2rem; border-radius:999px; border:2px solid transparent; font-size:1rem; font-weight:700; font-family:var(--font-main); cursor:pointer; transition:transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease; }
+.btn:hover { transform:translateY(-1px); opacity:0.96; }
+.btn-primary { background:var(--color-orange); color:var(--color-white); }
+.btn-outline { background:transparent; color:var(--color-navy); border-color:rgba(0,48,91,0.16); }
+.btn-large { padding:1rem 1.5rem; min-height:54px; font-size:1.06rem; }
+.btn-block { width:100%; }
+
+.section { padding:var(--space-2xl) 0; }
+.section-alt { background:var(--color-bg); }
+.section h2 { margin:0 0 1rem; font-size:clamp(2rem,4vw,3rem); line-height:1.02; color:var(--color-navy); }
+.section p { margin:0 0 1rem; font-size:1.16rem; }
+
+.steps-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0.75rem; margin-top:2rem; }
+.step-card { text-align:center; padding:1.25rem 0.75rem; background:var(--color-white); border:1px solid rgba(0,48,91,0.08); border-radius:var(--radius-md); box-shadow:var(--shadow-card); }
+.step-num { width:44px; height:44px; display:inline-grid; place-items:center; border-radius:50%; background:var(--color-orange); color:#fff; font-size:1.2rem; font-weight:700; margin-bottom:0.6rem; }
+.step-card h3 { margin:0; font-size:1.05rem; color:var(--color-navy); }
+
+.quiz-container { display:none; }
+.quiz-container.active { display:block; }
+.progress-bar-wrap { width:100%; height:8px; background:rgba(0,48,91,0.08); border-radius:999px; margin-bottom:0.75rem; overflow:hidden; }
+.progress-bar-fill { height:100%; background:var(--color-orange); border-radius:999px; transition:width 0.4s ease; }
+.progress-label { font-size:0.95rem; color:var(--color-gray); margin-bottom:2rem; }
+.cluster-label { display:inline-block; margin-bottom:0.75rem; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-orange); }
+.question-card { background:var(--color-white); border:1px solid rgba(0,48,91,0.08); border-radius:var(--radius-lg); box-shadow:var(--shadow-soft); padding:2rem; margin-bottom:1.5rem; animation:fadeIn 0.35s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.question-card h3 { margin:0 0 1.25rem; font-size:1.35rem; color:var(--color-navy); }
+.likert-group { display:flex; flex-direction:column; gap:0.6rem; }
+.likert-option { display:flex; align-items:center; gap:0.75rem; padding:0.85rem 1rem; border:2px solid rgba(0,48,91,0.08); border-radius:var(--radius-sm); cursor:pointer; transition:border-color 0.2s, background 0.2s; font-size:1.05rem; }
+.likert-option:hover { border-color:rgba(0,48,91,0.18); background:rgba(0,48,91,0.02); }
+.likert-option.selected { border-color:var(--color-orange); background:rgba(241,132,35,0.06); }
+.likert-option input { display:none; }
+.likert-dot { width:22px; height:22px; border-radius:50%; border:2px solid rgba(0,48,91,0.2); flex-shrink:0; display:grid; place-items:center; transition:border-color 0.2s; }
+.likert-option.selected .likert-dot { border-color:var(--color-orange); }
+.likert-option.selected .likert-dot::after { content:''; width:12px; height:12px; background:var(--color-orange); border-radius:50%; }
+.quiz-nav { display:flex; justify-content:space-between; gap:1rem; margin-top:1rem; }
+
+.result-container { display:none; }
+.result-container.active { display:block; }
+.lead-gate { display:none; }
+.lead-gate.active { display:block; }
+
+.score-hero { text-align:center; padding:2.5rem 2rem; background:linear-gradient(135deg, var(--color-navy), #004a8f); border-radius:var(--radius-lg); color:#fff; margin-bottom:2rem; }
+.score-number { font-size:clamp(4rem,8vw,6rem); font-weight:700; line-height:1; color:var(--color-orange); }
+.score-stage { font-size:1.5rem; margin-top:0.5rem; font-weight:700; }
+.score-subtitle { font-size:1.1rem; color:rgba(255,255,255,0.8); margin-top:0.75rem; max-width:32rem; margin-left:auto; margin-right:auto; }
+
+.result-card { background:var(--color-white); border:1px solid rgba(0,48,91,0.08); border-radius:var(--radius-lg); box-shadow:var(--shadow-soft); padding:2rem; margin-bottom:1.5rem; }
+.stage-bar-wrap { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+.stage-label { min-width:180px; font-weight:700; font-size:1rem; color:var(--color-navy); }
+.stage-bar-bg { flex:1; height:28px; background:rgba(0,48,91,0.06); border-radius:999px; overflow:hidden; }
+.stage-bar-fg { height:100%; border-radius:999px; transition:width 0.8s ease; }
+.stage-pct { min-width:48px; text-align:right; font-weight:700; font-size:1.05rem; color:var(--color-navy); }
+
+.lead-card { background:var(--color-white); border:2px solid var(--color-orange); border-radius:var(--radius-lg); box-shadow:var(--shadow-soft); padding:2.5rem; margin-bottom:2rem; text-align:center; }
+.lead-card h3 { margin:0 0 0.5rem; font-size:1.6rem; color:var(--color-navy); }
+.lead-subtitle { color:var(--color-gray); font-size:1.1rem; margin-bottom:1.5rem; }
+.lead-perks { display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; margin-bottom:1.75rem; }
+.lead-perks span { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 0.9rem; background:rgba(241,132,35,0.08); border-radius:999px; font-size:0.95rem; color:var(--color-navy); font-weight:600; }
+.lead-form { text-align:left; max-width:480px; margin:0 auto; }
+.lead-form .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.lead-form .form-field { margin-bottom:1rem; }
+.lead-form label { display:block; margin-bottom:0.4rem; font-weight:700; color:var(--color-navy); font-size:0.95rem; }
+.lead-form input { width:100%; padding:0.85rem 1rem; border:1px solid rgba(0,48,91,0.18); border-radius:12px; font:inherit; color:var(--color-text); background:#fff; }
+.lead-form input:focus { outline:none; border-color:var(--color-orange); box-shadow:0 0 0 4px rgba(241,132,35,0.12); }
+.form-note { font-size:0.85rem; color:var(--color-gray); margin-top:0.25rem; text-align:center; }
+
+.cta-section { background:linear-gradient(135deg, var(--color-navy), #004a8f); color:#fff; padding:3rem; margin-top:1.5rem; border-radius:var(--radius-lg); }
+.cta-inner { text-align:center; }
+.cta-inner h3 { margin:0 0 0.75rem; font-size:1.8rem; color:#fff; }
+.cta-inner p { color:rgba(255,255,255,0.85); font-size:1.15rem; margin-bottom:1.25rem; }
+
+.site-footer { background:#082742; color:rgba(255,255,255,0.86); padding:1.5rem 0; }
+.footer-inner { display:flex; justify-content:space-between; gap:1rem; align-items:center; }
+
+@media (max-width:980px) {
+  .hero-grid { grid-template-columns:1fr; }
+  .hero-image { max-width:480px; }
+  .steps-grid { grid-template-columns:repeat(2,1fr); }
+  .footer-inner, .header-inner { flex-direction:column; align-items:flex-start; }
+}
+@media (max-width:640px) {
+  .container { width:min(100% - 1.25rem, var(--container-width)); }
+  .question-card { padding:1.25rem; }
+  .stage-bar-wrap { flex-wrap:wrap; }
+  .stage-label { min-width:100%; }
+  .quiz-nav { flex-direction:column; }
+  .quiz-nav .btn { width:100%; }
+  .steps-grid { grid-template-columns:1fr; }
+  .lead-form .form-row { grid-template-columns:1fr; }
+  .hero-highlights { flex-direction:column; }
+  .score-hero { padding:2rem 1.25rem; }
+  .cta-section { padding:2rem 1.25rem; }
+}
+  </style>
 </head>
 <body>
-  <h1>Unternehmer-Score – Bewerte dein unternehmerisches Potenzial</h1>
+
+<header class="site-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="brand-logo">Unternehmer<span>Score</span></div>
+      <nav class="header-nav">
+        <a href="#about">Über den Score</a>
+        <a href="#quiz-section">Quick Check starten</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Brandenburger-Score Quick Check</span>
+        <h1>Wo stehst du als Unternehmer?</h1>
+        <p class="hero-text">40 Fragen – 5 Minuten – eine fundierte Standortbestimmung deines unternehmerischen Reifegrads. Finde heraus, auf welcher Stufe der Entwicklungs-Treppe du dich befindest.</p>
+        <div class="hero-highlights">
+          <span>📊 40 wissenschaftliche Indikatoren</span>
+          <span>🎯 5 Reifegrad-Stufen</span>
+          <span>⏱ ca. 5 Minuten</span>
+          <span>🔒 100 % anonym</span>
+        </div>
+        <a href="#quiz-section" class="btn btn-primary btn-large">Jetzt Score ermitteln →</a>
+      </div>
+      <div class="hero-image">
+        <img src="bilder/Unternehmer-Entwicklungs-Treppe.png" alt="Die 5 Stufen der Unternehmer-Entwicklungs-Treppe">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="about">
+  <div class="container">
+    <div class="narrow" style="margin-bottom:2rem;">
+      <h2>Die 5 Stufen der Entwicklungs-Treppe</h2>
+      <p>Jeder Unternehmer durchläuft typische Entwicklungsphasen – vom operativ getriebenen Macher bis zum strategisch souveränen Gestalter. Der Brandenburger-Score zeigt dir, wo du gerade stehst.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Getriebener Macher</h3><p style="font-size:0.92rem;color:var(--color-gray);margin:0.5rem 0 0;">Hamsterrad &amp; Feuerwehr</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Alltagsgestalter</h3><p style="font-size:0.92rem;color:var(--color-gray);margin:0.5rem 0 0;">Erste Strukturen</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Leader</h3><p style="font-size:0.92rem;color:var(--color-gray);margin:0.5rem 0 0;">Führung &amp; Delegation</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Systembauer</h3><p style="font-size:0.92rem;color:var(--color-gray);margin:0.5rem 0 0;">Prozesse &amp; Standards</p></div>
+      <div class="step-card"><div class="step-num">5</div><h3>Gestaltender Unternehmer</h3><p style="font-size:0.92rem;color:var(--color-gray);margin:0.5rem 0 0;">Strategie &amp; Souveränität</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="quiz-section">
+  <div class="container narrow">
+
+    <div id="quiz-start" class="quiz-container active">
+      <h2>Quick Check starten</h2>
+      <p>Beantworte die folgenden 40 Fragen ehrlich auf Basis deines Verhaltens in den <strong>letzten 4 Wochen</strong>. Es gibt keine richtigen oder falschen Antworten.</p>
+      <p style="color:var(--color-gray);">Skala: 0 = trifft gar nicht zu → 4 = trifft voll zu</p>
+      <button class="btn btn-primary btn-large" onclick="startQuiz()" style="margin-top:1rem;">Los geht's →</button>
+    </div>
+
+    <div id="quiz-questions" class="quiz-container">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label"></div>
+      <div id="question-area"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-outline" id="btn-prev" onclick="prevQuestion()">← Zurück</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Weiter →</button>
+      </div>
+    </div>
+
+    <div id="lead-gate" class="lead-gate">
+      <div class="score-hero">
+        <div class="score-number" id="teaser-score"></div>
+        <div class="score-stage" id="teaser-stage"></div>
+        <div class="score-subtitle">Dein Quick Check ist ausgewertet! Trage deine Daten ein, um dein vollständiges Ergebnis mit persönlicher Auswertung zu erhalten.</div>
+      </div>
+      <div class="lead-card">
+        <h3>🎁 Dein persönlicher Ergebnis-Report</h3>
+        <p class="lead-subtitle">Trage deine Daten ein und erhalte zusätzlich per E-Mail:</p>
+        <div class="lead-perks">
+          <span>📄 PDF-Auswertung deines Scores</span>
+          <span>🎯 Individuelle Handlungsempfehlungen</span>
+          <span>📊 Vergleich mit anderen Unternehmern</span>
+        </div>
+        <div class="lead-form" id="lead-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="lead-vorname">Vorname *</label>
+              <input type="text" id="lead-vorname" placeholder="Max" required>
+            </div>
+            <div class="form-field">
+              <label for="lead-name">Nachname *</label>
+              <input type="text" id="lead-name" placeholder="Mustermann" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="lead-firma">Firma *</label>
+            <input type="text" id="lead-firma" placeholder="Mustermann GmbH" required>
+          </div>
+          <div class="form-field">
+            <label for="lead-email">E-Mail-Adresse *</label>
+            <input type="email" id="lead-email" placeholder="max@mustermann.de" required>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="lead-plz">PLZ *</label>
+              <input type="text" id="lead-plz" placeholder="10115" maxlength="5" required>
+            </div>
+            <div class="form-field">
+              <label for="lead-ort">Ort *</label>
+              <input type="text" id="lead-ort" placeholder="Berlin" required>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-large btn-block" onclick="submitLead()" style="margin-top:0.5rem;">Ergebnis anzeigen &amp; Report sichern →</button>
+          <p class="form-note" style="margin-top:1rem;">Deine Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.</p>
+        </div>
+      </div>
+      <p style="text-align:center;"><a href="#" onclick="skipLead();return false;" style="color:var(--color-gray);font-size:0.95rem;text-decoration:underline;">Ohne Angabe fortfahren →</a></p>
+    </div>
+
+    <div id="quiz-results" class="result-container">
+      <div class="score-hero" id="result-hero">
+        <div class="score-number" id="final-score"></div>
+        <div class="score-stage" id="final-stage"></div>
+        <div class="score-subtitle" id="final-subtitle"></div>
+      </div>
+      <div class="result-card" id="result-bars"></div>
+      <div class="result-card" id="result-interpretation"></div>
+      <div class="cta-section">
+        <div class="cta-inner">
+          <h3>Dein nächster Schritt: Das Klarheitsgespräch</h3>
+          <p>In einem persönlichen 1:1-Gespräch analysieren wir deinen Score, identifizieren deine größten Hebel und erarbeiten konkrete nächste Schritte für deine Entwicklung als Unternehmer.</p>
+          <a href="#kontakt" class="btn btn-primary btn-large" style="background:#fff;color:var(--color-navy);">Klarheitsgespräch vereinbaren →</a>
+        </div>
+      </div>
+      <div style="margin-top:2rem;text-align:center;">
+        <button class="btn btn-outline" onclick="resetQuiz()">Score erneut ermitteln</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span>© 2026 Brandenburger-Score · T. Brandenburger &amp; H. Schrem</span>
+      <span style="font-size:0.9rem;">Psychometrisches Framework v1</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const questions=[
+{id:'x1',cluster:'Getriebener Macher',ci:0,text:'Ich musste in den letzten 4 Wochen häufig als \u201EFeuerwehr\u201C einspringen, um Stillstand zu vermeiden.',inv:true},
+{id:'x2',cluster:'Getriebener Macher',ci:0,text:'Wenn ich 2 Tage ausgefallen wäre, hätten viele Themen sofort eskaliert.',inv:true},
+{id:'x3',cluster:'Getriebener Macher',ci:0,text:'Mitarbeiter haben Probleme regelmäßig an mich zurückdelegiert.',inv:true},
+{id:'x4',cluster:'Getriebener Macher',ci:0,text:'Ich habe Aufgaben meiner Mitarbeiter übernommen, weil es \u201Eschneller ging\u201C.',inv:true},
+{id:'x5',cluster:'Getriebener Macher',ci:0,text:'Ich habe abends oder am Wochenende gearbeitet, um das Tagesgeschäft zu bewältigen.',inv:true},
+{id:'x6',cluster:'Getriebener Macher',ci:0,text:'Ich hatte beim Arbeitsstart klare Top-3-Prioritäten und habe sie eingehalten.',inv:false},
+{id:'x7',cluster:'Getriebener Macher',ci:0,text:'Ich wurde durch mehr als 10 Themenwechsel pro Tag unterbrochen.',inv:true},
+{id:'x8',cluster:'Getriebener Macher',ci:0,text:'Ich hatte das Gefühl, der Hauptengpass zu sein, der alles zusammenhalten muss.',inv:true},
+{id:'x9',cluster:'Alltagsgestalter',ci:1,text:'Ich hatte eine stabile Wochen-/Tagesstruktur mit festen Fokuszeiten.',inv:false},
+{id:'x10',cluster:'Alltagsgestalter',ci:1,text:'Ich hatte wöchentlich geblockte Zeit für Führung und Steuerung (nicht operativ).',inv:false},
+{id:'x11',cluster:'Alltagsgestalter',ci:1,text:'Entscheidungen, die Führungskräfte hätten treffen können, landeten bei mir.',inv:true},
+{id:'x12',cluster:'Alltagsgestalter',ci:1,text:'Ich habe delegierbare Routineaufgaben selbst erledigt.',inv:true},
+{id:'x13',cluster:'Alltagsgestalter',ci:1,text:'Die Zuständigkeiten (wer entscheidet was) waren in Kernbereichen klar.',inv:false},
+{id:'x14',cluster:'Alltagsgestalter',ci:1,text:'Ich habe Aufgaben/Projekte sichtbar per Tool oder Liste nachgehalten.',inv:false},
+{id:'x15',cluster:'Alltagsgestalter',ci:1,text:'Ich habe \u201EJa\u201C gesagt, obwohl die Kapazitäten eigentlich nicht reichten.',inv:true},
+{id:'x16',cluster:'Alltagsgestalter',ci:1,text:'Ich habe konsequent meine Führungskräfte genutzt, statt selbst einzuspringen.',inv:false},
+{id:'x17',cluster:'Leader',ci:2,text:'Wir nutzen ein aktuelles Organigramm aktiv im Alltag.',inv:false},
+{id:'x18',cluster:'Leader',ci:2,text:'Für alle Schlüsselrollen existieren klare Stellenbeschreibungen.',inv:false},
+{id:'x19',cluster:'Leader',ci:2,text:'Ich habe strukturierte Mitarbeitergespräche mit Zielen und Feedback geführt.',inv:false},
+{id:'x20',cluster:'Leader',ci:2,text:'Unsere Team-Meetings haben eine Agenda, ein Protokoll und Nachverfolgung.',inv:false},
+{id:'x21',cluster:'Leader',ci:2,text:'Ich habe echte Verantwortung inklusive Entscheidungsspielraum übertragen.',inv:false},
+{id:'x22',cluster:'Leader',ci:2,text:'Abläufe hingen stark von einzelnen \u201EHelden\u201C im Team ab.',inv:true},
+{id:'x23',cluster:'Leader',ci:2,text:'Identische Fehler sind wiederholt aufgetreten, ohne dauerhafte Beseitigung.',inv:true},
+{id:'x24',cluster:'Leader',ci:2,text:'Führungskennzahlen sind im Team bekannt und werden besprochen.',inv:false},
+{id:'x25',cluster:'Systembauer',ci:3,text:'Unsere Kernprozesse sind dokumentiert und die Standards werden genutzt.',inv:false},
+{id:'x26',cluster:'Systembauer',ci:3,text:'Für alle wichtigen Prozesse gibt es klare Verantwortliche und Stellvertreter.',inv:false},
+{id:'x27',cluster:'Systembauer',ci:3,text:'Wir haben aktiv bestehende Prozesse vereinfacht und optimiert.',inv:false},
+{id:'x28',cluster:'Systembauer',ci:3,text:'Für das Onboarding neuer Mitarbeiter gibt es Checklisten und Standards.',inv:false},
+{id:'x29',cluster:'Systembauer',ci:3,text:'Wir nutzen systematische Fehleranalysen (z.\u00a0B. 5-Why) mit Standard-Anpassung.',inv:false},
+{id:'x30',cluster:'Systembauer',ci:3,text:'Es gibt ein System zur Erfassung und Auswertung von Prozessabweichungen.',inv:false},
+{id:'x31',cluster:'Systembauer',ci:3,text:'Unsere Abläufe sind weitgehend automatisiert oder toolgestützt.',inv:false},
+{id:'x32',cluster:'Systembauer',ci:3,text:'Zentrale Kennzahlen (Liquidität, Auslastung etc.) sind in Echtzeit verfügbar.',inv:false},
+{id:'x33',cluster:'Gestaltender Unternehmer',ci:4,text:'Wir haben eine klare, im Führungsteam verbindliche Strategie.',inv:false},
+{id:'x34',cluster:'Gestaltender Unternehmer',ci:4,text:'Ich priorisiere konsequent durch Fokusentscheidungen und \u201EStop-Doing\u201C-Listen.',inv:false},
+{id:'x35',cluster:'Gestaltender Unternehmer',ci:4,text:'Unsere Strategie wurde aktiv an veränderte Rahmenbedingungen angepasst.',inv:false},
+{id:'x36',cluster:'Gestaltender Unternehmer',ci:4,text:'Das Unternehmen könnte mehrere Wochen ohne mich stabil laufen.',inv:false},
+{id:'x37',cluster:'Gestaltender Unternehmer',ci:4,text:'Ich arbeite hauptsächlich AM Unternehmen (Innovation, Markt) statt im Betrieb.',inv:false},
+{id:'x38',cluster:'Gestaltender Unternehmer',ci:4,text:'Wir haben einen klaren Rhythmus für Strategie- und Zielreviews.',inv:false},
+{id:'x39',cluster:'Gestaltender Unternehmer',ci:4,text:'Die Qualität unserer Arbeit ist unabhängig von einzelnen Schlüsselpersonen.',inv:false},
+{id:'x40',cluster:'Gestaltender Unternehmer',ci:4,text:'Ich verstehe meine Rolle primär als Gestalter, nicht als Problemlöser.',inv:false}
+];
+
+const likertLabels=['0 – trifft gar nicht zu','1 – trifft kaum zu','2 – trifft teilweise zu','3 – trifft überwiegend zu','4 – trifft voll zu'];
+const clusterNames=['Getriebener Macher','Alltagsgestalter','Leader','Systembauer','Gestaltender Unternehmer'];
+const clusterColors=['#c0392b','#e67e22','#f39c12','#27ae60','#00305b'];
+
+let answers=new Array(40).fill(null), currentQ=0, computedResults=null;
+
+function startQuiz(){
+  document.getElementById('quiz-start').classList.remove('active');
+  document.getElementById('quiz-questions').classList.add('active');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[currentQ], saved=answers[currentQ];
+  document.getElementById('progress-fill').style.width=((currentQ+1)/40*100)+'%';
+  document.getElementById('progress-label').textContent=`Frage ${currentQ+1} von 40 · ${q.cluster}`;
+  document.getElementById('btn-prev').style.visibility=currentQ===0?'hidden':'visible';
+  document.getElementById('btn-next').textContent=currentQ===39?'Auswertung anzeigen →':'Weiter →';
+  let h=`<div class="question-card"><span class="cluster-label">Cluster: ${q.cluster}</span><h3>${q.text}</h3><div class="likert-group">`;
+  for(let i=0;i<5;i++){const s=saved===i?'selected':'';h+=`<label class="likert-option ${s}" onclick="selectAnswer(${i},this)"><span class="likert-dot"></span><input type="radio" name="q${currentQ}" value="${i}" ${saved===i?'checked':''}>${likertLabels[i]}</label>`;}
+  h+='</div></div>';
+  document.getElementById('question-area').innerHTML=h;
+}
+
+function selectAnswer(v,el){answers[currentQ]=v;document.querySelectorAll('.likert-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
+
+function nextQuestion(){
+  if(answers[currentQ]===null){document.querySelector('.question-card').style.borderColor='var(--color-orange)';return;}
+  if(currentQ<39){currentQ++;renderQuestion();window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});}
+  else computeAndShowGate();
+}
+
+function prevQuestion(){if(currentQ>0){currentQ--;renderQuestion();}}
+
+function computeResults(){
+  const scores=[0,0,0,0,0],counts=[0,0,0,0,0];
+  questions.forEach((q,i)=>{let v=answers[i];if(q.inv)v=4-v;scores[q.ci]+=v;counts[q.ci]++;});
+  const pcts=scores.map((s,i)=>Math.round(s/(counts[i]*4)*100));
+  const weights=[1,1.5,2,2.5,3],totalW=weights.reduce((a,b)=>a+b,0);
+  const overall=Math.round(pcts.reduce((sum,p,i)=>sum+p*weights[i],0)/totalW);
+  let dominant=0,maxP=pcts[0];
+  for(let i=1;i<5;i++){if(pcts[i]>=maxP){maxP=pcts[i];dominant=i;}}
+  return{pcts,overall,dominant};
+}
+
+function computeAndShowGate(){
+  computedResults=computeResults();
+  document.getElementById('quiz-questions').classList.remove('active');
+  document.getElementById('lead-gate').classList.add('active');
+  document.getElementById('teaser-score').textContent=computedResults.overall+'%';
+  document.getElementById('teaser-stage').textContent='Stufe '+(computedResults.dominant+1)+': '+clusterNames[computedResults.dominant];
+  window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
+}
+
+function submitLead(){
+  const fields=['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'];
+  let valid=true;
+  fields.forEach(id=>{const el=document.getElementById(id);if(!el.value.trim()){el.style.borderColor='#c0392b';valid=false;}else{el.style.borderColor='';}});
+  const email=document.getElementById('lead-email');
+  if(email.value&&!email.value.includes('@')){email.style.borderColor='#c0392b';valid=false;}
+  if(!valid)return;
+  const leadData={vorname:document.getElementById('lead-vorname').value.trim(),name:document.getElementById('lead-name').value.trim(),firma:document.getElementById('lead-firma').value.trim(),email:document.getElementById('lead-email').value.trim(),plz:document.getElementById('lead-plz').value.trim(),ort:document.getElementById('lead-ort').value.trim(),score:computedResults.overall,stufe:computedResults.dominant+1,stufeName:clusterNames[computedResults.dominant],clusterPcts:computedResults.pcts,timestamp:new Date().toISOString()};
+  console.log('Lead-Daten:',JSON.stringify(leadData,null,2));
+  showFullResults();
+}
+
+function skipLead(){showFullResults();}
+
+function showFullResults(){
+  document.getElementById('lead-gate').classList.remove('active');
+  document.getElementById('quiz-results').classList.add('active');
+  const r=computedResults;
+  document.getElementById('final-score').textContent=r.overall+'%';
+  document.getElementById('final-stage').textContent='Stufe '+(r.dominant+1)+': '+clusterNames[r.dominant];
+  const subtitles=['Du steckst noch stark im operativen Hamsterrad. Das Gute: Du weißt es jetzt – und kannst gezielt daran arbeiten.','Du hast erste Strukturen geschaffen, aber ziehst noch zu viel an dich. Zeit, konsequent loszulassen.','Führung ist bei dir etabliert. Jetzt geht es darum, Systeme zu schaffen, die unabhängig von Einzelpersonen funktionieren.','Deine Prozesse stehen solide. Der nächste Schritt: strategische Souveränität aufbauen.','Du arbeitest AM Unternehmen statt nur im Betrieb. Hervorragend – bleib dran und verfeinere deine strategische Arbeit.'];
+  document.getElementById('final-subtitle').textContent=subtitles[r.dominant];
+  let bars='<h3 style="margin-top:0;color:var(--color-navy);">Dein Profil im Detail</h3>';
+  for(let i=0;i<5;i++){bars+=`<div class="stage-bar-wrap"><span class="stage-label">${i+1}. ${clusterNames[i]}</span><div class="stage-bar-bg"><div class="stage-bar-fg" style="width:${r.pcts[i]}%;background:${clusterColors[i]}"></div></div><span class="stage-pct">${r.pcts[i]}%</span></div>`;}
+  document.getElementById('result-bars').innerHTML=bars;
+  const stageTexts=['Du bist aktuell vor allem operativ unterwegs – Feuerwehreinsätze, Rückdelegation und Abend-/Wochenendarbeit dominieren deinen Alltag. Das ist anstrengend, aber kein Endstadium. Im Klarheitsgespräch identifizieren wir die 3 größten Engpässe und schaffen dir sofort Luft.','Du hast bereits erste Strukturen aufgebaut, aber Entscheidungen und Routineaufgaben landen noch zu oft bei dir. Das kostet dich wertvolle Zeit für echte Führungsarbeit. Im Klarheitsgespräch erarbeiten wir, welche Entscheidungen du sofort abgeben kannst.','Organigramm, Zielvereinbarungen und Feedback sind etabliert – du führst dein Team aktiv. Die nächste Herausforderung: Prozesse so aufzusetzen, dass sie nicht von einzelnen \u201EHelden\u201C abhängen. Im Klarheitsgespräch schauen wir uns deine kritischen Abhängigkeiten an.','Du hast Prozesse dokumentiert, Standards etabliert und Kennzahlen im Blick. Dein Unternehmen wird zunehmend unabhängig von Einzelpersonen. Im Klarheitsgespräch fokussieren wir uns auf den Sprung zur strategischen Souveränität.','Du arbeitest bereits hauptsächlich AM Unternehmen – Innovation, Strategie und Kultur stehen im Fokus. Im Klarheitsgespräch verfeinern wir deine strategische Ausrichtung und identifizieren Wachstumshebel.'];
+  document.getElementById('result-interpretation').innerHTML=`<h3 style="margin-top:0;color:var(--color-navy);">Was dein Ergebnis bedeutet</h3><p style="font-size:1.15rem;">${stageTexts[r.dominant]}</p>`;
+  window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
+}
+
+function resetQuiz(){
+  answers=new Array(40).fill(null);currentQ=0;computedResults=null;
+  document.getElementById('quiz-results').classList.remove('active');
+  document.getElementById('lead-gate').classList.remove('active');
+  document.getElementById('quiz-start').classList.add('active');
+  ['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.style.borderColor='';}});
+  window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
+}
+</script>
 </body>
 </html>
