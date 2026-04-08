@@ -230,8 +230,8 @@ function submitLead(){
   f.forEach(id=>{const e=document.getElementById(id);if(!e.value.trim()){e.style.borderColor='#c0392b';ok=false;}else e.style.borderColor='';});
   const em=document.getElementById('lead-email');if(em.value&&!em.value.includes('@')){em.style.borderColor='#c0392b';ok=false;}
   if(!ok)return;
-  const ld={vorname:document.getElementById('lead-vorname').value.trim(),name:document.getElementById('lead-name').value.trim(),firma:document.getElementById('lead-firma').value.trim(),email:document.getElementById('lead-email').value.trim(),plz:document.getElementById('lead-plz').value.trim(),ort:document.getElementById('lead-ort').value.trim(),score:CR.ov,stufe:CR.dom+1,stufeName:CN[CR.dom],clusterPcts:CR.p,timestamp:new Date().toISOString()};
-  console.log('Lead-Daten:',JSON.stringify(ld,null,2));
+  const ld={vorname:document.getElementById('lead-vorname').value.trim(),name:document.getElementById('lead-name').value.trim(),firma:document.getElementById('lead-firma').value.trim(),email:document.getElementById('lead-email').value.trim(),plz:document.getElementById('lead-plz').value.trim(),ort:document.getElementById('lead-ort').value.trim(),score:CR.ov,stufe:CR.dom+1,stufeName:CN[CR.dom],clusterPcts:CR.p.join('/'),timestamp:new Date().toISOString()};
+  fetch('https://formspree.io/f/mlgovkyp',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(ld)}).then(r=>{if(!r.ok)console.warn('Formspree-Fehler',r.status);}).catch(e=>console.warn('Senden fehlgeschlagen',e));
   results();
 }
 function skipLead(){results();}
