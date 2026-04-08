@@ -44,6 +44,20 @@
 
 .reco-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;border-left:4px solid var(--color-navy)}.reco-card h3{margin:0 0 .75rem;font-size:1.3rem;color:var(--color-navy)}.reco-card p{margin:0 0 1.25rem;font-size:1.1rem;color:var(--color-text)}.reco-cta{display:inline-block;padding:.6rem 1rem;background:rgba(241,132,35,.1);border-radius:999px;font-size:.95rem;font-weight:700;color:var(--color-orange)}
 
+.bench-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem}
+.bench-card h3{margin:0 0 1.25rem;font-size:1.3rem;color:var(--color-navy)}
+.bench-row{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.bench-label{min-width:100px;font-size:.95rem;font-weight:600;color:var(--color-navy)}
+.bench-bar-bg{flex:1;height:24px;background:rgba(0,48,91,.06);border-radius:999px;overflow:hidden;position:relative}
+.bench-bar-you{position:absolute;top:0;left:0;height:100%;border-radius:999px;background:var(--color-orange);transition:width .8s}
+.bench-bar-avg{position:absolute;top:0;left:0;height:100%;border-radius:999px;background:rgba(0,48,91,.18);transition:width .8s}
+.bench-val{min-width:42px;text-align:right;font-weight:700;font-size:.95rem;color:var(--color-navy)}
+.bench-legend{display:flex;gap:1.5rem;margin-top:.5rem;font-size:.88rem;color:var(--color-gray)}
+.bench-legend span{display:inline-flex;align-items:center;gap:.4rem}
+.bench-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.bench-dot.you{background:var(--color-orange)}.bench-dot.avg{background:rgba(0,48,91,.22)}
+.bench-verdict{margin-top:1.25rem;padding:1rem 1.25rem;background:#fff;border-radius:var(--radius-md);border:1px solid rgba(0,48,91,.08);font-size:1.05rem;color:var(--color-text)}
+
 .cta-section{background:var(--color-navy);color:#fff;padding:2.5rem;border-radius:var(--radius-lg);text-align:center;margin-bottom:1.5rem}.cta-section h3{margin:0 0 .6rem;font-size:1.6rem;color:#fff}.cta-section p{color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:1.25rem}
 
 .site-footer{background:#082742;color:rgba(255,255,255,.86);padding:1.5rem 0}.footer-inner{display:flex;justify-content:space-between;gap:1rem;align-items:center}
@@ -81,7 +95,7 @@
     <h2>Quick Check starten</h2>
     <p>Beantworte die folgenden 40 Fragen ehrlich auf Basis deines Verhaltens in den <strong>letzten 4 Wochen</strong>. Es gibt keine richtigen oder falschen Antworten.</p>
     <p>Du erhältst keine starre Einordnung, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe?</p>
-    <p style="color:var(--color-gray)">Skala: 0 = trifft gar nicht zu → 4 = trifft voll zu</p>
+    <p style="color:var(--color-gray)"><strong>Skala: 0 = trifft gar nicht zu → 4 = trifft voll zu</strong></p>
     <button class="btn btn-primary btn-large" onclick="startQuiz()" style="margin-top:1rem">Los geht's →</button>
   </div>
 
@@ -94,11 +108,11 @@
 
   <div id="lead-gate" class="lead-gate">
     <div class="score-donut-card"><div class="donut-wrap"><svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="teaser-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg><div class="donut-label"><div class="donut-number" id="teaser-num">0</div><div class="donut-sub">von 100</div></div></div><div class="stage-badge" id="teaser-stage"></div></div>
-    <p style="text-align:center;font-size:1.1rem;color:var(--color-gray);margin-bottom:1.5rem">Dein Quick Check ist ausgewertet! Trage deine Daten ein, um dein vollständiges Ergebnis mit persönlicher Auswertung zu erhalten.</p>
+    <p style="text-align:center;font-size:1.1rem;color:var(--color-gray);margin-bottom:1.5rem">Dein Quick Check ist ausgewertet! Trage bitte deine Daten ein, um dein vollständiges Ergebnis mit persönlicher Auswertung zu erhalten.</p>
     <div class="lead-card">
       <h3>🎁 Dein persönlicher Ergebnis-Report</h3>
       <p class="lead-subtitle">Trage deine Daten ein und erhalte zusätzlich per E-Mail:</p>
-      <div class="lead-perks"><span>📄 PDF-Auswertung deines Scores</span><span>🎯 Individuelle Handlungsempfehlungen</span><span>📊 Vergleich mit anderen Unternehmern</span></div>
+      <div class="lead-perks"><span>🎯 Individuelle Handlungsempfehlungen</span><span>📊 Vergleich mit anderen Unternehmern</span></div>
       <div class="lead-form" id="lead-form">
         <div class="form-row"><div class="form-field"><label for="lead-vorname">Vorname *</label><input type="text" id="lead-vorname" placeholder="Max" required></div><div class="form-field"><label for="lead-name">Nachname *</label><input type="text" id="lead-name" placeholder="Mustermann" required></div></div>
         <div class="form-field"><label for="lead-firma">Firma *</label><input type="text" id="lead-firma" placeholder="Mustermann GmbH" required></div>
@@ -116,6 +130,7 @@
     <div class="score-donut-card"><div class="donut-wrap"><svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="result-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg><div class="donut-label"><div class="donut-number" id="result-num">0</div><div class="donut-sub">von 100</div></div></div><div class="stage-badge" id="result-stage"></div></div>
     <div class="detail-section"><div class="detail-eyebrow">Deine Auswertung im Detail</div><div class="phase-grid" id="phase-grid"></div></div>
     <div class="reco-card" id="reco-card"></div>
+    <div class="bench-card" id="bench-card"></div>
     <div class="cta-section"><h3>Klarheitsgespräch buchen</h3><p>Besprich dein Score-Ergebnis persönlich mit Thomas Brandenburger — 30 Minuten, 1:1, kostenfrei.</p><a href="#kontakt" class="btn btn-primary btn-large">Jetzt Termin vereinbaren →</a></div>
     <div style="margin-top:2rem;text-align:center"><button class="btn btn-ghost" onclick="resetQuiz()">Score erneut durchführen</button></div>
   </div>
@@ -204,7 +219,7 @@ function setD(arc,num,v){const c=534.07;document.getElementById(arc).style.strok
 function gate(){
   CR=calc();hide('quiz-questions');show('lead-gate');
   setTimeout(()=>setD('teaser-arc','teaser-num',CR.ov),100);
-  document.getElementById('teaser-stage').textContent='Deine aktuelle Stufe: '+CN[CR.dom];
+  document.getElementById('teaser-stage').textContent='Deine aktuell st\u00e4rkste Stufe: '+CN[CR.str];
   window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
 }
 function submitLead(){
@@ -221,7 +236,7 @@ function skipLead(){results();}
 function results(){
   hide('lead-gate');show('quiz-results');const r=CR;
   setTimeout(()=>setD('result-arc','result-num',r.ov),100);
-  document.getElementById('result-stage').textContent='Deine aktuelle Stufe: '+CN[r.dom];
+  document.getElementById('result-stage').textContent='Deine aktuell st\u00e4rkste Stufe: '+CN[r.str];
 
   let g='';
   for(let i=0;i<5;i++){
@@ -239,6 +254,22 @@ function results(){
     'Du arbeitest bereits hauptsächlich AM Unternehmen. Dein Hebel: Verfeinere deine strategische Ausrichtung und identifiziere neue Wachstumshebel.'
   ];
   document.getElementById('reco-card').innerHTML=`<h3>Deine Handlungsempfehlung</h3><p>${rec[r.dom]}</p><div class="reco-cta">Empfohlener nächster Schritt: Klarheitsgespräch buchen</div>`;
+
+  // Benchmark comparison (static values – update periodically)
+  const BM={ov:42,p:[58,45,38,32,28]}; // avg scores from initial cohort
+  const diff=r.ov-BM.ov;
+  const verd=diff>10?`Mit ${r.ov} von 100 Punkten liegst du <strong>${diff} Punkte über</strong> dem Durchschnitt anderer Unternehmer. Starke Basis – jetzt geht es darum, gezielt die nächste Stufe zu erreichen.`:diff>0?`Mit ${r.ov} von 100 Punkten liegst du <strong>${diff} Punkte über</strong> dem Durchschnitt. Du bist auf einem guten Weg – im Klarheitsgespräch identifizieren wir deine nächsten Hebel.`:diff===0?`Mit ${r.ov} von 100 Punkten liegst du genau im Durchschnitt. Im Klarheitsgespräch finden wir heraus, wo du am schnellsten Fortschritte machen kannst.`:`Mit ${r.ov} von 100 Punkten liegst du <strong>${Math.abs(diff)} Punkte unter</strong> dem Durchschnitt. Das ist kein Grund zur Sorge – es zeigt, dass du besonders viel Potenzial hast. Im Klarheitsgespräch schaffen wir Klarheit.`;
+
+  let bh=`<h3>So schneidest du im Vergleich ab</h3>`;
+  // Overall
+  bh+=`<div class="bench-row"><span class="bench-label">Gesamt</span><div class="bench-bar-bg"><div class="bench-bar-avg" style="width:${BM.ov}%"></div><div class="bench-bar-you" style="width:${r.ov}%"></div></div><span class="bench-val">${r.ov}%</span></div>`;
+  // Per cluster
+  for(let i=0;i<5;i++){
+    bh+=`<div class="bench-row"><span class="bench-label">Phase ${i+1}</span><div class="bench-bar-bg"><div class="bench-bar-avg" style="width:${BM.p[i]}%"></div><div class="bench-bar-you" style="width:${r.p[i]}%"></div></div><span class="bench-val">${r.p[i]}%</span></div>`;
+  }
+  bh+=`<div class="bench-legend"><span><span class="bench-dot you"></span> Dein Score</span><span><span class="bench-dot avg"></span> Durchschnitt anderer Unternehmer</span></div>`;
+  bh+=`<div class="bench-verdict">${verd}</div>`;
+  document.getElementById('bench-card').innerHTML=bh;
   window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
 }
 
