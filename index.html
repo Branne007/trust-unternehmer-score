@@ -264,6 +264,7 @@ img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
     <!-- LEAD GATE -->
     <div id="lead-gate" class="lead-gate">
       <div class="score-donut-card">
+        <h2 style="margin:0 0 1.5rem;font-size:1.6rem;color:var(--color-navy);text-align:center">Dein persönlicher TRUST Unternehmer-Score</h2>
         <div class="donut-wrap">
           <svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="teaser-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg>
           <div class="donut-label"><div class="donut-number" id="teaser-num">–</div><div class="donut-sub">von 100</div></div>
@@ -275,9 +276,9 @@ img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
         <h3>🎁 Dein persönlicher TRUST Unternehmer-Score Report</h3>
         <p class="lead-subtitle">Trage deine Daten ein und erhalte deinen Report per E-Mail:</p>
         <div class="lead-perks">
+          <span>📈 Entwicklungsprofil im Detail</span>
           <span>🎯 Individuelle Handlungsempfehlungen</span>
-          <span>📊 Vergleich mit anderen Unternehmern</span>
-          <span>📋 Detaillierte Auswertung aller 40 Fragen</span>
+          <span>📋 Deine Antworten im Überblick</span>
         </div>
         <div class="lead-form">
           <div class="form-row">
@@ -290,7 +291,7 @@ img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
             <div class="form-field"><label for="lead-plz">PLZ *</label><input type="text" id="lead-plz" placeholder="10115" maxlength="5" required></div>
             <div class="form-field"><label for="lead-ort">Ort *</label><input type="text" id="lead-ort" placeholder="Berlin" required></div>
           </div>
-          <button class="btn btn-primary btn-large btn-block" onclick="submitLead()" style="margin-top:.5rem">Ergebnis anzeigen &amp; Report sichern →</button>
+          <button class="btn btn-primary btn-large btn-block" onclick="submitLead()" style="margin-top:.5rem">Report per E-Mail anfordern →</button>
           <p class="form-note" style="margin-top:1rem">Deine Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.</p>
         </div>
       </div>
@@ -299,11 +300,16 @@ img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
 
     <!-- ERGEBNISSE -->
     <div id="quiz-results" class="result-container">
-      <div class="result-header">
-        <div class="result-eyebrow">Dein Ergebnis</div>
-        <h2>TRUST Unternehmer-Score</h2>
+      <!-- Bestätigungs-Banner -->
+      <div id="confirm-banner" style="display:none;background:linear-gradient(135deg,#00305b,#082742);border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center;margin-bottom:1.5rem;color:#fff">
+        <div style="font-size:3rem;margin-bottom:.75rem">✅</div>
+        <h2 style="margin:0 0 .75rem;font-size:1.8rem;color:#fff">Dein Report ist unterwegs!</h2>
+        <p style="color:rgba(255,255,255,.8);font-size:1.1rem;margin:0 0 .5rem">Wir haben deinen persönlichen TRUST Unternehmer-Score Report an</p>
+        <p style="color:var(--color-orange);font-size:1.2rem;font-weight:700;margin:0 0 1rem" id="confirm-email">–</p>
+        <p style="color:rgba(255,255,255,.7);font-size:.95rem;margin:0">verschickt. Bitte schau in den nächsten Minuten in dein Postfach.<br><span style="font-size:.88rem;opacity:.7">Tipp: Auch den Spam-Ordner prüfen!</span></p>
       </div>
-      <div class="score-donut-card">
+      <div class="score-donut-card" style="padding-top:2rem">
+        <h2 style="margin:0 0 1.5rem;font-size:1.6rem;color:var(--color-navy);text-align:center">Dein persönlicher TRUST Unternehmer-Score</h2>
         <div class="donut-wrap">
           <svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="result-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg>
           <div class="donut-label"><div class="donut-number" id="result-num">–</div><div class="donut-sub">von 100</div></div>
@@ -314,9 +320,6 @@ img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
         <div class="detail-eyebrow">Deine Auswertung im Detail</div>
         <div class="phase-grid" id="phase-grid"></div>
       </div>
-      <div class="reco-card" id="reco-card"></div>
-      <div class="bench-card" id="bench-card"></div>
-      <div class="email-status" id="email-status"></div>
       <div class="cta-section">
         <h3>Klarheitsgespräch buchen</h3>
         <p>Besprich dein Score-Ergebnis persönlich mit Thomas Brandenburger — 30 Minuten, 1:1, kostenfrei.</p>
@@ -542,7 +545,7 @@ function skipLead(){LEAD={vorname:'',name:'',firma:'',email:'',plz:'',ort:''};re
 /* ══ ENCHARGE ══ */
 function sendToEncharge(){
   if(!LEAD.email)return;
-  const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjE0NTEyMSwibmFtZSI6ImJhc2UifQ.l_Cm2oAxTKokKGqUdy6UnZ7YGAjXzBXy_oqXPs_pRyc'; // ← hier deinen Key eintragen
+  const KEY='DEIN_ENCHARGE_API_KEY'; // ← hier deinen Key eintragen
   const h={'Content-Type':'application/json','X-Encharge-Token':KEY};
 
   fetch('https://api.encharge.io/v1/people',{method:'POST',headers:h,body:JSON.stringify({
@@ -553,6 +556,8 @@ function sendToEncharge(){
       trust_staerke:CN[CR.str],trust_hebel:CN[CR.wk],
       trust_p1:CR.p[0],trust_p2:CR.p[1],trust_p3:CR.p[2],trust_p4:CR.p[3],trust_p5:CR.p[4],
       trust_datum:new Date().toLocaleDateString('de-DE'),
+      trust_empfehlung:buildRec(),
+      trust_schritt1:buildEmp()[0],trust_schritt2:buildEmp()[1],trust_schritt3:buildEmp()[2],
       trust_report_html:buildReportHTML()
     },
     tags:['trust-score',`stufe-${CR.dom+1}`]
@@ -596,7 +601,7 @@ function buildReportHTML(){
 
   let ph='';
   CR.p.forEach((pct,i)=>{ph+=`<tr>
-    <td style="padding:7px 12px;font-size:13px;font-weight:600;color:#00305b;white-space:nowrap">Phase ${i+1}: ${CN[i]}</td>
+    <td style="padding:7px 12px;font-size:13px;font-weight:600;color:#00305b;white-space:nowrap">Phase ${i+1}: ${i===4?'Gestaltender Unternehmer':CN[i]}</td>
     <td style="padding:7px 12px"><div style="background:#eee;border-radius:999px;height:10px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${sc[i]};border-radius:999px"></div></div></td>
     <td style="padding:7px 12px;font-weight:700;font-size:14px;color:#00305b;text-align:right">${pct}%</td>
   </tr>`;});
@@ -620,9 +625,13 @@ function buildReportHTML(){
 <table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%">
 <tr><td style="background:#082742;border-radius:12px 12px 0 0;padding:24px 32px">
   <table width="100%" cellpadding="0" cellspacing="0"><tr>
-    <td style="color:#f18423;font-size:22px;font-weight:900;letter-spacing:.06em">TRUST</td>
-    <td align="right" style="color:rgba(255,255,255,.45);font-size:11px;text-transform:uppercase;letter-spacing:.06em">Unternehmer-Score</td>
-  </tr><tr><td colspan="2" style="color:rgba(255,255,255,.4);font-size:10px;letter-spacing:.08em;padding-top:2px;text-transform:uppercase">UNTERNEHMER · Nicht allein.</td></tr></table>
+    <td>
+      <div style="color:#f18423;font-size:24px;font-weight:900;letter-spacing:.06em;line-height:1">TRUST</div>
+      <div style="color:rgba(255,255,255,.6);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">UNTERNEHMER</div>
+      <div style="color:rgba(255,255,255,.35);font-size:10px;font-style:italic;margin-top:1px">Nicht allein.</div>
+    </td>
+    <td align="right" style="color:rgba(255,255,255,.3);font-size:10px;text-transform:uppercase;letter-spacing:.06em;vertical-align:top">TRUST Unternehmer-Score</td>
+  </tr></table>
 </td></tr>
 <tr><td style="background:#00305b;padding:18px 32px">
   <div style="color:#fff;font-size:19px;font-weight:700">Dein persönlicher TRUST Unternehmer-Score Report</div>
@@ -645,7 +654,7 @@ function buildReportHTML(){
     <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#aaa;margin-bottom:10px">1. Entwicklungsprofil im Detail</div>
     <table width="100%" cellpadding="0" cellspacing="0">${ph}</table>
   </div>
-  <div style="margin-top:20px;padding:16px;background:#f7f8fa;border-radius:8px;border-left:4px solid #00305b">
+  <div style="margin-top:20px;padding:16px;background:#fff3e0;border-radius:8px;">
     <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#aaa;margin-bottom:8px">2. Deine Kernempfehlung</div>
     <div style="font-size:13px;color:#222;line-height:1.65">${rec[CR.dom]}</div>
   </div>
@@ -667,15 +676,47 @@ function buildReportHTML(){
   <div style="color:rgba(255,255,255,.65);font-size:13px;margin-bottom:16px">30 Minuten · Persönlich · Vertraulich · Kein Verkaufsgespräch</div>
   <a href="mailto:tb@trust-unternehmer.de?subject=Klarheitsgespräch" style="display:inline-block;background:#f18423;color:#fff;text-decoration:none;padding:11px 26px;border-radius:999px;font-weight:700;font-size:13px">Klarheitsgespräch anfragen →</a>
   <div style="color:rgba(255,255,255,.45);font-size:12px;margin-top:10px">oder: 0151 2525 4853</div>
-  <div style="color:rgba(255,255,255,.25);font-size:10px;margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:14px">TB UnternehmerImpulse eG · Am Zwingel 2 · 35683 Dillenburg<br>© 2026 TRUST Unternehmer-Score</div>
+  <div style="color:rgba(255,255,255,.6);font-size:10px;margin-top:16px;border-top:1px solid rgba(255,255,255,.15);padding-top:14px">TB UnternehmerImpulse eG · Am Zwingel 2 · 35683 Dillenburg<br>© 2026 TRUST Unternehmer-Score</div>
 </td></tr>
 </table></td></tr></table></body></html>`;
 }
 
 /* ══ ERGEBNISSE ANZEIGEN ══ */
+function buildRec(){
+  const rec=['Du steckst noch tief im operativen Hamsterrad. Dein wichtigster Hebel: Verschaffe dir als erstes mehr Zeit, indem du lernst, konsequent loszulassen und erste Strukturen zu schaffen.',
+    'Du hast bereits erste Strukturen, aber Entscheidungen und Routineaufgaben landen noch zu oft bei dir. Dein Hebel: Lerne, konsequent zu delegieren und Führungskräfte einzusetzen.',
+    'Führung ist bei dir etabliert. Dein Hebel: Schaffe jetzt Systeme und Standards, die unabhängig von Einzelpersonen funktionieren.',
+    'Deine Prozesse stehen solide. Dein Hebel: Entwickle strategische Souveränität und arbeite mehr AM statt IM Unternehmen.',
+    'Du arbeitest bereits hauptsächlich AM Unternehmen. Dein Hebel: Verfeinere deine strategische Ausrichtung und identifiziere neue Wachstumshebel.'];
+  return rec[CR.dom];
+}
+function buildEmp(){
+  const emp=[
+    ['Schaffe täglich mindestens 2 Stunden ungestörte Fokuszeit.','Definiere 3 Aufgaben, die du diese Woche vollständig delegierst.','Führe eine Unterbrechungs-Liste: Was landet immer wieder bei dir, obwohl andere es lösen könnten?'],
+    ['Erstelle eine Zuständigkeitskarte: Wer entscheidet was – ohne dich?','Führe wöchentliche Steuerungsmeetings ein – Ziele statt Tagesgeschäft.','Etabliere feste Zeiten für Führung, Strategie und Fokusarbeit.'],
+    ['Dokumentiere eure 5 wichtigsten Führungsprozesse als Vorlage.','Identifiziere Helden-Abhängigkeiten und schaffe Stellvertreter.','Führe ein monatliches Führungsteam-Review ein.'],
+    ['Lege in 30 Tagen Standards für alle undokumentierten Kernprozesse fest.','Baue ein Dashboard mit 5–7 zentralen Kennzahlen.','Plane einmal pro Quartal einen halben Tag Prozess-Review.'],
+    ['Führe ein jährliches Strategiereview ein.','Erstelle einen Stop-Doing-Plan.','Identifiziere die wichtigste Marktchance des nächsten Jahres.']
+  ];
+  return emp[CR.dom];
+}
+
 function results(){
   hide('lead-gate');show('quiz-results');
   const r=CR;
+
+  // Bestätigungsbanner anzeigen wenn Lead ausgefüllt
+  const banner=document.getElementById('confirm-banner');
+  if(banner){
+    if(LEAD.email){
+      banner.style.display='block';
+      const ce=document.getElementById('confirm-email');
+      if(ce)ce.textContent=LEAD.email;
+    } else {
+      banner.style.display='none';
+    }
+  }
+
   setTimeout(()=>setD('result-arc','result-num',r.ov),100);
   document.getElementById('result-stage').textContent='Deine aktuell stärkste Stufe: '+CN[r.str];
 
@@ -686,25 +727,6 @@ function results(){
     g+=`<div class="phase-card ${hl} ${fw}"><div class="phase-top"><div><div class="phase-phase">Phase ${i+1}</div><div class="phase-name">${CN[i]}</div></div><div class="phase-pct">${r.p[i]}%</div></div><div class="phase-bar"><div class="phase-bar-fill" style="width:${r.p[i]}%"></div></div>${tag}</div>`;
   }
   document.getElementById('phase-grid').innerHTML=g;
-
-  const rec=['Du steckst noch tief im operativen Hamsterrad. Dein wichtigster Hebel: Verschaffe dir als erstes mehr Zeit, indem du lernst, konsequent loszulassen und erste Strukturen zu schaffen.',
-    'Du hast bereits erste Strukturen, aber Entscheidungen und Routineaufgaben landen noch zu oft bei dir. Dein Hebel: Lerne, konsequent zu delegieren und Führungskräfte einzusetzen.',
-    'Führung ist bei dir etabliert – Organigramm, Ziele, Feedback funktionieren. Dein Hebel: Schaffe jetzt Systeme und Standards, die unabhängig von Einzelpersonen funktionieren.',
-    'Deine Prozesse stehen solide, Kennzahlen sind im Blick. Dein Hebel: Entwickle strategische Souveränität und arbeite mehr AM statt IM Unternehmen.',
-    'Du arbeitest bereits hauptsächlich AM Unternehmen. Dein Hebel: Verfeinere deine strategische Ausrichtung und identifiziere neue Wachstumshebel.'];
-  document.getElementById('reco-card').innerHTML=`<h3>Deine Handlungsempfehlung</h3><p>${rec[r.dom]}</p><div class="reco-cta">Empfohlener nächster Schritt: Klarheitsgespräch buchen</div>`;
-
-  const BM={ov:42,p:[58,45,38,32,28]};const diff=r.ov-BM.ov;
-  const verd=diff>10?`Mit ${r.ov} von 100 Punkten liegst du <strong>${diff} Punkte über</strong> dem Durchschnitt. Starke Basis – jetzt geht es darum, gezielt die nächste Stufe zu erreichen.`
-    :diff>0?`Mit ${r.ov} von 100 Punkten liegst du <strong>${diff} Punkte über</strong> dem Durchschnitt. Du bist auf einem guten Weg.`
-    :diff===0?`Mit ${r.ov} von 100 Punkten liegst du genau im Durchschnitt.`
-    :`Mit ${r.ov} von 100 Punkten liegst du <strong>${Math.abs(diff)} Punkte unter</strong> dem Durchschnitt. Das zeigt, dass du besonders viel Potenzial hast.`;
-  const bi=(l,y,a)=>`<div class="bench-item"><div class="bench-item-label">${l}</div><div class="bench-row"><span class="bench-row-tag">Du</span><div class="bench-bar-bg"><div class="bench-bar-you" style="width:${y}%"></div></div><span class="bench-val">${y}%</span></div><div class="bench-row"><span class="bench-row-tag">Ø</span><div class="bench-bar-bg"><div class="bench-bar-avg" style="width:${a}%"></div></div><span class="bench-val bench-val-avg">${a}%</span></div></div>`;
-  let bh=`<h3>So schneidest du im Vergleich ab</h3>`;
-  bh+=bi('Gesamt',r.ov,BM.ov);
-  for(let i=0;i<5;i++)bh+=bi(`Phase ${i+1}: ${CN[i]}`,r.p[i],BM.p[i]);
-  bh+=`<div class="bench-legend"><span><span class="bench-dot you"></span> Dein Score</span><span><span class="bench-dot avg"></span> Durchschnitt</span></div><div class="bench-verdict">${verd}</div>`;
-  document.getElementById('bench-card').innerHTML=bh;
   scrollQ();
 }
 
@@ -715,7 +737,6 @@ function resetQuiz(){
   ['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'].forEach(id=>{const e=document.getElementById(id);if(e){e.value='';e.style.borderColor='';}});
   ['teaser-arc','result-arc'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.strokeDashoffset='534.07';});
   ['teaser-num','result-num'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='–';});
-  const st=document.getElementById('email-status');if(st){st.style.display='none';st.className='email-status';}
   scrollQ();
 }
 </script>
