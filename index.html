@@ -3,33 +3,204 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unternehmer-Score | Dein Quick Check</title>
+  <title>Trust Unternehmer-Score | Dein Quick Check</title>
   <style>
-:root{--color-navy:#00305b;--color-orange:#f18423;--color-gray:#54595f;--color-text:#161616;--color-white:#fff;--color-bg:#f7f8fa;--font-main:"Myriad Pro Condensed","Arial Narrow",Arial,sans-serif;--container-width:1140px;--container-narrow:780px;--radius-sm:8px;--radius-md:16px;--radius-lg:24px;--shadow-soft:0 12px 30px rgba(0,48,91,.08);--shadow-card:0 10px 24px rgba(0,48,91,.06);--space-2xl:5rem}
-*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:var(--font-main);color:var(--color-text);background:var(--color-white);line-height:1.55}img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
-.container{width:min(100% - 2rem,var(--container-width));margin:0 auto}.narrow{width:min(100%,var(--container-narrow));margin:0 auto}
+:root{
+  --color-navy:#00305b;
+  --color-navy-dark:#082742;
+  --color-orange:#f18423;
+  --color-gray:#54595f;
+  --color-text:#161616;
+  --color-white:#fff;
+  --color-bg:#f7f8fa;
+  --font-main:"Myriad Pro Condensed","Arial Narrow",Arial,sans-serif;
+  --container-width:1140px;
+  --container-narrow:780px;
+  --radius-sm:8px;
+  --radius-md:16px;
+  --radius-lg:24px;
+  --shadow-soft:0 12px 30px rgba(0,48,91,.08);
+  --shadow-card:0 10px 24px rgba(0,48,91,.06);
+  --space-2xl:5rem
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font-main);color:var(--color-text);background:var(--color-white);line-height:1.55}
+img{max-width:100%;display:block}
+a{color:var(--color-navy);text-decoration:none}
+.container{width:min(100% - 2rem,var(--container-width));margin:0 auto}
+.narrow{width:min(100%,var(--container-narrow));margin:0 auto}
 
-.site-header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,48,91,.08);backdrop-filter:blur(8px)}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0}.brand-logo{font-size:1.4rem;font-weight:700;color:var(--color-navy)}.brand-logo span{color:var(--color-orange)}.header-nav{display:flex;gap:1.25rem;font-size:1rem}.header-nav a:hover{color:var(--color-orange)}
+/* ── TRUST HEADER ── */
+.site-header{
+  position:sticky;top:0;z-index:20;
+  background:var(--color-navy-dark);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(8px);
+}
+.header-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;padding:.9rem 0;
+}
+/* Trust Logo SVG-style */
+.brand-logo{
+  display:flex;align-items:center;gap:.6rem;
+  text-decoration:none;
+}
+.trust-logo-box{
+  display:flex;flex-direction:column;align-items:flex-start;
+  line-height:1;
+}
+.trust-logo-top{
+  font-size:1.55rem;font-weight:900;
+  letter-spacing:.04em;color:var(--color-orange);
+  line-height:1;
+}
+.trust-logo-sub{
+  font-size:.7rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.7);
+  line-height:1.2;margin-top:.1rem;
+}
+.trust-logo-tagline{
+  font-size:.62rem;font-style:italic;
+  color:rgba(255,255,255,.45);letter-spacing:.02em;
+}
+.header-nav{display:flex;gap:1.5rem;font-size:.95rem;align-items:center}
+.header-nav a{color:rgba(255,255,255,.8);transition:color .2s}
+.header-nav a:hover{color:var(--color-orange)}
+.header-nav .btn-nav{
+  background:var(--color-orange);color:#fff;
+  padding:.5rem 1.1rem;border-radius:999px;font-weight:700;font-size:.9rem;
+  transition:opacity .2s;
+}
+.header-nav .btn-nav:hover{opacity:.88;color:#fff}
 
-.hero{background:linear-gradient(135deg,rgba(0,48,91,.98),rgba(0,48,91,.88));color:#fff;padding:5rem 0 4rem}.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:2.5rem;align-items:center}.hero h1{margin:0 0 1rem;font-size:clamp(2.5rem,5vw,4.2rem);line-height:.98;letter-spacing:-.02em}.eyebrow{display:inline-block;margin:0 0 1rem;font-size:.95rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--color-orange)}.hero-text{max-width:42rem;margin:0 0 1.5rem;font-size:1.25rem;color:rgba(255,255,255,.92)}.hero-highlights{display:flex;flex-wrap:wrap;gap:.75rem;margin:0 0 1.75rem}.hero-highlights span{display:inline-flex;align-items:center;padding:.55rem .85rem;border:1px solid rgba(255,255,255,.16);border-radius:999px;font-size:.98rem;color:rgba(255,255,255,.96);background:rgba(255,255,255,.06)}.hero-image{border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}.hero-image img{width:100%;height:auto}
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,rgba(0,48,91,.98),rgba(0,48,91,.88));
+  color:#fff;padding:5rem 0 4rem;
+}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:2.5rem;align-items:center}
+.hero h1{margin:0 0 1rem;font-size:clamp(2.5rem,5vw,4.2rem);line-height:.98;letter-spacing:-.02em}
+.eyebrow{
+  display:inline-block;margin:0 0 1rem;font-size:.95rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--color-orange);
+}
+.hero-text{max-width:42rem;margin:0 0 1.5rem;font-size:1.25rem;color:rgba(255,255,255,.92)}
+.hero-highlights{display:flex;flex-wrap:wrap;gap:.75rem;margin:0 0 1.75rem}
+.hero-highlights span{
+  display:inline-flex;align-items:center;padding:.55rem .85rem;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  font-size:.98rem;color:rgba(255,255,255,.96);background:rgba(255,255,255,.06);
+}
+.hero-image{border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.hero-image img{width:100%;height:auto}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.85rem 1.2rem;border-radius:999px;border:2px solid transparent;font-size:1rem;font-weight:700;font-family:var(--font-main);cursor:pointer;transition:transform .2s,opacity .2s,background-color .2s}.btn:hover{transform:translateY(-1px);opacity:.96}.btn-primary{background:var(--color-orange);color:#fff}.btn-outline{background:transparent;color:var(--color-navy);border-color:rgba(0,48,91,.16)}.btn-ghost{background:transparent;color:var(--color-gray);border-color:rgba(0,48,91,.12);font-weight:400}.btn-large{padding:1rem 1.5rem;min-height:54px;font-size:1.06rem}.btn-block{width:100%}
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:48px;padding:.85rem 1.2rem;border-radius:999px;
+  border:2px solid transparent;font-size:1rem;font-weight:700;
+  font-family:var(--font-main);cursor:pointer;
+  transition:transform .2s,opacity .2s,background-color .2s;
+}
+.btn:hover{transform:translateY(-1px);opacity:.96}
+.btn-primary{background:var(--color-orange);color:#fff}
+.btn-outline{background:transparent;color:var(--color-navy);border-color:rgba(0,48,91,.16)}
+.btn-ghost{background:transparent;color:var(--color-gray);border-color:rgba(0,48,91,.12);font-weight:400}
+.btn-large{padding:1rem 1.5rem;min-height:54px;font-size:1.06rem}
+.btn-block{width:100%}
 
-.section{padding:var(--space-2xl) 0}.section-alt{background:var(--color-bg)}.section h2{margin:0 0 1rem;font-size:clamp(2rem,4vw,3rem);line-height:1.02;color:var(--color-navy)}.section p{margin:0 0 1rem;font-size:1.16rem}
-.steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:2rem}.step-card{text-align:center;padding:1.25rem .75rem;background:var(--color-white);border:1px solid rgba(0,48,91,.08);border-radius:var(--radius-md);box-shadow:var(--shadow-card)}.step-num{width:44px;height:44px;display:inline-grid;place-items:center;border-radius:50%;background:var(--color-orange);color:#fff;font-size:1.2rem;font-weight:700;margin-bottom:.6rem}.step-card h3{margin:0;font-size:1.05rem;color:var(--color-navy)}
+/* ── SECTIONS ── */
+.section{padding:var(--space-2xl) 0}
+.section-alt{background:var(--color-bg)}
+.section h2{margin:0 0 1rem;font-size:clamp(2rem,4vw,3rem);line-height:1.02;color:var(--color-navy)}
+.section p{margin:0 0 1rem;font-size:1.16rem}
+.steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:2rem}
+.step-card{
+  text-align:center;padding:1.25rem .75rem;background:var(--color-white);
+  border:1px solid rgba(0,48,91,.08);border-radius:var(--radius-md);box-shadow:var(--shadow-card);
+}
+.step-num{
+  width:44px;height:44px;display:inline-grid;place-items:center;
+  border-radius:50%;background:var(--color-orange);color:#fff;
+  font-size:1.2rem;font-weight:700;margin-bottom:.6rem;
+}
+.step-card h3{margin:0;font-size:1.05rem;color:var(--color-navy)}
 
-.quiz-container{display:none}.quiz-container.active{display:block}.progress-bar-wrap{width:100%;height:8px;background:rgba(0,48,91,.08);border-radius:999px;margin-bottom:.75rem;overflow:hidden}.progress-bar-fill{height:100%;background:var(--color-orange);border-radius:999px;transition:width .4s}.progress-label{font-size:.95rem;color:var(--color-gray);margin-bottom:2rem}.cluster-label{display:inline-block;margin-bottom:.75rem;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--color-orange)}.question-card{background:#fff;border:1px solid rgba(0,48,91,.08);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:2rem;margin-bottom:1.5rem;animation:fadeIn .35s}@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}.question-card h3{margin:0 0 1.25rem;font-size:1.35rem;color:var(--color-navy)}.likert-group{display:flex;flex-direction:column;gap:.6rem}.likert-option{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;border:2px solid rgba(0,48,91,.08);border-radius:var(--radius-sm);cursor:pointer;transition:border-color .2s,background .2s;font-size:1.05rem}.likert-option:hover{border-color:rgba(0,48,91,.18);background:rgba(0,48,91,.02)}.likert-option.selected{border-color:var(--color-orange);background:rgba(241,132,35,.06)}.likert-option input{display:none}.likert-dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,48,91,.2);flex-shrink:0;display:grid;place-items:center;transition:border-color .2s}.likert-option.selected .likert-dot{border-color:var(--color-orange)}.likert-option.selected .likert-dot::after{content:'';width:12px;height:12px;background:var(--color-orange);border-radius:50%}.quiz-nav{display:flex;justify-content:space-between;gap:1rem;margin-top:1rem}
+/* ── QUIZ ── */
+.quiz-container{display:none}
+.quiz-container.active{display:block}
+.progress-bar-wrap{width:100%;height:8px;background:rgba(0,48,91,.08);border-radius:999px;margin-bottom:.75rem;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--color-orange);border-radius:999px;transition:width .4s}
+.progress-label{font-size:.95rem;color:var(--color-gray);margin-bottom:2rem}
+.cluster-label{display:inline-block;margin-bottom:.75rem;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--color-orange)}
+.question-card{
+  background:#fff;border:1px solid rgba(0,48,91,.08);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-soft);padding:2rem;margin-bottom:1.5rem;animation:fadeIn .35s;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.question-card h3{margin:0 0 1.25rem;font-size:1.35rem;color:var(--color-navy)}
+.likert-group{display:flex;flex-direction:column;gap:.6rem}
+.likert-option{
+  display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;
+  border:2px solid rgba(0,48,91,.08);border-radius:var(--radius-sm);
+  cursor:pointer;transition:border-color .2s,background .2s;font-size:1.05rem;
+}
+.likert-option:hover{border-color:rgba(0,48,91,.18);background:rgba(0,48,91,.02)}
+.likert-option.selected{border-color:var(--color-orange);background:rgba(241,132,35,.06)}
+.likert-option input{display:none}
+.likert-dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,48,91,.2);flex-shrink:0;display:grid;place-items:center;transition:border-color .2s}
+.likert-option.selected .likert-dot{border-color:var(--color-orange)}
+.likert-option.selected .likert-dot::after{content:'';width:12px;height:12px;background:var(--color-orange);border-radius:50%}
+.quiz-nav{display:flex;justify-content:space-between;gap:1rem;margin-top:1rem}
 
-.lead-gate{display:none}.lead-gate.active{display:block}.lead-card{background:#fff;border:2px solid var(--color-orange);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:2.5rem;margin-bottom:2rem;text-align:center}.lead-card h3{margin:0 0 .5rem;font-size:1.6rem;color:var(--color-navy)}.lead-subtitle{color:var(--color-gray);font-size:1.1rem;margin-bottom:1.5rem}.lead-perks{display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-bottom:1.75rem}.lead-perks span{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;background:rgba(241,132,35,.08);border-radius:999px;font-size:.95rem;color:var(--color-navy);font-weight:600}.lead-form{text-align:left;max-width:480px;margin:0 auto}.lead-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.lead-form .form-field{margin-bottom:1rem}.lead-form label{display:block;margin-bottom:.4rem;font-weight:700;color:var(--color-navy);font-size:.95rem}.lead-form input{width:100%;padding:.85rem 1rem;border:1px solid rgba(0,48,91,.18);border-radius:12px;font:inherit;color:var(--color-text);background:#fff}.lead-form input:focus{outline:none;border-color:var(--color-orange);box-shadow:0 0 0 4px rgba(241,132,35,.12)}.form-note{font-size:.85rem;color:var(--color-gray);margin-top:.25rem;text-align:center}
+/* ── LEAD GATE ── */
+.lead-gate{display:none}
+.lead-gate.active{display:block}
+.lead-card{
+  background:#fff;border:2px solid var(--color-orange);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-soft);padding:2.5rem;margin-bottom:2rem;text-align:center;
+}
+.lead-card h3{margin:0 0 .5rem;font-size:1.6rem;color:var(--color-navy)}
+.lead-subtitle{color:var(--color-gray);font-size:1.1rem;margin-bottom:1.5rem}
+.lead-perks{display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-bottom:1.75rem}
+.lead-perks span{
+  display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;
+  background:rgba(241,132,35,.08);border-radius:999px;font-size:.95rem;
+  color:var(--color-navy);font-weight:600;
+}
+.lead-form{text-align:left;max-width:480px;margin:0 auto}
+.lead-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.lead-form .form-field{margin-bottom:1rem}
+.lead-form label{display:block;margin-bottom:.4rem;font-weight:700;color:var(--color-navy);font-size:.95rem}
+.lead-form input{
+  width:100%;padding:.85rem 1rem;border:1px solid rgba(0,48,91,.18);
+  border-radius:12px;font:inherit;color:var(--color-text);background:#fff;
+}
+.lead-form input:focus{outline:none;border-color:var(--color-orange);box-shadow:0 0 0 4px rgba(241,132,35,.12)}
+.form-note{font-size:.85rem;color:var(--color-gray);margin-top:.25rem;text-align:center}
 
-.result-container{display:none}.result-container.active{display:block}
-.result-header{text-align:center;margin-bottom:2rem}.result-header .result-eyebrow{font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray);margin-bottom:.5rem}.result-header h2{margin:0;font-size:2.2rem;color:var(--color-navy)}
+/* ── RESULTS ── */
+.result-container{display:none}
+.result-container.active{display:block}
+.result-header{text-align:center;margin-bottom:2rem}
+.result-header .result-eyebrow{font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray);margin-bottom:.5rem}
+.result-header h2{margin:0;font-size:2.2rem;color:var(--color-navy)}
+
 .score-donut-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center;margin-bottom:1.5rem}
-.donut-wrap{position:relative;width:200px;height:200px;margin:0 auto 1.5rem}.donut-wrap svg{width:200px;height:200px;transform:rotate(-90deg)}.donut-track{fill:none;stroke:rgba(0,48,91,.08);stroke-width:14}.donut-value{fill:none;stroke:var(--color-orange);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease}
-.donut-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}.donut-number{font-size:3.5rem;font-weight:700;color:var(--color-navy);line-height:1}.donut-sub{font-size:1rem;color:var(--color-gray)}
+.donut-wrap{position:relative;width:200px;height:200px;margin:0 auto 1.5rem}
+.donut-wrap svg{width:200px;height:200px;transform:rotate(-90deg)}
+.donut-track{fill:none;stroke:rgba(0,48,91,.08);stroke-width:14}
+.donut-value{fill:none;stroke:var(--color-orange);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease}
+.donut-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-number{font-size:3.5rem;font-weight:700;color:var(--color-navy);line-height:1}
+.donut-sub{font-size:1rem;color:var(--color-gray)}
 .stage-badge{display:inline-block;padding:.65rem 1.25rem;background:rgba(0,48,91,.06);border-radius:999px;font-size:1.05rem;color:var(--color-navy);font-weight:600}
 
-.detail-section{margin-bottom:1.5rem}.detail-eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray);margin-bottom:1rem;font-weight:700}
+.detail-section{margin-bottom:1.5rem}
+.detail-eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray);margin-bottom:1rem;font-weight:700}
 .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .phase-card{background:var(--color-bg);border-radius:var(--radius-md);padding:1.25rem 1.4rem;border:2px solid transparent;position:relative}
 .phase-card.highlight-hebel{border-color:var(--color-orange);background:#fff}
@@ -40,9 +211,14 @@
 .phase-pct{font-size:1.8rem;font-weight:700;color:var(--color-navy);line-height:1}
 .phase-bar{height:6px;border-radius:999px;background:rgba(0,48,91,.1);margin-bottom:.4rem;overflow:hidden}
 .phase-bar-fill{height:100%;border-radius:999px;background:var(--color-navy);transition:width .8s}
-.phase-tag{font-size:.82rem;font-weight:700}.phase-tag.strength{color:var(--color-navy)}.phase-tag.hebel{color:var(--color-orange)}
+.phase-tag{font-size:.82rem;font-weight:700}
+.phase-tag.strength{color:var(--color-navy)}
+.phase-tag.hebel{color:var(--color-orange)}
 
-.reco-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;border-left:4px solid var(--color-navy)}.reco-card h3{margin:0 0 .75rem;font-size:1.3rem;color:var(--color-navy)}.reco-card p{margin:0 0 1.25rem;font-size:1.1rem;color:var(--color-text)}.reco-cta{display:inline-block;padding:.6rem 1rem;background:rgba(241,132,35,.1);border-radius:999px;font-size:.95rem;font-weight:700;color:var(--color-orange)}
+.reco-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;border-left:4px solid var(--color-navy)}
+.reco-card h3{margin:0 0 .75rem;font-size:1.3rem;color:var(--color-navy)}
+.reco-card p{margin:0 0 1.25rem;font-size:1.1rem;color:var(--color-text)}
+.reco-cta{display:inline-block;padding:.6rem 1rem;background:rgba(241,132,35,.1);border-radius:999px;font-size:.95rem;font-weight:700;color:var(--color-orange)}
 
 .bench-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem}
 .bench-card h3{margin:0 0 1.25rem;font-size:1.3rem;color:var(--color-navy)}
@@ -58,89 +234,435 @@
 .bench-legend{display:flex;gap:1.5rem;margin-top:.75rem;font-size:.88rem;color:var(--color-gray)}
 .bench-legend span{display:inline-flex;align-items:center;gap:.4rem}
 .bench-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
-.bench-dot.you{background:var(--color-orange)}.bench-dot.avg{background:rgba(0,48,91,.22)}
+.bench-dot.you{background:var(--color-orange)}
+.bench-dot.avg{background:rgba(0,48,91,.22)}
 .bench-verdict{margin-top:1.25rem;padding:1rem 1.25rem;background:#fff;border-radius:var(--radius-md);border:1px solid rgba(0,48,91,.08);font-size:1.05rem;color:var(--color-text)}
 
-.cta-section{background:var(--color-navy);color:#fff;padding:2.5rem;border-radius:var(--radius-lg);text-align:center;margin-bottom:1.5rem}.cta-section h3{margin:0 0 .6rem;font-size:1.6rem;color:#fff}.cta-section p{color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:1.25rem}
+.cta-section{background:var(--color-navy);color:#fff;padding:2.5rem;border-radius:var(--radius-lg);text-align:center;margin-bottom:1.5rem}
+.cta-section h3{margin:0 0 .6rem;font-size:1.6rem;color:#fff}
+.cta-section p{color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:1.25rem}
 
-.site-footer{background:#082742;color:rgba(255,255,255,.86);padding:1.5rem 0}.footer-inner{display:flex;justify-content:space-between;gap:1rem;align-items:center}
+/* ── EXPOSE / REPORT ── */
+.expose-section{margin-bottom:1.5rem}
+.expose-header{
+  background:linear-gradient(135deg,var(--color-navy-dark),var(--color-navy));
+  color:#fff;border-radius:var(--radius-lg);padding:2.5rem 2rem;
+  margin-bottom:1.5rem;text-align:center;position:relative;overflow:hidden;
+}
+.expose-header::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.expose-header h3{
+  margin:0 0 .5rem;font-size:1.8rem;font-weight:900;
+  letter-spacing:-.01em;position:relative;
+}
+.expose-header .expose-subtitle{
+  color:rgba(255,255,255,.75);font-size:1.05rem;margin-bottom:1rem;position:relative;
+}
+.expose-meta{
+  display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;
+  position:relative;
+}
+.expose-meta-item{
+  display:flex;flex-direction:column;align-items:center;gap:.2rem;
+}
+.expose-meta-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)}
+.expose-meta-value{font-size:1.1rem;font-weight:700;color:var(--color-orange)}
 
-@media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero-image{max-width:480px}.steps-grid{grid-template-columns:repeat(2,1fr)}.footer-inner,.header-inner{flex-direction:column;align-items:flex-start}}
-@media(max-width:640px){.container{width:min(100% - 1.25rem,var(--container-width))}.question-card{padding:1.25rem}.quiz-nav{flex-direction:column}.quiz-nav .btn{width:100%}.steps-grid{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}.lead-form .form-row{grid-template-columns:1fr}.hero-highlights{flex-direction:column}.cta-section{padding:2rem 1.25rem}}
+.expose-block{
+  background:#fff;border:1px solid rgba(0,48,91,.08);
+  border-radius:var(--radius-lg);padding:2rem;margin-bottom:1rem;
+}
+.expose-block-title{
+  font-size:1.1rem;font-weight:900;color:var(--color-navy);
+  text-transform:uppercase;letter-spacing:.04em;
+  border-bottom:2px solid var(--color-orange);padding-bottom:.6rem;
+  margin-bottom:1.25rem;
+}
+.expose-intro-text{font-size:1.05rem;color:var(--color-text);line-height:1.65}
+
+/* Profil-Stufen-Visual */
+.expose-staircase{
+  display:flex;align-items:flex-end;gap:.5rem;
+  height:120px;margin:1.5rem 0;
+}
+.stair-bar{
+  flex:1;border-radius:6px 6px 0 0;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:.4rem;font-size:.75rem;font-weight:700;color:#fff;
+  transition:height .8s ease;
+}
+.stair-label{
+  text-align:center;font-size:.7rem;color:var(--color-gray);
+  margin-top:.4rem;font-weight:600;
+}
+
+/* Detail-Antwort-Tabelle */
+.answers-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.answers-table th{
+  background:var(--color-navy);color:#fff;padding:.6rem .8rem;
+  text-align:left;font-size:.8rem;letter-spacing:.03em;
+}
+.answers-table th:last-child{text-align:center}
+.answers-table td{
+  padding:.55rem .8rem;border-bottom:1px solid rgba(0,48,91,.06);
+  color:var(--color-text);vertical-align:top;
+}
+.answers-table tr:nth-child(even) td{background:rgba(0,48,91,.02)}
+.answers-table td:last-child{text-align:center}
+.score-pill{
+  display:inline-block;min-width:28px;padding:.2rem .5rem;
+  border-radius:999px;font-weight:700;font-size:.82rem;
+  text-align:center;
+}
+.score-pill.s0{background:rgba(220,50,50,.1);color:#c0392b}
+.score-pill.s1{background:rgba(230,126,34,.1);color:#d35400}
+.score-pill.s2{background:rgba(241,196,15,.15);color:#b7950b}
+.score-pill.s3{background:rgba(39,174,96,.1);color:#1e8449}
+.score-pill.s4{background:rgba(0,48,91,.12);color:var(--color-navy)}
+.cluster-section{margin-bottom:1.5rem}
+.cluster-section-title{
+  font-size:.85rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--color-orange);
+  padding:.4rem .8rem;background:rgba(241,132,35,.06);
+  border-radius:6px;margin-bottom:.4rem;
+}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--color-navy-dark);color:rgba(255,255,255,.86);padding:3rem 0 1.5rem}
+.footer-grid{
+  display:grid;grid-template-columns:1fr auto auto;gap:2rem;
+  padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.08);
+  margin-bottom:1.5rem;
+}
+.footer-brand{display:flex;flex-direction:column;gap:.75rem}
+.footer-brand-logo{display:flex;align-items:center;gap:.5rem}
+.footer-brand-name{font-size:1.4rem;font-weight:900;color:var(--color-orange);letter-spacing:.04em}
+.footer-brand-desc{font-size:.9rem;color:rgba(255,255,255,.5);max-width:280px;line-height:1.5}
+.footer-col h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin:0 0 .75rem}
+.footer-col a{display:block;color:rgba(255,255,255,.7);font-size:.9rem;margin-bottom:.4rem;transition:color .2s}
+.footer-col a:hover{color:var(--color-orange)}
+.footer-bottom{display:flex;justify-content:space-between;font-size:.82rem;color:rgba(255,255,255,.35)}
+.footer-address{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.6;margin-top:.5rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-image{max-width:480px}
+  .steps-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr;gap:1.5rem}
+  .header-inner{flex-direction:row}
+}
+@media(max-width:640px){
+  .container{width:min(100% - 1.25rem,var(--container-width))}
+  .question-card{padding:1.25rem}
+  .quiz-nav{flex-direction:column}
+  .quiz-nav .btn{width:100%}
+  .steps-grid{grid-template-columns:1fr}
+  .phase-grid{grid-template-columns:1fr}
+  .lead-form .form-row{grid-template-columns:1fr}
+  .hero-highlights{flex-direction:column}
+  .cta-section{padding:2rem 1.25rem}
+  .expose-meta{gap:1rem}
+  .header-nav a:not(.btn-nav){display:none}
+}
   </style>
 </head>
 <body>
 
-<header class="site-header"><div class="container"><div class="header-inner"><div class="brand-logo">Unternehmer<span>Score</span></div><nav class="header-nav"><a href="#about">Über den Score</a><a href="#quiz-section">Quick Check starten</a></nav></div></div></header>
-
-<section class="hero"><div class="container"><div class="hero-grid"><div>
-  <span class="eyebrow">Brandenburger-Score Quick Check</span>
-  <h1>Wo stehst du als Unternehmer?</h1>
-  <p class="hero-text">40 Fragen – 10 Minuten – eine fundierte Standortbestimmung deines unternehmerischen Reifegrads. Finde heraus, auf welcher Stufe der Entwicklungs-Treppe du dich befindest.</p>
-  <div class="hero-highlights"><span>📊 40 wissenschaftliche Indikatoren</span><span>🎯 5 Reifegrad-Stufen</span><span>⏱ ca. 10 Minuten</span><span>🔒 100 % anonym</span></div>
-  <a href="#quiz-section" class="btn btn-primary btn-large">Jetzt Score ermitteln →</a>
-</div><div class="hero-image"><img src="bilder/Unternehmer-Entwicklungs-Treppe.png" alt="Die 5 Stufen der Unternehmer-Entwicklungs-Treppe"></div></div></div></section>
-
-<section class="section section-alt" id="about"><div class="container">
-  <div class="narrow" style="margin-bottom:2rem"><h2>Die 5 Stufen der Entwicklungs-Treppe</h2><p>Jeder Unternehmer durchläuft typische Entwicklungsphasen – vom operativ getriebenen Macher bis zum strategisch souveränen Gestalter. Der Brandenburger-Score zeigt dir, wo du gerade stehst.</p></div>
-  <div class="steps-grid">
-    <div class="step-card"><div class="step-num">1</div><h3>Getriebener Macher</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Hamsterrad &amp; Feuerwehr</p></div>
-    <div class="step-card"><div class="step-num">2</div><h3>Alltagsgestalter</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Erste Strukturen</p></div>
-    <div class="step-card"><div class="step-num">3</div><h3>Leader</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Führung &amp; Delegation</p></div>
-    <div class="step-card"><div class="step-num">4</div><h3>Systembauer</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Prozesse &amp; Standards</p></div>
-    <div class="step-card"><div class="step-num">5</div><h3>Gestaltender Unternehmer</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Strategie &amp; Souveränität</p></div>
+<!-- ── TRUST HEADER ── -->
+<header class="site-header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="#" class="brand-logo">
+        <div class="trust-logo-box">
+          <div class="trust-logo-top">TRUST</div>
+          <div class="trust-logo-sub">UNTERNEHMER</div>
+          <div class="trust-logo-tagline">Nicht allein.</div>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="#about">Über den Score</a>
+        <a href="#quiz-section">Quick Check starten</a>
+        <a href="#quiz-section" class="btn-nav">Score starten</a>
+      </nav>
+    </div>
   </div>
-</div></section>
+</header>
 
-<section class="section" id="quiz-section"><div class="container narrow">
-
-  <div id="quiz-start" class="quiz-container active">
-    <h2>Quick Check starten</h2>
-    <p>Beantworte die folgenden 40 Fragen ehrlich auf Basis deines Verhaltens in den <strong>letzten 4 Wochen</strong>. Es gibt keine richtigen oder falschen Antworten.</p>
-    <p>Du erhältst keine starre Einordnung, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe?</p>
-    <p style="color:var(--color-gray)"><strong>Skala: 0 = trifft gar nicht zu → 4 = trifft voll zu</strong></p>
-    <button class="btn btn-primary btn-large" onclick="startQuiz()" style="margin-top:1rem">Los geht's →</button>
-  </div>
-
-  <div id="quiz-questions" class="quiz-container">
-    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
-    <div class="progress-label" id="progress-label"></div>
-    <div id="question-area"></div>
-    <div class="quiz-nav"><button class="btn btn-outline" id="btn-prev" onclick="prevQuestion()">← Zurück</button><button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Weiter →</button></div>
-  </div>
-
-  <div id="lead-gate" class="lead-gate">
-    <div class="score-donut-card"><div class="donut-wrap"><svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="teaser-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg><div class="donut-label"><div class="donut-number" id="teaser-num">0</div><div class="donut-sub">von 100</div></div></div><div class="stage-badge" id="teaser-stage"></div></div>
-    <p style="text-align:center;font-size:1.1rem;color:var(--color-gray);margin-bottom:1.5rem">Dein Quick Check ist ausgewertet! Trage bitte deine Daten ein, um dein vollständiges Ergebnis mit persönlicher Auswertung zu erhalten.</p>
-    <div class="lead-card">
-      <h3>🎁 Dein persönlicher Ergebnis-Report</h3>
-      <p class="lead-subtitle">Trage deine Daten ein und erhalte zusätzlich per E-Mail:</p>
-      <div class="lead-perks"><span>🎯 Individuelle Handlungsempfehlungen</span><span>📊 Vergleich mit anderen Unternehmern</span></div>
-      <div class="lead-form" id="lead-form">
-        <div class="form-row"><div class="form-field"><label for="lead-vorname">Vorname *</label><input type="text" id="lead-vorname" placeholder="Max" required></div><div class="form-field"><label for="lead-name">Nachname *</label><input type="text" id="lead-name" placeholder="Mustermann" required></div></div>
-        <div class="form-field"><label for="lead-firma">Firma *</label><input type="text" id="lead-firma" placeholder="Mustermann GmbH" required></div>
-        <div class="form-field"><label for="lead-email">E-Mail-Adresse *</label><input type="email" id="lead-email" placeholder="max@mustermann.de" required></div>
-        <div class="form-row"><div class="form-field"><label for="lead-plz">PLZ *</label><input type="text" id="lead-plz" placeholder="10115" maxlength="5" required></div><div class="form-field"><label for="lead-ort">Ort *</label><input type="text" id="lead-ort" placeholder="Berlin" required></div></div>
-        <button class="btn btn-primary btn-large btn-block" onclick="submitLead()" style="margin-top:.5rem">Ergebnis anzeigen &amp; Report sichern →</button>
-        <p class="form-note" style="margin-top:1rem">Deine Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.</p>
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Trust Unternehmer-Score Quick Check</span>
+        <h1>Wo stehst du als Unternehmer?</h1>
+        <p class="hero-text">40 Fragen – 10 Minuten – eine fundierte Standortbestimmung deines unternehmerischen Reifegrads. Finde heraus, auf welcher Stufe der Entwicklungs-Treppe du dich befindest.</p>
+        <div class="hero-highlights">
+          <span>📊 40 wissenschaftliche Indikatoren</span>
+          <span>🎯 5 Reifegrad-Stufen</span>
+          <span>⏱ ca. 10 Minuten</span>
+          <span>🔒 100 % anonym</span>
+        </div>
+        <a href="#quiz-section" class="btn btn-primary btn-large">Jetzt Score ermitteln →</a>
+      </div>
+      <div class="hero-image">
+        <img src="bilder/Unternehmer-Entwicklungs-Treppe.png" alt="Die 5 Stufen der Unternehmer-Entwicklungs-Treppe">
       </div>
     </div>
-    <p style="text-align:center"><a href="#" onclick="skipLead();return false;" style="color:var(--color-gray);font-size:.95rem;text-decoration:underline">Ohne Angabe fortfahren →</a></p>
   </div>
+</section>
 
-  <div id="quiz-results" class="result-container">
-    <div class="result-header"><div class="result-eyebrow">Dein Ergebnis</div><h2>Brandenburger-Score</h2></div>
-    <div class="score-donut-card"><div class="donut-wrap"><svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="result-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg><div class="donut-label"><div class="donut-number" id="result-num">0</div><div class="donut-sub">von 100</div></div></div><div class="stage-badge" id="result-stage"></div></div>
-    <div class="detail-section"><div class="detail-eyebrow">Deine Auswertung im Detail</div><div class="phase-grid" id="phase-grid"></div></div>
-    <div class="reco-card" id="reco-card"></div>
-    <div class="bench-card" id="bench-card"></div>
-    <div class="cta-section"><h3>Klarheitsgespräch buchen</h3><p>Besprich dein Score-Ergebnis persönlich mit Thomas Brandenburger — 30 Minuten, 1:1, kostenfrei.</p><a href="mailto:thb@potentiale.de?subject=Klarheitsgespräch%20anfragen&amp;body=Hallo%20Thomas,%0A%0Aich%20habe%20den%20Unternehmer-Score%20ausgefüllt%20und%20möchte%20gerne%20ein%20Klarheitsgespräch%20vereinbaren.%0A%0AViele%20Grüße" class="btn btn-primary btn-large">Jetzt Termin vereinbaren →</a></div>
-    <div style="margin-top:2rem;text-align:center"><button class="btn btn-ghost" onclick="resetQuiz()">Score erneut durchführen</button></div>
+<!-- ── 5 STUFEN ── -->
+<section class="section section-alt" id="about">
+  <div class="container">
+    <div class="narrow" style="margin-bottom:2rem">
+      <h2>Die 5 Stufen der Entwicklungs-Treppe</h2>
+      <p>Jeder Unternehmer durchläuft typische Entwicklungsphasen – vom operativ getriebenen Macher bis zum strategisch souveränen Gestalter. Der Trust Unternehmer-Score zeigt dir, wo du gerade stehst.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Getriebener Macher</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Hamsterrad &amp; Feuerwehr</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Alltagsgestalter</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Erste Strukturen</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Leader</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Führung &amp; Delegation</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Systembauer</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Prozesse &amp; Standards</p></div>
+      <div class="step-card"><div class="step-num">5</div><h3>Gestaltender Unternehmer</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Strategie &amp; Souveränität</p></div>
+    </div>
   </div>
+</section>
 
-</div></section>
+<!-- ── QUIZ SECTION ── -->
+<section class="section" id="quiz-section">
+  <div class="container narrow">
 
-<footer class="site-footer"><div class="container"><div class="footer-inner"><span>© 2026 Brandenburger-Score · T. Brandenburger &amp; H. Schrem</span><span style="font-size:.9rem">Psychometrisches Framework v1</span></div></div></footer>
+    <!-- START -->
+    <div id="quiz-start" class="quiz-container active">
+      <h2>Quick Check starten</h2>
+      <p>Beantworte die folgenden 40 Fragen ehrlich auf Basis deines Verhaltens in den <strong>letzten 4 Wochen</strong>. Es gibt keine richtigen oder falschen Antworten.</p>
+      <p>Du erhältst keine starre Einordnung, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe?</p>
+      <p style="color:var(--color-gray)"><strong>Skala: 0 = trifft gar nicht zu → 4 = trifft voll zu</strong></p>
+      <button class="btn btn-primary btn-large" onclick="startQuiz()" style="margin-top:1rem">Los geht's →</button>
+    </div>
+
+    <!-- FRAGEN -->
+    <div id="quiz-questions" class="quiz-container">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label"></div>
+      <div id="question-area"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-outline" id="btn-prev" onclick="prevQuestion()">← Zurück</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- LEAD GATE -->
+    <div id="lead-gate" class="lead-gate">
+      <div class="score-donut-card">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 200 200">
+            <circle class="donut-track" cx="100" cy="100" r="85"/>
+            <circle class="donut-value" id="teaser-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/>
+          </svg>
+          <div class="donut-label">
+            <div class="donut-number" id="teaser-num">0</div>
+            <div class="donut-sub">von 100</div>
+          </div>
+        </div>
+        <div class="stage-badge" id="teaser-stage"></div>
+      </div>
+      <p style="text-align:center;font-size:1.1rem;color:var(--color-gray);margin-bottom:1.5rem">Dein Quick Check ist ausgewertet! Trage bitte deine Daten ein, um dein vollständiges Ergebnis mit persönlicher Auswertung zu erhalten.</p>
+      <div class="lead-card">
+        <h3>🎁 Dein persönlicher Trust Unternehmer-Score Report</h3>
+        <p class="lead-subtitle">Trage deine Daten ein und erhalte zusätzlich per E-Mail:</p>
+        <div class="lead-perks">
+          <span>🎯 Individuelle Handlungsempfehlungen</span>
+          <span>📊 Vergleich mit anderen Unternehmern</span>
+          <span>📋 Detaillierte Auswertung aller 40 Fragen</span>
+        </div>
+        <div class="lead-form" id="lead-form">
+          <div class="form-row">
+            <div class="form-field"><label for="lead-vorname">Vorname *</label><input type="text" id="lead-vorname" placeholder="Max" required></div>
+            <div class="form-field"><label for="lead-name">Nachname *</label><input type="text" id="lead-name" placeholder="Mustermann" required></div>
+          </div>
+          <div class="form-field"><label for="lead-firma">Firma *</label><input type="text" id="lead-firma" placeholder="Mustermann GmbH" required></div>
+          <div class="form-field"><label for="lead-email">E-Mail-Adresse *</label><input type="email" id="lead-email" placeholder="max@mustermann.de" required></div>
+          <div class="form-row">
+            <div class="form-field"><label for="lead-plz">PLZ *</label><input type="text" id="lead-plz" placeholder="10115" maxlength="5" required></div>
+            <div class="form-field"><label for="lead-ort">Ort *</label><input type="text" id="lead-ort" placeholder="Berlin" required></div>
+          </div>
+          <button class="btn btn-primary btn-large btn-block" onclick="submitLead()" style="margin-top:.5rem">Ergebnis anzeigen &amp; Report sichern →</button>
+          <p class="form-note" style="margin-top:1rem">Deine Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.</p>
+        </div>
+      </div>
+      <p style="text-align:center"><a href="#" onclick="skipLead();return false;" style="color:var(--color-gray);font-size:.95rem;text-decoration:underline">Ohne Angabe fortfahren →</a></p>
+    </div>
+
+    <!-- ERGEBNISSE -->
+    <div id="quiz-results" class="result-container">
+      <div class="result-header">
+        <div class="result-eyebrow">Dein Ergebnis</div>
+        <h2>Trust Unternehmer-Score</h2>
+      </div>
+
+      <!-- Score Donut -->
+      <div class="score-donut-card">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 200 200">
+            <circle class="donut-track" cx="100" cy="100" r="85"/>
+            <circle class="donut-value" id="result-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/>
+          </svg>
+          <div class="donut-label">
+            <div class="donut-number" id="result-num">0</div>
+            <div class="donut-sub">von 100</div>
+          </div>
+        </div>
+        <div class="stage-badge" id="result-stage"></div>
+      </div>
+
+      <!-- Phase-Detail -->
+      <div class="detail-section">
+        <div class="detail-eyebrow">Deine Auswertung im Detail</div>
+        <div class="phase-grid" id="phase-grid"></div>
+      </div>
+
+      <!-- Empfehlung -->
+      <div class="reco-card" id="reco-card"></div>
+
+      <!-- Benchmark -->
+      <div class="bench-card" id="bench-card"></div>
+
+      <!-- ══ EXPOSE / REPORT ══ -->
+      <div class="expose-section" id="expose-section">
+
+        <!-- Expose Header -->
+        <div class="expose-header">
+          <h3>📋 Dein Trust Unternehmer-Score Report</h3>
+          <p class="expose-subtitle">Individuelles Entwicklungsprofil · Persönliche Analyse</p>
+          <div class="expose-meta">
+            <div class="expose-meta-item">
+              <span class="expose-meta-label">Erstellt am</span>
+              <span class="expose-meta-value" id="expose-date">—</span>
+            </div>
+            <div class="expose-meta-item">
+              <span class="expose-meta-label">Für</span>
+              <span class="expose-meta-value" id="expose-name">—</span>
+            </div>
+            <div class="expose-meta-item">
+              <span class="expose-meta-label">Gesamtscore</span>
+              <span class="expose-meta-value" id="expose-score">—</span>
+            </div>
+            <div class="expose-meta-item">
+              <span class="expose-meta-label">Entwicklungsstufe</span>
+              <span class="expose-meta-value" id="expose-stufe">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seite 1: Profil-Übersicht -->
+        <div class="expose-block">
+          <div class="expose-block-title">1. Dein Entwicklungsprofil auf einen Blick</div>
+          <div id="expose-profil-text" class="expose-intro-text"></div>
+          <!-- Balken-Visual -->
+          <div style="margin-top:1.5rem">
+            <div class="expose-staircase" id="expose-staircase"></div>
+            <div style="display:flex;gap:.5rem" id="expose-stair-labels"></div>
+          </div>
+        </div>
+
+        <!-- Seite 2: Stärken & Hebel -->
+        <div class="expose-block">
+          <div class="expose-block-title">2. Deine Stärken &amp; größten Hebel</div>
+          <div id="expose-staerken-hebel" class="expose-intro-text"></div>
+        </div>
+
+        <!-- Seite 3: Handlungsempfehlungen -->
+        <div class="expose-block">
+          <div class="expose-block-title">3. Konkrete Handlungsempfehlungen</div>
+          <div id="expose-empfehlungen" class="expose-intro-text"></div>
+        </div>
+
+        <!-- Seite 4: Alle 40 Antworten -->
+        <div class="expose-block">
+          <div class="expose-block-title">4. Deine Antworten im Detail – alle 40 Fragen</div>
+          <p style="font-size:.9rem;color:var(--color-gray);margin-bottom:1.25rem">Skala: 0 = trifft gar nicht zu | 1 = trifft kaum zu | 2 = trifft teilweise zu | 3 = trifft überwiegend zu | 4 = trifft voll zu</p>
+          <div id="expose-answers-detail"></div>
+        </div>
+
+        <!-- Seite 5: Nächster Schritt -->
+        <div class="expose-block" style="background:linear-gradient(135deg,rgba(0,48,91,.04),rgba(241,132,35,.04));border-color:rgba(0,48,91,.12)">
+          <div class="expose-block-title">5. Dein nächster Schritt</div>
+          <div class="expose-intro-text">
+            <p>Dieser Report zeigt dir, wo du heute stehst. Aber Klarheit allein verändert noch nichts – es braucht den richtigen nächsten Schritt.</p>
+            <p>Im <strong>kostenlosen Klarheitsgespräch</strong> mit Thomas Brandenburger schauen wir gemeinsam:</p>
+            <ul style="margin:1rem 0 1rem 1.2rem;line-height:2">
+              <li>Was hält dich aktuell am meisten zurück?</li>
+              <li>Welcher Hebel hätte die größte Wirkung?</li>
+              <li>Welcher konkrete nächste Schritt passt zu dir?</li>
+            </ul>
+            <p><strong>30 Minuten. Persönlich. Vertraulich. Kein Verkaufsgespräch.</strong></p>
+          </div>
+          <div style="text-align:center;margin-top:1.5rem">
+            <a href="mailto:tb@trust-unternehmer.de?subject=Klarheitsgespräch%20nach%20Trust%20Unternehmer-Score&body=Hallo%20Thomas,%0A%0Aich%20habe%20den%20Trust%20Unternehmer-Score%20ausgefüllt%20und%20möchte%20gerne%20ein%20Klarheitsgespräch%20vereinbaren.%0A%0AViele%20Grüße" class="btn btn-primary btn-large">Klarheitsgespräch anfragen →</a>
+            <div style="margin-top:.75rem;font-size:.9rem;color:var(--color-gray)">oder direkt: <a href="tel:015125254853" style="color:var(--color-navy);font-weight:700">0151 2525 4853</a></div>
+          </div>
+        </div>
+
+      </div><!-- /expose-section -->
+
+      <!-- CTA -->
+      <div class="cta-section">
+        <h3>Klarheitsgespräch buchen</h3>
+        <p>Besprich dein Score-Ergebnis persönlich mit Thomas Brandenburger — 30 Minuten, 1:1, kostenfrei.</p>
+        <a href="mailto:tb@trust-unternehmer.de?subject=Klarheitsgespräch%20anfragen&body=Hallo%20Thomas,%0A%0Aich%20habe%20den%20Trust%20Unternehmer-Score%20ausgefüllt%20und%20möchte%20gerne%20ein%20Klarheitsgespräch%20vereinbaren.%0A%0AViele%20Grüße" class="btn btn-primary btn-large">Jetzt Termin vereinbaren →</a>
+      </div>
+
+      <div style="margin-top:2rem;text-align:center">
+        <button class="btn btn-ghost" onclick="resetQuiz()">Score erneut durchführen</button>
+      </div>
+    </div><!-- /quiz-results -->
+
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">
+          <div>
+            <div class="footer-brand-name">TRUST</div>
+            <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(255,255,255,.5);text-transform:uppercase">UNTERNEHMER · Nicht allein.</div>
+          </div>
+        </div>
+        <div class="footer-address">
+          TB UnternehmerImpulse eG<br>
+          Am Zwingel 2<br>
+          35683 Dillenburg
+        </div>
+        <div class="footer-brand-desc">Der Trust Unternehmer-Score ist ein psychometrisches Framework zur Standortbestimmung für Inhaber &amp; Geschäftsführer von KMU.</div>
+      </div>
+      <div class="footer-col">
+        <h4>Angebote</h4>
+        <a href="#">Trust Unternehmer-Score</a>
+        <a href="#">Klarheitsgespräch</a>
+        <a href="#">Unternehmergruppen</a>
+        <a href="#">Entwicklungs-Treppe</a>
+        <a href="#">KI-Implementierung</a>
+      </div>
+      <div class="footer-col">
+        <h4>Verbinden</h4>
+        <a href="#">LinkedIn</a>
+        <a href="mailto:tb@trust-unternehmer.de">E-Mail schreiben</a>
+        <a href="tel:015125254853">0151 2525 4853</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TB UnternehmerImpulse eG · Trust Unternehmer-Score</span>
+      <span>Psychometrisches Framework v1</span>
+    </div>
+  </div>
+</footer>
 
 <script>
 const Q=[
@@ -150,6 +672,7 @@ const Q=[
 {ci:0,text:'Ich habe Aufgaben meiner Mitarbeiter übernommen, weil es \u201Eschneller ging\u201C.',inv:true},
 {ci:0,text:'Ich habe abends oder am Wochenende gearbeitet, um das Tagesgeschäft zu bewältigen.',inv:true},
 {ci:0,text:'Ich hatte beim Arbeitsstart klare Top-3-Prioritäten und habe sie eingehalten.',inv:false},
+{ci:0,text:'Ich hatte mindestens 2 Stunden ungestörte Fokuszeit pro Tag.',inv:false},
 {ci:0,text:'Ich wurde durch mehr als 10 Themenwechsel pro Tag unterbrochen.',inv:true},
 {ci:0,text:'Ich hatte das Gefühl, der Hauptengpass zu sein, der alles zusammenhalten muss.',inv:true},
 {ci:1,text:'Ich hatte eine stabile Wochen-/Tagesstruktur mit festen Fokuszeiten.',inv:false},
@@ -187,7 +710,8 @@ const Q=[
 ];
 const LL=['0 – trifft gar nicht zu','1 – trifft kaum zu','2 – trifft teilweise zu','3 – trifft überwiegend zu','4 – trifft voll zu'];
 const CN=['Getriebener Macher','Alltagsgestalter','Leader','Systembauer','Gestaltender Unternehmer'];
-let A=new Array(40).fill(null),cQ=0,CR=null;
+const COLORS=['#e74c3c','#e67e22','#f1c40f','#27ae60','#00305b'];
+let A=new Array(40).fill(null),cQ=0,CR=null,LEAD={};
 
 function startQuiz(){hide('quiz-start');show('quiz-questions');renderQ();}
 function show(id){document.getElementById(id).classList.add('active');}
@@ -201,10 +725,15 @@ function renderQ(){
   document.getElementById('btn-next').textContent=cQ===39?'Auswertung anzeigen →':'Weiter →';
   let h=`<div class="question-card"><span class="cluster-label">Cluster: ${CN[q.ci]}</span><h3>${q.text}</h3><div class="likert-group">`;
   for(let i=0;i<5;i++){h+=`<label class="likert-option ${s===i?'selected':''}" onclick="sel(${i},this)"><span class="likert-dot"></span><input type="radio" name="q${cQ}" value="${i}" ${s===i?'checked':''}>${LL[i]}</label>`;}
-  h+='</div></div>';document.getElementById('question-area').innerHTML=h;
+  h+='</div></div>';
+  document.getElementById('question-area').innerHTML=h;
 }
 function sel(v,el){A[cQ]=v;document.querySelectorAll('.likert-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
-function nextQuestion(){if(A[cQ]===null){document.querySelector('.question-card').style.borderColor='var(--color-orange)';return;}if(cQ<39){cQ++;renderQ();window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});}else gate();}
+function nextQuestion(){
+  if(A[cQ]===null){document.querySelector('.question-card').style.borderColor='var(--color-orange)';return;}
+  if(cQ<39){cQ++;renderQ();window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});}
+  else gate();
+}
 function prevQuestion(){if(cQ>0){cQ--;renderQ();}}
 
 function calc(){
@@ -217,38 +746,102 @@ function calc(){
   let str=0,wk=0;for(let i=1;i<5;i++){if(p[i]>p[str])str=i;if(p[i]<p[wk])wk=i;}
   return{p,ov,dom,str,wk};
 }
-function setD(arc,num,v){const c=534.07;document.getElementById(arc).style.strokeDashoffset=c-c*v/100;document.getElementById(num).textContent=v;}
+function setD(arc,num,v){
+  const c=534.07;
+  document.getElementById(arc).style.strokeDashoffset=c-c*v/100;
+  document.getElementById(num).textContent=v;
+}
 
 function gate(){
   CR=calc();hide('quiz-questions');show('lead-gate');
   setTimeout(()=>setD('teaser-arc','teaser-num',CR.ov),100);
-  document.getElementById('teaser-stage').textContent='Deine aktuell st\u00e4rkste Stufe: '+CN[CR.str];
+  document.getElementById('teaser-stage').textContent='Deine aktuell stärkste Stufe: '+CN[CR.str];
   window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
 }
+
 function submitLead(){
-  const f=['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'];let ok=true;
+  const f=['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'];
+  let ok=true;
   f.forEach(id=>{const e=document.getElementById(id);if(!e.value.trim()){e.style.borderColor='#c0392b';ok=false;}else e.style.borderColor='';});
-  const em=document.getElementById('lead-email');if(em.value&&!em.value.includes('@')){em.style.borderColor='#c0392b';ok=false;}
+  const em=document.getElementById('lead-email');
+  if(em.value&&!em.value.includes('@')){em.style.borderColor='#c0392b';ok=false;}
   if(!ok)return;
-  const ld={vorname:document.getElementById('lead-vorname').value.trim(),name:document.getElementById('lead-name').value.trim(),firma:document.getElementById('lead-firma').value.trim(),email:document.getElementById('lead-email').value.trim(),plz:document.getElementById('lead-plz').value.trim(),ort:document.getElementById('lead-ort').value.trim(),score:CR.ov,stufe:CR.dom+1,stufeName:CN[CR.dom],clusterPcts:CR.p.join('/'),timestamp:new Date().toISOString()};
-  fetch('https://formspree.io/f/mlgovkyp',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(ld)}).then(r=>{if(!r.ok)console.warn('Formspree-Fehler',r.status);}).catch(e=>console.warn('Senden fehlgeschlagen',e));
+
+  LEAD={
+    vorname:document.getElementById('lead-vorname').value.trim(),
+    name:document.getElementById('lead-name').value.trim(),
+    firma:document.getElementById('lead-firma').value.trim(),
+    email:document.getElementById('lead-email').value.trim(),
+    plz:document.getElementById('lead-plz').value.trim(),
+    ort:document.getElementById('lead-ort').value.trim()
+  };
+
+  // Baue detaillierte Antworten-Liste
+  const detailLines=Q.map((q,i)=>{
+    const val=A[i];
+    const valLabel=LL[val]||'–';
+    return `F${String(i+1).padStart(2,'0')} [${CN[q.ci]}]: ${q.text} → ANTWORT: ${valLabel}`;
+  }).join('\n');
+
+  // Cluster-Scores
+  const clusterScores=CR.p.map((pct,i)=>`${CN[i]}: ${pct}%`).join(' | ');
+
+  const ld={
+    // Personendaten
+    vorname:LEAD.vorname,
+    name:LEAD.name,
+    firma:LEAD.firma,
+    email:LEAD.email,
+    plz:LEAD.plz,
+    ort:LEAD.ort,
+    // Gesamt-Score
+    gesamtscore:CR.ov,
+    dominant_stufe:CR.dom+1,
+    dominant_stufe_name:CN[CR.dom],
+    staerkste_phase:CN[CR.str],
+    groesster_hebel:CN[CR.wk],
+    cluster_scores:clusterScores,
+    // Alle 40 Einzelantworten
+    alle_antworten_detail:detailLines,
+    timestamp:new Date().toISOString(),
+    _subject:`[Trust Unternehmer-Score] ${LEAD.vorname} ${LEAD.name} – Score: ${CR.ov}/100 – ${CN[CR.dom]}`
+  };
+
+  // Formspree senden
+  fetch('https://formspree.io/f/mlgovkyp',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(ld)
+  }).then(r=>{
+    if(!r.ok)console.warn('Formspree-Fehler',r.status);
+  }).catch(e=>console.warn('Senden fehlgeschlagen',e));
+
   results();
 }
-function skipLead(){results();}
+
+function skipLead(){
+  LEAD={vorname:'',name:'',firma:'',email:'',plz:'',ort:''};
+  results();
+}
 
 function results(){
-  hide('lead-gate');show('quiz-results');const r=CR;
+  hide('lead-gate');show('quiz-results');
+  const r=CR;
   setTimeout(()=>setD('result-arc','result-num',r.ov),100);
-  document.getElementById('result-stage').textContent='Deine aktuell st\u00e4rkste Stufe: '+CN[r.str];
+  document.getElementById('result-stage').textContent='Deine aktuell stärkste Stufe: '+CN[r.str];
 
+  // Phase-Grid
   let g='';
   for(let i=0;i<5;i++){
     const hb=i===r.wk,st=i===r.str&&i!==r.wk,fw=i===4?'full-width':'',hl=hb?'highlight-hebel':'';
-    let tag='';if(st)tag='<div class="phase-tag strength">Deine Stärke</div>';if(hb)tag='<div class="phase-tag hebel">Größter Hebel</div>';
+    let tag='';
+    if(st)tag='<div class="phase-tag strength">Deine Stärke</div>';
+    if(hb)tag='<div class="phase-tag hebel">Größter Hebel</div>';
     g+=`<div class="phase-card ${hl} ${fw}"><div class="phase-top"><div><div class="phase-phase">Phase ${i+1}</div><div class="phase-name">${CN[i]}</div></div><div class="phase-pct">${r.p[i]}%</div></div><div class="phase-bar"><div class="phase-bar-fill" style="width:${r.p[i]}%"></div></div>${tag}</div>`;
   }
   document.getElementById('phase-grid').innerHTML=g;
 
+  // Empfehlung
   const rec=[
     'Du steckst noch tief im operativen Hamsterrad. Dein wichtigster Hebel: Verschaffe dir als erstes mehr Zeit, indem du lernst, konsequent loszulassen und erste Strukturen zu schaffen.',
     'Du hast bereits erste Strukturen, aber Entscheidungen und Routineaufgaben landen noch zu oft bei dir. Dein Hebel: Lerne, konsequent zu delegieren und Führungskräfte einzusetzen.',
@@ -258,8 +851,8 @@ function results(){
   ];
   document.getElementById('reco-card').innerHTML=`<h3>Deine Handlungsempfehlung</h3><p>${rec[r.dom]}</p><div class="reco-cta">Empfohlener nächster Schritt: Klarheitsgespräch buchen</div>`;
 
-  // Benchmark comparison (static values – update periodically)
-  const BM={ov:42,p:[58,45,38,32,28]}; // avg scores from initial cohort
+  // Benchmark
+  const BM={ov:42,p:[58,45,38,32,28]};
   const diff=r.ov-BM.ov;
   const verd=diff>10?`Mit ${r.ov} von 100 Punkten liegst du <strong>${diff} Punkte über</strong> dem Durchschnitt anderer Unternehmer. Starke Basis – jetzt geht es darum, gezielt die nächste Stufe zu erreichen.`:diff>0?`Mit ${r.ov} von 100 Punkten liegst du <strong>${diff} Punkte über</strong> dem Durchschnitt. Du bist auf einem guten Weg – im Klarheitsgespräch identifizieren wir deine nächsten Hebel.`:diff===0?`Mit ${r.ov} von 100 Punkten liegst du genau im Durchschnitt. Im Klarheitsgespräch finden wir heraus, wo du am schnellsten Fortschritte machen kannst.`:`Mit ${r.ov} von 100 Punkten liegst du <strong>${Math.abs(diff)} Punkte unter</strong> dem Durchschnitt. Das ist kein Grund zur Sorge – es zeigt, dass du besonders viel Potenzial hast. Im Klarheitsgespräch schaffen wir Klarheit.`;
 
@@ -272,11 +865,108 @@ function results(){
   bh+=`<div class="bench-legend"><span><span class="bench-dot you"></span> Dein Score</span><span><span class="bench-dot avg"></span> Durchschnitt anderer Unternehmer</span></div>`;
   bh+=`<div class="bench-verdict">${verd}</div>`;
   document.getElementById('bench-card').innerHTML=bh;
+
+  // ══ EXPOSÉ AUFBAUEN ══
+  buildExpose(r);
+
   window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});
 }
 
+function buildExpose(r){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  // Meta
+  document.getElementById('expose-date').textContent=dateStr;
+  const nameStr=LEAD.vorname?`${LEAD.vorname} ${LEAD.name}`:'Teilnehmer/in';
+  document.getElementById('expose-name').textContent=nameStr;
+  document.getElementById('expose-score').textContent=r.ov+' / 100';
+  document.getElementById('expose-stufe').textContent=CN[r.dom];
+
+  // Staircase Visual
+  const stairEl=document.getElementById('expose-staircase');
+  const labelEl=document.getElementById('expose-stair-labels');
+  stairEl.innerHTML='';labelEl.innerHTML='';
+  r.p.forEach((pct,i)=>{
+    const bar=document.createElement('div');
+    bar.className='stair-bar';
+    bar.style.cssText=`height:${Math.max(pct,8)}%;background:${COLORS[i]};opacity:${i===r.str?1:0.6}`;
+    bar.textContent=pct+'%';
+    stairEl.appendChild(bar);
+
+    const lbl=document.createElement('div');
+    lbl.className='stair-label';
+    lbl.style.flex='1';
+    lbl.textContent=CN[i];
+    labelEl.appendChild(lbl);
+  });
+
+  // Profil-Text
+  const profilTexts=[
+    'Du befindest dich hauptsächlich in der Phase des <strong>Getriebenen Machers</strong>. Das ist der Startpunkt – du bist tief ins operative Geschäft eingebunden, springst als Feuerwehr ein und bist oft der Hauptengpass. Das ist typisch und zeigt, dass du Verantwortung nimmst – aber es kostet dich Energie und bremst das Wachstum.',
+    'Dein Profil zeigt den <strong>Alltagsgestalter</strong>. Du hast begonnen, Strukturen zu schaffen – erste Routinen, klarere Zuständigkeiten. Aber Entscheidungen landen noch zu oft bei dir. Du bist auf dem richtigen Weg, aber es gilt jetzt, diesen Schritt konsequent zu gehen.',
+    'Du agierst als <strong>Leader</strong>. Führung, Delegation und Feedback sind bei dir etabliert. Du hast gelernt, loszulassen. Jetzt ist der Moment, aus persönlicher Führung echte Systemstärke zu bauen – damit das Unternehmen auch ohne deinen ständigen Input robust läuft.',
+    'Dein Profil entspricht dem <strong>Systembauer</strong>. Prozesse, Standards und Kennzahlen sind deine Werkzeuge. Dein Unternehmen läuft strukturiert. Die nächste Ebene heißt strategische Souveränität – weniger Betriebsblindheit, mehr Gestaltungskraft.',
+    'Du bist der <strong>Gestaltende Unternehmer</strong>. Du arbeitest am und nicht im Unternehmen. Strategie, Markt und Innovation sind dein Fokus. Das Unternehmen läuft weitgehend ohne dich. Jetzt geht es darum, diese Stärke zu sichern und neue Wachstumsfelder zu erschließen.'
+  ];
+  document.getElementById('expose-profil-text').innerHTML=`<p>${profilTexts[r.dom]}</p><p>Dein Gesamtscore von <strong>${r.ov} von 100 Punkten</strong> spiegelt eine gewichtete Auswertung aller 5 Entwicklungsphasen wider. Die höhere Gewichtung liegt auf den fortgeschritteneren Phasen, da diese den unternehmerischen Reifegrad am stärksten abbilden.</p>`;
+
+  // Stärken & Hebel
+  const staerkeTexts=[
+    'Als Getriebener Macher liegt deine Stärke im Anpacken und im operativen Durchhaltevermögen. Du kennst jeden Bereich deines Unternehmens aus eigener Erfahrung – ein wertvolles Fundament.',
+    'Als Alltagsgestalter zeigst du bereits strukturelles Denken. Du erkennst, dass nicht alles über deinen Tisch laufen muss – und fängst an, das umzusetzen.',
+    'Deine Führungsstärke ist klar erkennbar. Menschen folgen dir, Ziele werden gesetzt und Verantwortung übertragen. Das ist eine tragende Kompetenz für jede Wachstumsphase.',
+    'Systemdenken ist deine Stärke. Dort, wo andere improvisieren, hast du Standards geschaffen. Das schützt dein Unternehmen vor Abhängigkeiten und Qualitätsschwankungen.',
+    'Strategie und Vision sind deine Kernkompetenzen. Du denkst in Systemen, Märkten und Chancen – und nicht nur im Tagesgeschäft. Das ist die seltenste und wertvollste Unternehmerfähigkeit.'
+  ];
+  const hebelTexts=[
+    'Dein größter Hebel liegt im Bereich <strong>'+CN[r.wk]+'</strong>. Hier ist der stärkste Nachholbedarf – und gleichzeitig das größte Wachstumspotenzial. Mit gezieltem Fokus auf genau diese Phase wirst du die spürbarste Veränderung in deinem Alltag erleben.',
+    'Konkret bedeutet das: weniger selbst machen, mehr befähigen – und die Energie, die du freisetzt, in die Weiterentwicklung deines Unternehmens investieren.',
+    'Der Schlüssel liegt nicht darin, in allen Phasen gleich stark zu sein, sondern die eigene Engpass-Phase zu erkennen und dort konsequent anzusetzen.'
+  ];
+  document.getElementById('expose-staerken-hebel').innerHTML=`
+    <p><strong>Deine Stärke:</strong> ${staerkeTexts[r.str]}</p>
+    <p><strong>Dein größter Hebel – Phase ${r.wk+1}: ${CN[r.wk]} (${r.p[r.wk]}%)</strong></p>
+    ${hebelTexts.map(t=>`<p>${t}</p>`).join('')}
+  `;
+
+  // Empfehlungen
+  const empfTexts=[
+    ['Schaffe dir täglich mindestens 2 Stunden ungestörte Fokuszeit – das ist nicht Luxus, sondern strategische Notwendigkeit.','Definiere für die nächste Woche 3 Aufgaben, die du vollständig delegieren kannst – und tue es dann wirklich.','Führe eine einfache "Unterbrechungs-Liste": Was landet immer wieder bei dir, obwohl andere es lösen könnten?'],
+    ['Erstelle eine klare Zuständigkeitskarte: Wer entscheidet was? Ohne dich? Kommuniziere das aktiv.','Führe wöchentliche Steuerungsmeetings ein – nicht operativ, sondern zur Überprüfung von Zielen und Aufgaben.','Etabliere eine persönliche Wochenstruktur mit festen Zeiten für Führung, Strategie und Fokusarbeit.'],
+    ['Dokumentiere eure 5 wichtigsten Führungsprozesse – von Zielsetzung bis Feedback – als Vorlage, nicht als Einzel-Coaching.','Identifiziere 2-3 "Helden-Abhängigkeiten" in deinem Team und schaffe Stellvertreter-Regelungen.','Führe ein monatliches Führungsteam-Review ein, in dem Kennzahlen, Probleme und Prioritäten besprochen werden.'],
+    ['Überprüfe, welche deiner Top-5-Prozesse noch nicht dokumentiert sind – und lege in den nächsten 30 Tagen Standards fest.','Baue ein einfaches Management-Dashboard: 5-7 Kennzahlen, die dir täglich/wöchentlich zeigen, wie das Unternehmen steht.','Plane einmal im Quartal einen halben Tag "Prozess-Review" – was läuft gut, was braucht Anpassung?'],
+    ['Führe ein jährliches Strategiereview mit deinem Führungsteam ein – extern moderiert, mit klaren Ergebnissen.','Entwickle einen persönlichen "Stop-Doing"-Plan: Welche operativen Aufgaben nimmst du noch selbst wahr, die andere übernehmen können?','Denke über neue Wachstumsfelder nach: Welche Marktchance oder Innovation liegt im nächsten Jahr vor dir?']
+  ];
+  let empfHTML='';
+  empfTexts[r.dom].forEach((t,i)=>{
+    empfHTML+=`<div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem"><div style="width:28px;height:28px;border-radius:50%;background:var(--color-orange);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div><p style="margin:0;font-size:1.05rem;line-height:1.6">${t}</p></div>`;
+  });
+  empfHTML+=`<div style="background:rgba(241,132,35,.06);border-radius:12px;padding:1.25rem;margin-top:1.5rem;border-left:3px solid var(--color-orange)"><strong>Generelle Empfehlung:</strong> Setze nicht alles gleichzeitig um. Wähle einen Hebel, arbeite 30 Tage daran konsequent – und messe den Unterschied.</div>`;
+  document.getElementById('expose-empfehlungen').innerHTML=empfHTML;
+
+  // Detail-Tabelle alle 40 Fragen
+  const clusterGroups=[0,1,2,3,4].map(ci=>({
+    ci,
+    questions:Q.map((q,i)=>({...q,idx:i,answer:A[i]})).filter(q=>q.ci===ci)
+  }));
+
+  let tableHTML='';
+  clusterGroups.forEach(grp=>{
+    tableHTML+=`<div class="cluster-section"><div class="cluster-section-title">Phase ${grp.ci+1}: ${CN[grp.ci]}</div>`;
+    tableHTML+=`<table class="answers-table"><thead><tr><th>#</th><th>Frage</th><th>Antwort</th></tr></thead><tbody>`;
+    grp.questions.forEach(q=>{
+      const sc=q.answer!==null?q.answer:0;
+      const pill=`<span class="score-pill s${sc}">${sc}</span>`;
+      tableHTML+=`<tr><td style="color:var(--color-gray);font-size:.82rem;white-space:nowrap">F${String(q.idx+1).padStart(2,'0')}</td><td>${q.text}${q.inv?'<span style="font-size:.72rem;color:var(--color-orange);margin-left:.4rem">(invertiert)</span>':''}</td><td>${pill}</td></tr>`;
+    });
+    tableHTML+=`</tbody></table></div>`;
+  });
+  document.getElementById('expose-answers-detail').innerHTML=tableHTML;
+}
+
 function resetQuiz(){
-  A=new Array(40).fill(null);cQ=0;CR=null;
+  A=new Array(40).fill(null);cQ=0;CR=null;LEAD={};
   hide('quiz-results');hide('lead-gate');show('quiz-start');
   ['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'].forEach(id=>{const e=document.getElementById(id);if(e){e.value='';e.style.borderColor='';}});
   ['teaser-arc','result-arc'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.strokeDashoffset='534.07';});
