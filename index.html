@@ -1,1049 +1,756 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KI-Reifegrad-Score</title>
-<style>
-:root {
-  --color-navy: #00305b;
-  --color-orange: #f18423;
-  --color-gray: #54595f;
-  --color-text: #161616;
-  --color-white: #ffffff;
-  --color-bg: #f7f8fa;
-  --color-border: #d9dee5;
-  --font-main: "Myriad Pro Condensed", "Arial Narrow", Arial, sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --shadow-soft: 0 12px 30px rgba(0,48,91,0.08);
-  --shadow-card: 0 10px 24px rgba(0,48,91,0.06);
-}
-*, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: var(--font-main);
-  color: var(--color-text);
-  background: var(--color-white);
-  line-height: 1.55;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI im Unternehmen wirksam verankern | UnternehmerImpulse</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    /* ── Ergänzende Styles (nur was style.css nicht abdeckt) ── */
 
-/* ── Screens ── */
-.screen { display: none; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .testimonial-card {
+      padding: 1.5rem;
+      background: var(--color-white);
+      border: 1px solid rgba(0, 48, 91, 0.08);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+    }
+    .testimonial-quote {
+      font-size: 1.02rem;
+      font-style: italic;
+      color: var(--color-gray);
+      margin: 0 0 1.2rem;
+      line-height: 1.6;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .testimonial-photo {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top;
+    }
+    .testimonial-name {
+      font-weight: 700;
+      color: var(--color-navy);
+      font-size: 0.95rem;
+    }
+    .testimonial-role {
+      font-size: 0.85rem;
+      color: var(--color-gray);
+    }
+    .trust-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(0, 48, 91, 0.08);
+      font-size: 0.95rem;
+      color: var(--color-gray);
+    }
+    .trust-bar strong {
+      font-size: 1.15rem;
+      color: var(--color-navy);
+    }
 
-/* ── INTRO ── */
-.intro-screen {
-  background: linear-gradient(135deg, rgba(0,48,91,0.98), rgba(0,48,91,0.88));
-  color: var(--color-white);
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 1.5rem;
-}
-.intro-inner {
-  max-width: 640px;
-  width: 100%;
-  text-align: center;
-}
-.intro-icon {
-  margin-bottom: 12px;
-}
-.intro-inner h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  margin: 0 0 4px;
-}
-.intro-inner h1 span { color: var(--color-orange); }
-.intro-tagline {
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 2rem;
-}
-.intro-desc {
-  font-size: 1.15rem;
-  color: rgba(255,255,255,0.85);
-  line-height: 1.65;
-  margin-bottom: 2.5rem;
-}
-.dim-pills {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
-  margin-bottom: 2.5rem;
-}
-.dim-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 14px;
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 999px;
-  font-size: 0.92rem;
-  color: rgba(255,255,255,0.88);
-  background: rgba(255,255,255,0.05);
-}
-.intro-input {
-  width: 100%; max-width: 380px;
-  padding: 14px 18px;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  background: rgba(255,255,255,0.07);
-  color: #fff;
-  font: inherit; font-size: 1rem;
-  outline: none;
-  margin-bottom: 1.5rem;
-}
-.intro-input::placeholder { color: rgba(255,255,255,0.4); }
-.intro-input:focus { border-color: var(--color-orange); box-shadow: 0 0 0 4px rgba(241,132,35,0.18); }
+    .usp-section {
+      background: var(--color-navy);
+      color: var(--color-white);
+    }
+    .usp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .usp-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+    .usp-feature {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+    .usp-feature-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(241, 132, 35, 0.2);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-orange);
+    }
+    .usp-feature h4 {
+      margin: 0 0 0.15rem;
+      font-size: 1.05rem;
+    }
+    .usp-feature p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.55;
+    }
+    .usp-visual {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+    .usp-visual h3 {
+      margin: 0 0 1rem;
+      font-size: 1.25rem;
+      text-align: center;
+    }
+    .usp-visual-item {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1rem;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: #5ecc89; }
+    .dot-yellow { background: var(--color-orange); }
+    .dot-blue { background: #6bb8d6; }
 
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 48px; padding: 0.85rem 1.4rem;
-  border-radius: 999px; border: 2px solid transparent;
-  font: inherit; font-size: 1rem; font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-}
-.btn:hover { transform: translateY(-1px); }
-.btn-primary {
-  background: var(--color-orange); color: #fff; border-color: var(--color-orange);
-  box-shadow: 0 6px 24px rgba(241,132,35,0.3);
-}
-.btn-primary:hover { box-shadow: 0 8px 32px rgba(241,132,35,0.4); }
-.btn-ghost {
-  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65);
-  border-color: rgba(255,255,255,0.15);
-}
-.btn-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.btn-outline-dark {
-  background: transparent; color: var(--color-navy);
-  border-color: rgba(0,48,91,0.16);
-}
+    .inqa-process {
+      background: var(--color-white);
+      border: 1px solid rgba(0, 48, 91, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-top: 1.75rem;
+      box-shadow: var(--shadow-card);
+    }
+    .inqa-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+    }
+    .inqa-step:last-child { margin-bottom: 0; }
+    .inqa-step-num {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: var(--color-navy);
+      color: var(--color-orange);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .inqa-step h4 {
+      margin: 0 0 0.2rem;
+      font-size: 1.08rem;
+      color: var(--color-navy);
+    }
+    .inqa-step p {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--color-gray);
+      line-height: 1.6;
+    }
+    .inqa-badge {
+      display: inline-block;
+      background: var(--color-bg);
+      border-radius: 999px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.82rem;
+      color: var(--color-gray);
+      margin-top: 0.45rem;
+    }
+    .inqa-connector {
+      width: 2px;
+      height: 16px;
+      background: var(--color-border);
+      margin: -0.6rem 0 -0.6rem 21px;
+    }
 
-/* ── ASSESSMENT ── */
-.assess-screen {
-  background: var(--color-bg);
-  padding: 0;
-}
-.assess-header {
-  position: sticky; top: 0; z-index: 10;
-  background: rgba(255,255,255,0.96);
-  border-bottom: 1px solid rgba(0,48,91,0.08);
-  backdrop-filter: blur(8px);
-  padding: 16px 20px 12px;
-}
-.assess-header-inner {
-  max-width: 700px; margin: 0 auto;
-}
-.progress-meta {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 6px;
-  font-size: 0.85rem; color: var(--color-gray);
-}
-.progress-pct { color: var(--color-orange); font-weight: 700; }
-.progress-track {
-  height: 4px; background: var(--color-border); border-radius: 2px; overflow: hidden;
-}
-.progress-fill {
-  height: 100%; background: linear-gradient(90deg, var(--color-orange), var(--color-navy));
-  border-radius: 2px; transition: width 0.5s ease;
-}
-.dim-dots {
-  display: flex; justify-content: center; gap: 6px; margin-top: 10px;
-}
-.dim-dot {
-  width: 32px; height: 4px; border-radius: 2px;
-  background: var(--color-border); transition: background 0.3s;
-}
-.dim-dot.active { background: var(--color-orange); }
-.dim-dot.done { background: var(--color-navy); }
+    .hint-box {
+      padding: 1.2rem 1.4rem;
+      border-radius: var(--radius-sm);
+      margin-top: 1.25rem;
+      background: var(--color-white);
+      border: 1px solid rgba(0, 48, 91, 0.08);
+      box-shadow: var(--shadow-card);
+    }
+    .hint-box.orange { border-left: 4px solid var(--color-orange); }
+    .hint-box.green { border-left: 4px solid #2e7d5b; }
+    .hint-box strong {
+      display: block;
+      color: var(--color-navy);
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .hint-box p {
+      margin: 0;
+      font-size: 0.98rem;
+      color: var(--color-gray);
+      line-height: 1.6;
+    }
 
-.assess-body {
-  flex: 1; padding: 24px 20px 32px;
-  max-width: 700px; margin: 0 auto; width: 100%;
-}
-.dim-header { text-align: center; margin-bottom: 24px; }
-.dim-icon { font-size: 36px; margin-bottom: 4px; }
-.dim-name {
-  font-size: 1.15rem; font-weight: 700; color: var(--color-navy); margin-bottom: 2px;
-}
-.dim-leitfrage {
-  font-size: 0.92rem; color: var(--color-gray); font-style: italic;
-}
+    .begleitung-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .begleitung-photo {
+      width: 200px;
+      height: 260px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+    }
+    .credential-tags {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .credential-tag {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--color-gray);
+      font-weight: 600;
+    }
 
-.question-text {
-  font-size: 1.1rem; font-weight: 600; color: var(--color-navy);
-  text-align: center; margin-bottom: 20px; line-height: 1.45;
-}
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .cta-option {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+    .cta-option h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.45rem;
+      color: var(--color-white);
+    }
+    .cta-option .desc {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .cta-option .form-field label {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .cta-option .form-field input,
+    .cta-option .form-field textarea,
+    .cta-option .form-field select {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--color-white);
+    }
+    .cta-option .form-field input::placeholder,
+    .cta-option .form-field textarea::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .cta-option .form-field select option {
+      color: var(--color-text);
+      background: var(--color-white);
+    }
+    .cta-option .form-field input:focus,
+    .cta-option .form-field textarea:focus,
+    .cta-option .form-field select:focus {
+      border-color: var(--color-orange);
+    }
+    .cta-hint {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+    .gespraech-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .gespraech-icon {
+      width: 72px; height: 72px;
+      background: rgba(241, 132, 35, 0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      color: var(--color-orange);
+    }
+    .gespraech-steps {
+      text-align: left;
+      margin: 1.5rem 0;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .gespraech-step {
+      display: flex; align-items: center; gap: 0.7rem;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .gespraech-step-num {
+      width: 26px; height: 26px;
+      background: rgba(241, 132, 35, 0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--color-orange);
+      flex-shrink: 0;
+    }
+    .nutzen-icon {
+      width: 44px; height: 44px;
+      background: var(--color-navy);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.8rem;
+      color: var(--color-orange);
+    }
+    .phase-badge {
+      display: inline-block;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      padding: 0.15rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--color-gray);
+      margin-top: 0.6rem;
+    }
 
-.answer-list { display: flex; flex-direction: column; gap: 10px; }
-.answer-btn {
-  display: flex; align-items: flex-start; gap: 12px;
-  width: 100%; padding: 14px 16px; text-align: left;
-  background: var(--color-white);
-  border: 2px solid transparent;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  font: inherit; font-size: 0.95rem; line-height: 1.5;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-}
-.answer-btn:hover {
-  border-color: rgba(0,48,91,0.15);
-  box-shadow: 0 10px 28px rgba(0,48,91,0.1);
-}
-.answer-btn.selected {
-  border-color: var(--color-orange);
-  background: rgba(241,132,35,0.04);
-  box-shadow: 0 10px 28px rgba(241,132,35,0.12);
-}
-.stufe-badge {
-  flex-shrink: 0; margin-top: 2px;
-  padding: 2px 10px; border-radius: 4px;
-  font-size: 0.78rem; font-weight: 700;
-  white-space: nowrap;
-}
-
-.assess-nav {
-  display: flex; justify-content: space-between; align-items: center;
-  max-width: 700px; margin: 0 auto; width: 100%;
-  padding: 0 20px 32px;
-}
-
-/* ── RESULTS ── */
-.results-screen {
-  background: var(--color-bg);
-  padding: 32px 20px;
-}
-.results-inner {
-  max-width: 800px; margin: 0 auto; width: 100%;
-}
-.results-header {
-  text-align: center; margin-bottom: 12px;
-  font-size: 0.82rem; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--color-gray);
-}
-.results-date {
-  text-align: center; font-size: 0.8rem; color: var(--color-gray);
-  margin-bottom: 40px;
-}
-
-.score-hero {
-  text-align: center; padding: 48px 24px;
-  background: linear-gradient(135deg, rgba(0,48,91,0.98), rgba(0,48,91,0.88));
-  color: #fff; border-radius: var(--radius-lg);
-  margin-bottom: 40px;
-  box-shadow: var(--shadow-soft);
-}
-.score-number {
-  font-size: clamp(4rem, 10vw, 6rem);
-  font-weight: 700; line-height: 1;
-  color: var(--color-orange);
-  margin-bottom: 4px;
-}
-.score-of { font-size: 0.85rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
-.score-badge {
-  display: inline-block;
-  padding: 6px 24px;
-  border-radius: 999px;
-  font-size: 0.95rem; font-weight: 700;
-  margin-bottom: 12px;
-}
-.score-desc { color: rgba(255,255,255,0.7); font-size: 1rem; max-width: 440px; margin: 0 auto; }
-.score-warning {
-  margin-top: 24px; padding: 14px 20px;
-  background: rgba(241,132,35,0.15); border: 1px solid rgba(241,132,35,0.3);
-  border-radius: var(--radius-sm); font-size: 0.92rem; color: #ffd5b1;
-  max-width: 520px; margin-left: auto; margin-right: auto;
-}
-
-.section-title {
-  text-align: center; font-size: 0.82rem;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--color-gray); margin-bottom: 24px;
-}
-
-/* Radar */
-.radar-card {
-  background: var(--color-white); border-radius: var(--radius-lg);
-  border: 1px solid rgba(0,48,91,0.06);
-  box-shadow: var(--shadow-card);
-  padding: 24px; text-align: center;
-  margin-bottom: 40px;
-}
-.radar-card svg { max-width: 100%; height: auto; }
-
-/* Dimension results */
-.dim-results { display: flex; flex-direction: column; gap: 14px; margin-bottom: 48px; }
-.dim-result-card {
-  padding: 18px 22px;
-  background: var(--color-white);
-  border: 1px solid rgba(0,48,91,0.06);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  border-left: 4px solid var(--color-navy);
-}
-.dim-result-top {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px;
-}
-.dim-result-name { font-weight: 700; font-size: 1rem; color: var(--color-navy); }
-.dim-result-right { display: flex; align-items: center; gap: 12px; }
-.dim-result-stufe {
-  font-size: 0.78rem; font-weight: 700; padding: 3px 10px;
-  border-radius: 4px;
-}
-.dim-result-score { font-size: 1.35rem; font-weight: 700; color: var(--color-orange); }
-.dim-bar-track {
-  height: 5px; background: var(--color-border); border-radius: 3px;
-  overflow: hidden; margin-bottom: 10px;
-}
-.dim-bar-fill {
-  height: 100%; border-radius: 3px;
-  transition: width 1.2s ease;
-}
-.dim-empfehlung {
-  font-size: 0.9rem; color: var(--color-gray); line-height: 1.55;
-}
-
-/* 4-Satz */
-.vier-satz {
-  padding: 28px;
-  background: var(--color-white);
-  border: 2px solid rgba(241,132,35,0.2);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  margin-bottom: 48px;
-}
-.satz-item {
-  display: flex; gap: 14px;
-  padding: 14px;
-  background: var(--color-bg);
-  border-radius: var(--radius-sm);
-  margin-bottom: 12px;
-}
-.satz-item:last-child { margin-bottom: 0; }
-.satz-num {
-  font-size: 1.4rem; font-weight: 700; color: var(--color-orange);
-  flex-shrink: 0; width: 28px;
-}
-.satz-label {
-  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
-  color: var(--color-navy); text-transform: uppercase; margin-bottom: 4px;
-}
-.satz-text { font-size: 0.92rem; color: var(--color-gray); line-height: 1.6; }
-
-.methodik-note {
-  text-align: center; font-size: 0.82rem;
-  color: var(--color-gray); line-height: 1.8;
-  margin-bottom: 32px;
-}
-.restart-wrap { text-align: center; }
-
-/* Stufen colors */
-.stufe-1 { background: #fde8e8; color: #b91c1c; }
-.stufe-2 { background: #fef3e2; color: #b45309; }
-.stufe-3 { background: #fef9e7; color: #92780c; }
-.stufe-4 { background: #e6f9f1; color: #0f7b54; }
-.stufe-5 { background: #e6f6f6; color: #0e7490; }
-
-.bar-1 { background: #ef4444; }
-.bar-2 { background: #f59e0b; }
-.bar-3 { background: #eab308; }
-.bar-4 { background: #22c55e; }
-.bar-5 { background: #06b6d4; }
-
-/* Logo */
-.logo-intro { display: block; width: 180px; margin: 0 auto 2rem; }
-.logo-header { height: 36px; width: auto; }
-.logo-results { display: block; width: 200px; margin: 0 auto 16px; }
-.assess-brand {
-  display: flex; align-items: center; justify-content: space-between;
-}
-.intro-footer {
-  margin-top: 3rem; padding-top: 1.5rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.82rem; color: rgba(255,255,255,0.35);
-}
-
-@media (max-width: 640px) {
-  .logo-intro { width: 140px; }
-  .logo-header { height: 28px; }
-  .intro-inner h1 { font-size: 2rem; }
-  .dim-pills { gap: 6px; }
-  .dim-pill { font-size: 0.82rem; padding: 5px 10px; }
-  .assess-body { padding: 16px 16px 24px; }
-  .answer-btn { font-size: 0.88rem; padding: 12px 14px; }
-  .score-hero { padding: 36px 16px; }
-  .vier-satz { padding: 18px; }
-  .satz-item { padding: 10px; }
-}
-</style>
+    @media (max-width: 980px) {
+      .testimonial-grid, .usp-grid, .cta-grid { grid-template-columns: 1fr; }
+      .begleitung-grid { grid-template-columns: 1fr; text-align: center; }
+      .begleitung-photo { margin: 0 auto; }
+      .credential-tags { justify-content: center; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ═══════════════ INTRO ═══════════════ -->
-<div id="screen-intro" class="screen intro-screen active">
-  <div class="intro-inner">
-    <div class="logo-intro"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 150" role="img" aria-label="TRUST – Unternehmer. Nicht allein."><g fill="#f18423"><path transform="translate(20,78) scale(0.02832,-0.02832)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/><path transform="translate(57.599,78) scale(0.02832,-0.02832)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/><path transform="translate(99.785,78) scale(0.02832,-0.02832)" d="M169 1493H516V598Q516 413 570.5 333.5Q625 254 748 254Q872 254 926.5 333.5Q981 413 981 598V1493H1328V598Q1328 281 1184.5 126Q1041-29 748-29Q455-29 312 126Q169 281 169 598Z"/><path transform="translate(144.152,78) scale(0.02832,-0.02832)" d="M1104 1446V1130Q994 1185 888.5 1213Q783 1241 689 1241Q565 1241 505.5 1203Q446 1165 446 1085Q446 1025 486 991.5Q526 958 632 934L779 901Q1004 851 1098 749Q1192 647 1192 459Q1192 212 1060.5 91.5Q929-29 658-29Q530-29 401.5-2Q273 25 144 78V403Q273 327 393 288.5Q513 250 625 250Q738 250 798.5 292Q859 334 859 412Q859 482 818 520Q777 558 654 588L520 621Q319 669 225.5 774Q132 879 132 1057Q132 1280 262 1400Q392 1520 634 1520Q745 1520 862 1501.5Q979 1483 1104 1446Z"/><path transform="translate(183.733,78) scale(0.02832,-0.02832)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/></g><g fill="#c9d4e3"><path transform="translate(20,104) scale(0.00732,-0.00732)" d="M169 1493H516V598Q516 413 570.5 333.5Q625 254 748 254Q872 254 926.5 333.5Q981 413 981 598V1493H1328V598Q1328 281 1184.5 126Q1041-29 748-29Q455-29 312 126Q169 281 169 598Z"/><path transform="translate(34.457,104) scale(0.00732,-0.00732)" d="M169 1493H556L1045 469V1493H1373V0H986L498 1024V0H169Z"/><path transform="translate(49.251,104) scale(0.00732,-0.00732)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/><path transform="translate(61.958,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(74.679,104) scale(0.00732,-0.00732)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/><path transform="translate(88.572,104) scale(0.00732,-0.00732)" d="M169 1493H556L1045 469V1493H1373V0H986L498 1024V0H169Z"/><path transform="translate(103.366,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(116.087,104) scale(0.00732,-0.00732)" d="M169 1493H516V924H1027V1493H1373V0H1027V633H516V0H169Z"/><path transform="translate(130.881,104) scale(0.00732,-0.00732)" d="M169 1493H610L916 694L1224 1493H1664V0H1336V1092L1027 287H807L498 1092V0H169Z"/><path transform="translate(147.813,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(160.535,104) scale(0.00732,-0.00732)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/></g><g fill="#c9d4e3"><path transform="translate(20,132) scale(0.00928,-0.00928)" d="M311 1493H556L927 213L1152 1493H1329L1067 0H822L452 1288L227 0H50Z"/><path transform="translate(32.784,132) scale(0.00928,-0.00928)" d="M338 1556H503L463 1323H297ZM262 1120H428L230 0H65Z"/><path transform="translate(37.534,132) scale(0.00928,-0.00928)" d="M988 1077 955 895Q896 943 828.5 967Q761 991 689 991Q610 991 538.5 960Q467 929 418 872Q341 785 298.5 668Q256 551 256 426Q256 275 324 201Q392 127 531 127Q599 127 676 150Q753 173 837 219L806 37Q734 4 657.5-12.5Q581-29 501-29Q301-29 193 82.5Q85 194 85 401Q85 575 141 721.5Q197 868 308 985Q383 1065 485 1106Q587 1147 707 1147Q778 1147 847 1129.5Q916 1112 988 1077Z"/><path transform="translate(46.932,132) scale(0.00928,-0.00928)" d="M1027 676 909 0H742L860 669Q868 716 873 752Q878 788 878 809Q878 893 830 940Q782 987 697 987Q563 987 465.5 887Q368 787 339 621L230 0H65L338 1556H503L396 944Q459 1038 557 1092.5Q655 1147 763 1147Q896 1147 969.5 1067Q1043 987 1043 842Q1043 806 1039 765Q1035 724 1027 676Z"/><path transform="translate(57.768,132) scale(0.00928,-0.00928)" d="M779 1120 754 977H424L317 369Q311 335 308.5 312Q306 289 306 276Q306 212 340.5 183Q375 154 452 154H619L591 0H433Q285 0 212.5 64Q140 128 140 258Q140 281 143 308.5Q146 336 151 369L258 977H118L144 1120H282L338 1438H503L448 1120Z"/><path transform="translate(69.894,132) scale(0.00928,-0.00928)" d="M990 639 878 0H712L742 170Q670 70 576.5 20.5Q483-29 369-29Q240-29 158 58.5Q76 146 76 283Q76 479 216.5 593Q357 707 605 707H835L844 756Q846 764 847 773.5Q848 783 848 803Q848 892 782.5 941.5Q717 991 599 991Q518 991 433 968Q348 945 258 899L287 1069Q381 1108 470.5 1127.5Q560 1147 644 1147Q822 1147 915 1061Q1008 975 1008 811Q1008 778 1003.5 733.5Q999 689 990 639ZM811 563H645Q442 563 344.5 502.5Q247 442 247 315Q247 227 296.5 177Q346 127 435 127Q570 127 670.5 234.5Q771 342 804 522Z"/><path transform="translate(80.368,132) scale(0.00928,-0.00928)" d="M338 1556H503L230 0H65Z"/><path transform="translate(85.118,132) scale(0.00928,-0.00928)" d="M338 1556H503L230 0H65Z"/><path transform="translate(89.868,132) scale(0.00928,-0.00928)" d="M886 660Q889 676 890.5 693Q892 710 892 727Q892 849 827.5 920Q763 991 652 991Q529 991 434.5 904.5Q340 818 292 659ZM1030 516H260Q255 478 253 456Q251 434 251 418Q251 279 328 203Q405 127 545 127Q653 127 749.5 154Q846 181 929 233L897 51Q808 11 713-9Q618-29 520-29Q310-29 197.5 82.5Q85 194 85 399Q85 574 141 724.5Q197 875 306 993Q376 1067 473 1107Q570 1147 679 1147Q850 1147 951 1033Q1052 919 1052 727Q1052 681 1046.5 628.5Q1041 576 1030 516Z"/><path transform="translate(100.388,132) scale(0.00928,-0.00928)" d="M338 1556H503L463 1323H297ZM262 1120H428L230 0H65Z"/><path transform="translate(105.138,132) scale(0.00928,-0.00928)" d="M1027 676 909 0H742L860 669Q868 716 873 752Q878 788 878 809Q878 893 830 940Q782 987 697 987Q563 987 467 888.5Q371 790 341 621L230 0H65L260 1120H426L392 944Q462 1041 559 1094Q656 1147 763 1147Q896 1147 969.5 1067Q1043 987 1043 842Q1043 806 1039 765Q1035 724 1027 676Z"/></g><g fill="#f18423"><path transform="translate(115.974,132) scale(0.00928,-0.00928)" d="M188 387H512V0H188Z"/></g></svg></div>
-    <div class="intro-icon"><svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="36" cy="40" r="28" stroke="rgba(255,255,255,0.12)" stroke-width="3" stroke-dasharray="4 4"/>
-      <path d="M12 52 A28 28 0 0 1 60 52" stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round" fill="none"/>
-      <path d="M12 52 A28 28 0 0 1 52.5 18" stroke="#f18423" stroke-width="6" stroke-linecap="round" fill="none"/>
-      <circle cx="36" cy="40" r="5" fill="#f18423"/>
-      <line x1="36" y1="40" x2="50" y2="22" stroke="#f18423" stroke-width="2.5" stroke-linecap="round"/>
-      <circle cx="36" cy="40" r="2.5" fill="#fff"/>
-      <text x="36" y="62" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Arial Narrow,Arial,sans-serif" font-weight="700" letter-spacing="0.08em">SCORE</text>
-    </svg></div>
-    <h1>KI-Reifegrad<span>-Score</span></h1>
-    <p class="intro-tagline">Ehrlich messen. Klar entscheiden.</p>
-    <p class="intro-desc">
-      In ca. 10 Minuten erhalten Sie eine fundierte Standortbestimmung Ihrer KI-Reife
-      über 7 Dimensionen mit 28 Fragen. Sie bekommen einen Score von 0–100,
-      ein visuelles Reifegradprofil und konkrete Handlungsempfehlungen.
-    </p>
-    <div class="dim-pills" id="dim-pills"></div>
-    <input type="text" id="company-input" class="intro-input" placeholder="Unternehmen / Kunde (optional)">
-    <br>
-    <button class="btn btn-primary" onclick="startAssessment()" style="min-width:240px;">Assessment starten →</button>
-    <div class="intro-footer">Ein Service von TRUST · Thomas Brandenburger · v1.0 vom 18.05.2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════ ASSESSMENT ═══════════════ -->
-<div id="screen-assess" class="screen assess-screen">
-  <div class="assess-header">
-    <div class="assess-header-inner">
-      <div class="assess-brand">
-        <div class="logo-header"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 150" role="img" aria-label="TRUST"><g fill="#00305b"><path transform="translate(20,78) scale(0.02832,-0.02832)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/><path transform="translate(57.599,78) scale(0.02832,-0.02832)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/><path transform="translate(99.785,78) scale(0.02832,-0.02832)" d="M169 1493H516V598Q516 413 570.5 333.5Q625 254 748 254Q872 254 926.5 333.5Q981 413 981 598V1493H1328V598Q1328 281 1184.5 126Q1041-29 748-29Q455-29 312 126Q169 281 169 598Z"/><path transform="translate(144.152,78) scale(0.02832,-0.02832)" d="M1104 1446V1130Q994 1185 888.5 1213Q783 1241 689 1241Q565 1241 505.5 1203Q446 1165 446 1085Q446 1025 486 991.5Q526 958 632 934L779 901Q1004 851 1098 749Q1192 647 1192 459Q1192 212 1060.5 91.5Q929-29 658-29Q530-29 401.5-2Q273 25 144 78V403Q273 327 393 288.5Q513 250 625 250Q738 250 798.5 292Q859 334 859 412Q859 482 818 520Q777 558 654 588L520 621Q319 669 225.5 774Q132 879 132 1057Q132 1280 262 1400Q392 1520 634 1520Q745 1520 862 1501.5Q979 1483 1104 1446Z"/><path transform="translate(183.733,78) scale(0.02832,-0.02832)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/></g><g fill="#54595f"><path transform="translate(20,104) scale(0.00732,-0.00732)" d="M169 1493H516V598Q516 413 570.5 333.5Q625 254 748 254Q872 254 926.5 333.5Q981 413 981 598V1493H1328V598Q1328 281 1184.5 126Q1041-29 748-29Q455-29 312 126Q169 281 169 598Z"/><path transform="translate(34.457,104) scale(0.00732,-0.00732)" d="M169 1493H556L1045 469V1493H1373V0H986L498 1024V0H169Z"/><path transform="translate(49.251,104) scale(0.00732,-0.00732)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/><path transform="translate(61.958,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(74.679,104) scale(0.00732,-0.00732)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/><path transform="translate(88.572,104) scale(0.00732,-0.00732)" d="M169 1493H556L1045 469V1493H1373V0H986L498 1024V0H169Z"/><path transform="translate(103.366,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(116.087,104) scale(0.00732,-0.00732)" d="M169 1493H516V924H1027V1493H1373V0H1027V633H516V0H169Z"/><path transform="translate(130.881,104) scale(0.00732,-0.00732)" d="M169 1493H610L916 694L1224 1493H1664V0H1336V1092L1027 287H807L498 1092V0H169Z"/><path transform="translate(147.813,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(160.535,104) scale(0.00732,-0.00732)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/></g><g fill="#54595f"><path transform="translate(20,132) scale(0.00928,-0.00928)" d="M311 1493H556L927 213L1152 1493H1329L1067 0H822L452 1288L227 0H50Z"/><path transform="translate(32.784,132) scale(0.00928,-0.00928)" d="M338 1556H503L463 1323H297ZM262 1120H428L230 0H65Z"/><path transform="translate(37.534,132) scale(0.00928,-0.00928)" d="M988 1077 955 895Q896 943 828.5 967Q761 991 689 991Q610 991 538.5 960Q467 929 418 872Q341 785 298.5 668Q256 551 256 426Q256 275 324 201Q392 127 531 127Q599 127 676 150Q753 173 837 219L806 37Q734 4 657.5-12.5Q581-29 501-29Q301-29 193 82.5Q85 194 85 401Q85 575 141 721.5Q197 868 308 985Q383 1065 485 1106Q587 1147 707 1147Q778 1147 847 1129.5Q916 1112 988 1077Z"/><path transform="translate(46.932,132) scale(0.00928,-0.00928)" d="M1027 676 909 0H742L860 669Q868 716 873 752Q878 788 878 809Q878 893 830 940Q782 987 697 987Q563 987 465.5 887Q368 787 339 621L230 0H65L338 1556H503L396 944Q459 1038 557 1092.5Q655 1147 763 1147Q896 1147 969.5 1067Q1043 987 1043 842Q1043 806 1039 765Q1035 724 1027 676Z"/><path transform="translate(57.768,132) scale(0.00928,-0.00928)" d="M779 1120 754 977H424L317 369Q311 335 308.5 312Q306 289 306 276Q306 212 340.5 183Q375 154 452 154H619L591 0H433Q285 0 212.5 64Q140 128 140 258Q140 281 143 308.5Q146 336 151 369L258 977H118L144 1120H282L338 1438H503L448 1120Z"/><path transform="translate(69.894,132) scale(0.00928,-0.00928)" d="M990 639 878 0H712L742 170Q670 70 576.5 20.5Q483-29 369-29Q240-29 158 58.5Q76 146 76 283Q76 479 216.5 593Q357 707 605 707H835L844 756Q846 764 847 773.5Q848 783 848 803Q848 892 782.5 941.5Q717 991 599 991Q518 991 433 968Q348 945 258 899L287 1069Q381 1108 470.5 1127.5Q560 1147 644 1147Q822 1147 915 1061Q1008 975 1008 811Q1008 778 1003.5 733.5Q999 689 990 639ZM811 563H645Q442 563 344.5 502.5Q247 442 247 315Q247 227 296.5 177Q346 127 435 127Q570 127 670.5 234.5Q771 342 804 522Z"/><path transform="translate(80.368,132) scale(0.00928,-0.00928)" d="M338 1556H503L230 0H65Z"/><path transform="translate(85.118,132) scale(0.00928,-0.00928)" d="M338 1556H503L230 0H65Z"/><path transform="translate(89.868,132) scale(0.00928,-0.00928)" d="M886 660Q889 676 890.5 693Q892 710 892 727Q892 849 827.5 920Q763 991 652 991Q529 991 434.5 904.5Q340 818 292 659ZM1030 516H260Q255 478 253 456Q251 434 251 418Q251 279 328 203Q405 127 545 127Q653 127 749.5 154Q846 181 929 233L897 51Q808 11 713-9Q618-29 520-29Q310-29 197.5 82.5Q85 194 85 399Q85 574 141 724.5Q197 875 306 993Q376 1067 473 1107Q570 1147 679 1147Q850 1147 951 1033Q1052 919 1052 727Q1052 681 1046.5 628.5Q1041 576 1030 516Z"/><path transform="translate(100.388,132) scale(0.00928,-0.00928)" d="M338 1556H503L463 1323H297ZM262 1120H428L230 0H65Z"/><path transform="translate(105.138,132) scale(0.00928,-0.00928)" d="M1027 676 909 0H742L860 669Q868 716 873 752Q878 788 878 809Q878 893 830 940Q782 987 697 987Q563 987 467 888.5Q371 790 341 621L230 0H65L260 1120H426L392 944Q462 1041 559 1094Q656 1147 763 1147Q896 1147 969.5 1067Q1043 987 1043 842Q1043 806 1039 765Q1035 724 1027 676Z"/></g><g fill="#f18423"><path transform="translate(115.974,132) scale(0.00928,-0.00928)" d="M188 387H512V0H188Z"/></g></svg></div>
-        <span id="q-counter" style="font-size:0.85rem;color:var(--color-gray);">Frage 1 von 28</span>
-      </div>
-      <div class="progress-meta">
-        <span></span>
-        <span class="progress-pct" id="progress-pct">0%</span>
-      </div>
-      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      <div class="dim-dots" id="dim-dots"></div>
+  <!-- ══════ HEADER ══════ -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="#" class="brand-logo">
+        <img src="./bilder/UI-Logo-Claim-2fbg.png" alt="UnternehmerImpulse by Thomas Brandenburger">
+      </a>
+      <a href="#reservierung" class="btn btn-primary">Unverbindlich Platz reservieren</a>
     </div>
-  </div>
-  <div class="assess-body" id="assess-body">
-    <div class="dim-header">
-      <div class="dim-icon" id="dim-icon"></div>
-      <div class="dim-name" id="dim-name"></div>
-      <div class="dim-leitfrage" id="dim-leitfrage"></div>
+  </header>
+
+  <!-- ══════ HERO ══════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">INQA-gefördertes Projekt · Exklusiv für TRUST-Unternehmergruppen-Mitglieder</span>
+          <h1>KI im Unternehmen wirksam verankern</h1>
+          <p class="hero-text">Ein gefördertes 6-Monats-Projekt für Geschäftsführer und ausgewählte Mitarbeitende, die KI sicher, strukturiert und mit echtem Nutzen in den Arbeitsalltag integrieren wollen.</p>
+          <div class="hero-highlights">
+            <span>✓ Klare KI-Leitlinien statt Schatten-KI</span>
+            <span>✓ Priorisierte Use-Case-Roadmap statt Wildwuchs</span>
+            <span>✓ Umgesetzte Anwendungsfälle statt Spielerei</span>
+            <span>✓ Gemeinsame Use-Case-Bibliothek statt Insellösungen</span>
+          </div>
+          <div class="hero-actions">
+            <a href="#reservierung" class="btn btn-primary btn-large">Unverbindlich Platz reservieren →</a>
+            <a href="#reservierung" class="btn btn-secondary btn-large">Klärungsgespräch vereinbaren</a>
+          </div>
+          <div class="hero-note">
+            <strong>Projektwert: 14.400&nbsp;€</strong> — Mit möglicher INQA-Förderung beträgt der Eigenanteil nur <strong>2.880&nbsp;€</strong>.<br>
+            Geplanter Start: <strong>ab Mai 2026</strong> · Erster Schritt: <strong>Gemeinsame INQA-Prüfung</strong>
+          </div>
+        </div>
+        <div>
+          <img src="./bilder/headerbild.png" alt="KI im Unternehmen – Team-Workshop" style="width: 100%; border-radius: var(--radius-lg); margin-bottom: 1.25rem; box-shadow: var(--shadow-soft);">
+          <div class="hero-card">
+          <h2>Worum es konkret geht</h2>
+          <ul>
+            <li><strong>Sicherheit</strong> durch klare Leitlinien und Spielregeln</li>
+            <li>Ein offizieller <strong>KI-Tool-Rahmen</strong> für dein Unternehmen</li>
+            <li>Eine umfassende <strong>Use-Case-Roadmap</strong> – priorisiert nach Nutzen</li>
+            <li>Erste <strong>praktische Umsetzung</strong> im Arbeitsalltag</li>
+            <li>Aufbau einer gemeinsamen <strong>Use-Case-Bibliothek</strong></li>
+          </ul>
+          <div class="hero-card-meta">
+            <strong>Rahmen:</strong> 6 Monate · <strong>Teilnehmer:</strong> Geschäftsführung + Mitarbeitende · <strong>Start:</strong> geplant ab Mai 2026
+          </div>
+        </div>
+        </div>
+      </div>
     </div>
-    <div class="question-text" id="question-text"></div>
-    <div class="answer-list" id="answer-list"></div>
-  </div>
-  <div class="assess-nav">
-    <button class="btn btn-outline-dark" id="btn-back" onclick="goBack()">← Zurück</button>
-    <button class="btn btn-primary" id="btn-finish" onclick="showResults()" style="display:none;">Ergebnisse anzeigen →</button>
-  </div>
-</div>
+  </section>
 
-<!-- ═══════════════ RESULTS ═══════════════ -->
-<div id="screen-results" class="screen results-screen">
-  <div class="results-inner" id="results-inner"></div>
-</div>
+  <!-- ══════ AUSGANGSSITUATION ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Ausgangssituation</span>
+      <h2>Warum dieses Projekt jetzt wichtig ist</h2>
+      <p class="section-intro">In vielen Unternehmen wird KI bereits punktuell genutzt – oft jedoch ohne klare Regeln, ohne abgestimmte Tools und ohne gemeinsame Richtung. Dadurch entstehen Unsicherheiten und die Gefahr einer unkontrollierten Schatten-KI.</p>
+      <div class="card-grid three" style="margin-top: 1.5rem;">
+        <div class="info-card">
+          <h3>Welche Tools dürfen wir nutzen?</h3>
+          <p>Mitarbeitende experimentieren mit verschiedenen KI-Tools – ohne zu wissen, was offiziell erlaubt, sicher und sinnvoll ist.</p>
+        </div>
+        <div class="info-card">
+          <h3>Was ist datenschutzkonform?</h3>
+          <p>EU AI Act, DSGVO, Betriebsgeheimnisse – die rechtlichen Anforderungen sind komplex und kaum jemand hat den vollen Überblick.</p>
+        </div>
+        <div class="info-card">
+          <h3>Vom Ausprobieren zum Alltag?</h3>
+          <p>Einzelne Experimente gibt es bereits – aber wie wird daraus eine wirksame, dauerhafte Arbeitsweise im Team?</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<script>
-// ════════════════════════════════════════════
-// DATA MODEL
-// ════════════════════════════════════════════
-const DIMS = [
-  {
-    id:"strategie", name:"Geschäftsmodell & Strategie", icon:"🎯",
-    leitfrage:"Ist KI mit den Geschäftszielen verknüpft – oder läuft sie nebenher?",
-    questions:[
-      {q:"Wie ist KI in der Unternehmensstrategie verankert?", a:[
-        "KI wird nicht in der Strategie erwähnt",
-        "Es gibt erste Überlegungen, KI irgendwo einzusetzen",
-        "Es existiert eine formulierte KI-Strategie mit konkreten Zielen",
-        "KI ist fester Bestandteil der Geschäftsstrategie und treibt Innovationen",
-        "KI formt aktiv neue Geschäftsmodelle und Marktchancen"
-      ]},
-      {q:"Wie werden KI-Investitionen mit dem Geschäftserfolg verknüpft?", a:[
-        "Es gibt keinen erkennbaren Zusammenhang zwischen KI und Geschäftszielen",
-        "Einzelne Pilotprojekte werden gestartet, ohne klare ROI-Erwartung",
-        "KI-Projekte haben definierte Business Cases und messbare Ziele",
-        "KI-Investitionen werden regelmäßig an Geschäftsergebnissen gemessen",
-        "KI-ROI wird in Echtzeit getrackt und optimiert"
-      ]},
-      {q:"Wer treibt das Thema KI im Unternehmen?", a:[
-        "Niemand konkret – es passiert sporadisch",
-        "Einzelne Enthusiasten oder die IT-Abteilung",
-        "Es gibt eine beauftragte Person oder Gruppe mit klarem Mandat",
-        "Die Geschäftsführung treibt KI aktiv als strategisches Thema",
-        "KI-Verantwortung ist auf C-Level verankert mit eigenem Budget"
-      ]},
-      {q:"Wie wird KI bei Produkt- oder Serviceentwicklungen berücksichtigt?", a:[
-        "Gar nicht – Produkte werden ohne KI-Bezug entwickelt",
-        "Gelegentlich wird geprüft, ob KI irgendwo passen könnte",
-        "Bei neuen Produkten wird systematisch geprüft, ob KI Mehrwert liefert",
-        "KI ist integraler Bestandteil der Produktentwicklung",
-        "Neue Produkte und Services werden »KI-first« gedacht"
-      ]}
-    ]
-  },
-  {
-    id:"organisation", name:"Organisation & Prozesse", icon:"⚙️",
-    leitfrage:"Gibt es klare Zuständigkeiten – oder macht »jeder mal«?",
-    questions:[
-      {q:"Wie sind KI-Zuständigkeiten organisiert?", a:[
-        "Es gibt keine definierten Zuständigkeiten für KI",
-        "Einzelne Personen kümmern sich nebenbei um KI-Themen",
-        "Es gibt definierte Rollen und Verantwortlichkeiten für KI-Projekte",
-        "KI ist abteilungsübergreifend organisiert mit klaren Strukturen",
-        "KI ist zentraler Bestandteil der Organisationsstruktur mit eigenen Teams"
-      ]},
-      {q:"Wie werden KI-Projekte gesteuert und priorisiert?", a:[
-        "Es gibt kein Projektmanagement für KI-Vorhaben",
-        "Projekte entstehen ad hoc ohne klare Priorisierung",
-        "Es gibt ein Portfolio mit priorisierten KI-Projekten",
-        "KI-Projekte werden systematisch gesteuert mit Ressourcenplanung",
-        "Kontinuierliches KI-Programmmanagement mit agiler Anpassung"
-      ]},
-      {q:"Wie werden bestehende Prozesse durch KI verändert?", a:[
-        "Prozesse werden nicht hinsichtlich KI-Potenzial betrachtet",
-        "Einzelne Prozesse werden punktuell mit KI-Tools unterstützt",
-        "Kernprozesse werden systematisch auf KI-Potenzial analysiert",
-        "KI ist in wichtige Geschäftsprozesse integriert und optimiert sie",
-        "Prozesse werden kontinuierlich KI-gestützt weiterentwickelt"
-      ]},
-      {q:"Wie wird Wissen über KI-Projekte dokumentiert und geteilt?", a:[
-        "Es gibt keine Dokumentation von KI-Aktivitäten",
-        "Wissen bleibt bei einzelnen Personen – kein strukturiertes Teilen",
-        "Use Cases und Learnings werden dokumentiert und sind zugänglich",
-        "Es gibt ein zentrales Wissensmanagement für KI mit Best Practices",
-        "Automatisiertes Knowledge Management mit Lessons Learned"
-      ]}
-    ]
-  },
-  {
-    id:"menschen", name:"Menschen & Kultur", icon:"👥",
-    leitfrage:"Können und wollen die Mitarbeitenden mit KI arbeiten?",
-    questions:[
-      {q:"Wie ist das KI-Bewusstsein und die Akzeptanz bei den Mitarbeitenden?", a:[
-        "Kaum Bewusstsein – KI ist kein Thema im Arbeitsalltag",
-        "Einzelne Teams zeigen Interesse, die Mehrheit ist unbeteiligt",
-        "Breites Verständnis – KI wird als nützliches Werkzeug akzeptiert",
-        "Mitarbeitende treiben KI-Nutzung aktiv voran und verbessern Lösungen",
-        "KI-Kultur ist gelebter Alltag – Mitarbeitende innovieren eigenständig"
-      ]},
-      {q:"Welche KI-Schulungen und Weiterbildungen gibt es?", a:[
-        "Keine Schulungsangebote zu KI",
-        "Vereinzelte Workshops oder Vorträge für Interessierte",
-        "Strukturiertes Schulungsprogramm für verschiedene Zielgruppen",
-        "KI-Kompetenz ist Teil der Personalentwicklung mit individuellem Plan",
-        "Kontinuierliches Lernprogramm mit Zertifizierungen und Innovationslabs"
-      ]},
-      {q:"Wie wird KI-Wissen intern sichtbar gemacht?", a:[
-        "KI-Erfahrungen werden nicht geteilt",
-        "Informeller Austausch in einzelnen Teams",
-        "Regelmäßige Show-&-Tell-Formate oder Demos von KI-Anwendungen",
-        "Sichtbare Use Cases im Intranet, regelmäßige Retros und KI-Community",
-        "KI-Innovationstage, externe Sichtbarkeit, Mitarbeitende als KI-Botschafter"
-      ]},
-      {q:"Wie offen ist die Fehlerkultur bei KI-Experimenten?", a:[
-        "Fehler werden vermieden – lieber wird nichts ausprobiert",
-        "Einzelne dürfen experimentieren, aber Fehler sind unerwünscht",
-        "Es gibt eine offene Haltung: Experimente sind erlaubt und gewollt",
-        "Lernen aus Fehlern ist Methode – Retrospektiven finden regelmäßig statt",
-        "Fail-Fast-Kultur: schnelle Experimente, offenes Lernen, keine Schuldzuweisung"
-      ]}
-    ]
-  },
-  {
-    id:"technologie", name:"Technologie & Daten", icon:"💾",
-    leitfrage:"Tragen Plattformen und Datenqualität die KI verlässlich?",
-    questions:[
-      {q:"Wie ist die technische Infrastruktur für KI aufgestellt?", a:[
-        "Grundlegende IT – keine KI-spezifische Infrastruktur vorhanden",
-        "Erste KI-Tools im Einsatz, aber nicht integriert",
-        "KI-Plattformen sind beschafft und werden in mehreren Bereichen genutzt",
-        "Integrierte Technologieplattform mit strukturierter KI-Architektur",
-        "Führende Infrastruktur mit Echtzeitverarbeitung und Innovation"
-      ]},
-      {q:"Wie steht es um die Datenqualität und -verfügbarkeit?", a:[
-        "Daten liegen unstrukturiert in Silos – kein Überblick",
-        "Erste Dateninventuren wurden gemacht, Qualität ist unklar",
-        "Daten werden systematisch erfasst, bereinigt und sind für KI nutzbar",
-        "Strukturierte Datenstrategie mit Data Governance und Qualitätssicherung",
-        "Echtzeit-Datenplattform mit automatisierter Qualitätskontrolle"
-      ]},
-      {q:"Gibt es wiederholbare KI-Pipelines?", a:[
-        "Nein – alles wird manuell und einmalig gebaut",
-        "Erste Automatisierungen existieren, aber ohne Versionierung",
-        "Standardisierte Pipelines mit Protokollierung und Überwachung",
-        "Versionierte, automatisierte Pipelines mit Recovery-Plan",
-        "Vollautomatisierte MLOps-Pipelines mit Monitoring und Auto-Retraining"
-      ]},
-      {q:"Wie werden KI-Tools evaluiert und integriert?", a:[
-        "Keine systematische Evaluation – jeder nutzt eigene Tools",
-        "Einzelne Tools werden ad hoc getestet",
-        "Es gibt einen Evaluierungsprozess für neue KI-Tools",
-        "Tool-Landschaft ist strategisch geplant und wird zentral gesteuert",
-        "Kontinuierliche Evaluation mit automatisiertem Benchmarking"
-      ]}
-    ]
-  },
-  {
-    id:"prozesse_kunden", name:"Prozesse & Kunden", icon:"🤝",
-    leitfrage:"Spüren Kunden und Belegschaft den konkreten Nutzen?",
-    questions:[
-      {q:"Wie stark profitieren Kunden von Ihren KI-Aktivitäten?", a:[
-        "Kunden merken nichts von KI – kein sichtbarer Nutzen",
-        "Erste Verbesserungen in einzelnen Bereichen",
-        "KI verbessert spürbar die Kundeninteraktion in mehreren Touchpoints",
-        "Kunden erleben personalisierte, KI-gestützte Services",
-        "KI ermöglicht maßgeschneiderte Echtzeit-Kundenerlebnisse"
-      ]},
-      {q:"Wie wird der Nutzen von KI für interne Prozesse gemessen?", a:[
-        "Es wird nicht gemessen – KI-Nutzen ist Bauchgefühl",
-        "Einzelne Erfolgsgeschichten, aber keine systematische Messung",
-        "KPIs sind definiert: Zeitersparnis, Fehlerreduktion, Kosten",
-        "Regelmäßiges KI-Reporting mit Dashboards und Trendanalysen",
-        "Echtzeit-Monitoring mit automatischer Optimierung"
-      ]},
-      {q:"Wie viele KI-Use-Cases laufen im produktiven Regelbetrieb?", a:[
-        "Keine – nur Ideen oder abgebrochene Versuche",
-        "1–2 Use Cases im Pilotbetrieb, kein Regelbetrieb",
-        "3–5 Use Cases dokumentiert, mindestens 2 im Regelbetrieb",
-        "Mehr als 5 Use Cases im Regelbetrieb mit KPIs",
-        "Breites Portfolio an produktiven KI-Anwendungen"
-      ]},
-      {q:"Wie werden Prozessverbesserungen durch KI dokumentiert?", a:[
-        "Gar nicht – niemand hält fest, was KI verändert hat",
-        "Anekdotisch – Erfolge werden mündlich weitergegeben",
-        "Use Cases sind dokumentiert mit Vorher/Nachher-Vergleich",
-        "Zentrale Dokumentation mit Impact-Messung und Lessons Learned",
-        "Automatisierte Erfassung von Prozessverbesserungen mit Benchmarks"
-      ]}
-    ]
-  },
-  {
-    id:"recht_ethik", name:"Recht & Ethik", icon:"⚖️",
-    leitfrage:"Sind Leitplanken gesetzt – oder fliegt das Unternehmen blind?",
-    questions:[
-      {q:"Gibt es Richtlinien für den Einsatz von KI im Unternehmen?", a:[
-        "Keine – niemand hat sich mit dem Thema beschäftigt",
-        "Erste Überlegungen zu Richtlinien, aber nichts Dokumentiertes",
-        "Eine KI-Nutzungsrichtlinie existiert und ist allen bekannt",
-        "Umfassende KI-Governance mit regelmäßiger Überprüfung",
-        "Branchenführende KI-Ethik-Standards, extern vorbildlich"
-      ]},
-      {q:"Wie ist die Rollen- und Zugriffssteuerung (RBAC) für KI-Systeme geregelt?", a:[
-        "Keine spezifische Zugriffskontrolle für KI-Tools",
-        "Grundlegende Zugriffsbeschränkungen existieren",
-        "Rollen-Matrix definiert: Leser, Bearbeiter, Freigeber",
-        "RBAC mit Audit-Log und Vier-Augen-Prinzip bei kritischen Schritten",
-        "Zero-Trust-Ansatz mit automatisierter Compliance-Überwachung"
-      ]},
-      {q:"Wie werden ethische Risiken von KI-Anwendungen bewertet?", a:[
-        "Ethische Aspekte werden nicht berücksichtigt",
-        "Einzelne Bedenken werden bei Bedarf diskutiert",
-        "Es gibt einen Prozess zur ethischen Bewertung neuer KI-Anwendungen",
-        "Ethik-Board oder verantwortliche Person prüft alle KI-Projekte",
-        "Systematische KI-Ethik-Bewertung mit Impact Assessment"
-      ]},
-      {q:"Wie wird mit KI-generierten Ergebnissen umgegangen?", a:[
-        "Ergebnisse werden ungeprüft übernommen",
-        "Einzelne prüfen KI-Ergebnisse nach eigenem Ermessen",
-        "Es gibt klare Regeln, wann KI-Ergebnisse geprüft werden müssen",
-        "Qualitätssicherung ist in alle KI-Workflows integriert",
-        "Automatisierte Qualitätskontrolle mit menschlicher Eskalation"
-      ]}
-    ]
-  },
-  {
-    id:"datenschutz", name:"Datenschutz & Compliance", icon:"🔒",
-    leitfrage:"Sind DSGVO und interne Richtlinien umgesetzt und prüfbar?",
-    questions:[
-      {q:"Wie ist der DSGVO-Status bei KI-Anwendungen?", a:[
-        "DSGVO wird im KI-Kontext nicht berücksichtigt",
-        "Erste Auseinandersetzung mit Datenschutzanforderungen",
-        "Datenschutz-Folgenabschätzung für KI-Tools durchgeführt",
-        "Vollständige DSGVO-Compliance für alle KI-Anwendungen",
-        "Proaktive Standards, die über gesetzliche Anforderungen hinausgehen"
-      ]},
-      {q:"Sind die eingesetzten KI-Tools datenschutzrechtlich geprüft?", a:[
-        "Nein – Mitarbeitende nutzen Tools ohne Prüfung",
-        "Einzelne Tools wurden grob geprüft, ohne Dokumentation",
-        "Top-3-Tools sind DSGVO-geprüft und formal freigegeben",
-        "Alle KI-Tools durchlaufen einen Freigabeprozess vor Einsatz",
-        "Automatisierte Compliance-Prüfung bei jeder Tool-Einführung"
-      ]},
-      {q:"Wie werden personenbezogene Daten in KI-Systemen geschützt?", a:[
-        "Kein Überblick, welche Daten in KI-Systeme fließen",
-        "Grundlegendes Bewusstsein, aber keine technischen Schutzmaßnahmen",
-        "Datenklassifikation existiert, Zugriffe sind eingeschränkt",
-        "Technische und organisatorische Maßnahmen (TOM) sind dokumentiert",
-        "Verschlüsselung, Anonymisierung und Data-Lineage vollständig implementiert"
-      ]},
-      {q:"Gibt es einen Notfallplan für KI-Vorfälle?", a:[
-        "Nein – KI-spezifische Vorfälle wurden nie bedacht",
-        "Allgemeiner IT-Notfallplan existiert, aber ohne KI-Bezug",
-        "KI-spezifische Risiken sind identifiziert, erste Maßnahmen definiert",
-        "Umfassender Incident-Response-Plan für KI-Vorfälle vorhanden",
-        "Regelmäßig getesteter Notfallplan mit automatisierter Erkennung"
-      ]}
-    ]
-  }
-];
+  <!-- ══════ ERGEBNISSE ══════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-tag">Ergebnisse</span>
+      <h2>Was dein Unternehmen nach 6 Monaten konkret hat</h2>
+      <p class="section-intro">Das Projekt unterstützt dein Unternehmen dabei, KI nicht nur auszuprobieren, sondern als sichere und wirksame Arbeitsweise dauerhaft zu verankern.</p>
+      <div class="card-grid three" style="margin-top: 1.5rem;">
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Klare Leitlinien</h3>
+          <p>Verbindliche Spielregeln für den sicheren Umgang mit KI – abgestimmt auf die Anforderungen deines Unternehmens.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <h3>Offizieller Tool-Rahmen</h3>
+          <p>Klarheit darüber, welche KI-Tools offiziell genutzt werden dürfen – datenschutzkonform und praxistauglich.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+          <h3>Use-Case-Roadmap</h3>
+          <p>Eine umfassende Übersicht möglicher Anwendungsfälle – priorisiert nach Nutzen und Machbarkeit für dein Unternehmen.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8l-4 4-4-4"/><path d="M12 12v6"/></svg></div>
+          <h3>Umgesetzte Anwendungsfälle</h3>
+          <p>Erste priorisierte Use Cases werden praktisch umgesetzt – mit echtem Praxisbezug und messbarem Ergebnis.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <h3>Erfahrung im Team</h3>
+          <p>Mitarbeitende lernen durch Anwendung und Austausch mit anderen Unternehmen – und bauen echte KI-Kompetenz auf.</p>
+        </div>
+        <div class="info-card">
+          <div class="nutzen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+          <h3>Tragfähige Grundlage</h3>
+          <p>Standards, Verantwortlichkeiten und eine Roadmap für die weitere Entwicklung – damit aus ersten Erfolgen Dauerwirkung wird.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-const STUFEN = ["Initiierung","Entwicklung","Anwendung","Integration","Optimierung"];
+  <!-- ══════ USE-CASE-BIBLIOTHEK ══════ -->
+  <section class="section usp-section">
+    <div class="container">
+      <span class="section-tag" style="color: #ffd5b1;">Alleinstellungsmerkmal</span>
+      <h2 style="color: var(--color-white);">Die gemeinsame Use-Case-Bibliothek</h2>
+      <p class="section-intro" style="color: rgba(255,255,255,0.75);">Dieses Projekt geht über einzelne Unternehmen hinaus: Alle Teilnehmer bauen gemeinsam eine wachsende Sammlung von KI-Anwendungsfällen auf, auf die jeder zugreifen kann.</p>
+      <div class="usp-grid" style="margin-top: 1.5rem;">
+        <div class="usp-features">
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+            <div><h4>Branchenübergreifende Inspiration</h4><p>Anwendungsfälle aus verschiedenen Unternehmen – oft sind die besten Ideen übertragbar.</p></div>
+          </div>
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+            <div><h4>Priorisiert und dokumentiert</h4><p>Jeder Use Case mit Bewertung, Erfahrungsbericht und Umsetzungshinweisen.</p></div>
+          </div>
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></div>
+            <div><h4>Dauerhafter Zugang</h4><p>Die Bibliothek wächst über das Projekt hinaus und bleibt allen Teilnehmern zugänglich.</p></div>
+          </div>
+          <div class="usp-feature">
+            <div class="usp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+            <div><h4>Voneinander lernen</h4><p>Regelmäßiger Austausch zu Erfahrungen, Stolpersteinen und Erfolgen.</p></div>
+          </div>
+        </div>
+        <div class="usp-visual">
+          <h3>Beispiele aus der Bibliothek</h3>
+          <div class="usp-visual-item"><span class="dot dot-green"></span> Angebotserstellung mit KI-Unterstützung</div>
+          <div class="usp-visual-item"><span class="dot dot-green"></span> Meeting-Protokolle automatisch aufbereiten</div>
+          <div class="usp-visual-item"><span class="dot dot-yellow"></span> Kundenkommunikation beschleunigen</div>
+          <div class="usp-visual-item"><span class="dot dot-yellow"></span> Wissensmanagement im Team aufbauen</div>
+          <div class="usp-visual-item"><span class="dot dot-blue"></span> Datenanalyse für Geschäftsentscheidungen</div>
+          <div class="usp-visual-item"><span class="dot dot-blue"></span> Onboarding neuer Mitarbeiter optimieren</div>
+          <div class="usp-visual-item" style="opacity:0.5; font-style:italic;">+ weitere aus deinem Unternehmen …</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-const EMPFEHLUNGEN = {
-  strategie:[
-    "Verknüpfen Sie KI mit konkreten Geschäftszielen. Starten Sie mit einem Strategieworkshop.",
-    "Formulieren Sie eine KI-Strategie mit messbaren Zielen und kommunizieren Sie diese intern.",
-    "Verankern Sie KI-Verantwortung auf Führungsebene und messen Sie den ROI systematisch.",
-    "Nutzen Sie KI zur Erschließung neuer Geschäftsfelder und überprüfen Sie die Strategie quartalsweise.",
-    "Teilen Sie Ihre Best Practices extern und entwickeln Sie KI-first-Geschäftsmodelle."
-  ],
-  organisation:[
-    "Definieren Sie erste Zuständigkeiten – auch eine einzelne Person ist ein Anfang.",
-    "Bauen Sie ein kleines KI-Kompetenzteam (5–6 Personen) aus verschiedenen Abteilungen auf.",
-    "Implementieren Sie ein strukturiertes Projektportfolio mit klarer Priorisierung.",
-    "Verankern Sie KI abteilungsübergreifend und schaffen Sie ein zentrales Wissensmanagement.",
-    "Optimieren Sie das KI-Programmmanagement kontinuierlich und automatisieren Sie Routinen."
-  ],
-  menschen:[
-    "Starten Sie mit niedrigschwelliger Sensibilisierung – z.\u00a0B. Lunch & Learn.",
-    "Bieten Sie strukturierte Schulungen an und nehmen Sie auch Skeptiker mit auf die Reise.",
-    "Machen Sie KI-Kompetenz zum Teil der Personalentwicklung mit individuellen Lernpfaden.",
-    "Fördern Sie interdisziplinäre KI-Teams und etablieren Sie regelmäßige Show-&-Tell-Formate.",
-    "Positionieren Sie sich als attraktiver Arbeitgeber für KI-Talente."
-  ],
-  technologie:[
-    "Verschaffen Sie sich einen Überblick über die Datenlandschaft und IT-Infrastruktur.",
-    "Evaluieren Sie gezielt KI-Plattformen und starten Sie mit strukturierter Datenhygiene.",
-    "Bauen Sie wiederholbare Pipelines mit Protokollierung und Versionierung auf.",
-    "Entwickeln Sie eine integrierte Technologie-Architektur mit Data Governance.",
-    "Investieren Sie in Echtzeit-Datenplattformen und automatisiertes MLOps."
-  ],
-  prozesse_kunden:[
-    "Identifizieren Sie 2–3 Prozesse, bei denen KI den größten Nutzen stiften könnte.",
-    "Starten Sie Pilotprojekte mit klaren KPIs: Zeitersparnis, Fehlerreduktion, Kosten.",
-    "Dokumentieren Sie Use Cases mit Vorher/Nachher-Vergleich und machen Sie den Nutzen sichtbar.",
-    "Skalieren Sie erfolgreiche Use Cases und messen Sie den Kundenimpact systematisch.",
-    "Automatisieren Sie die Erfassung von Prozessverbesserungen."
-  ],
-  recht_ethik:[
-    "Setzen Sie sich erstmals strukturiert mit KI-Richtlinien auseinander.",
-    "Erstellen Sie eine KI-Nutzungsrichtlinie und kommunizieren Sie diese.",
-    "Implementieren Sie RBAC mit Audit-Log und einen Prüfprozess für KI-Anwendungen.",
-    "Etablieren Sie ein KI-Ethik-Board und führen Sie regelmäßige Compliance-Reviews durch.",
-    "Werden Sie zum Branchenvorbild für verantwortungsvolle KI-Nutzung."
-  ],
-  datenschutz:[
-    "Verschaffen Sie sich einen Überblick: Welche KI-Tools werden genutzt, welche Daten fließen?",
-    "Führen Sie eine Datenschutz-Folgenabschätzung für die wichtigsten KI-Tools durch.",
-    "Prüfen und dokumentieren Sie alle KI-Tools auf DSGVO-Konformität.",
-    "Implementieren Sie umfassende technische und organisatorische Schutzmaßnahmen.",
-    "Gehen Sie über gesetzliche Anforderungen hinaus – proaktive Standards."
-  ]
-};
+  <!-- ══════ ABLAUF ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Ablauf</span>
+      <h2>So läuft das Projekt ab</h2>
+      <p class="section-intro">Vier Phasen über sechs Monate – von der Standortbestimmung bis zur dauerhaften Verankerung.</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-number">1</div>
+          <div class="timeline-content">
+            <h3>Motivation &amp; Standortbestimmung</h3>
+            <p>Möglichkeiten aufzeigen und Begeisterung für KI entfachen. Analyse der Ausgangssituation, Klärung der Engpässe und Erarbeitung der Use-Case-Roadmap mit allen relevanten Anwendungsfällen.</p>
+            <span class="phase-badge">Monat 1–2</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">2</div>
+          <div class="timeline-content">
+            <h3>Orientierung &amp; Sicherheit</h3>
+            <p>Sicherheit im Umgang mit KI schaffen – Datenschutz, EU AI Act, sinnvolle Nutzung und klare Spielregeln für das Unternehmen.</p>
+            <span class="phase-badge">Monat 2–3</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">3</div>
+          <div class="timeline-content">
+            <h3>Umsetzung im Alltag</h3>
+            <p>Priorisierte Anwendungsfälle werden praktisch umgesetzt – an echten Aufgaben, mit realen Ergebnissen im Tagesgeschäft.</p>
+            <span class="phase-badge">Monat 3–5</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">4</div>
+          <div class="timeline-content">
+            <h3>Integration &amp; Verankerung</h3>
+            <p>Standards, Verantwortlichkeiten und die weitere Roadmap werden festgelegt. Die Use-Case-Bibliothek wird finalisiert.</p>
+            <span class="phase-badge">Monat 5–6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-// ════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════
-let curDim = 0, curQ = 0;
-let answers = {};
-const TOTAL_Q = DIMS.reduce((s,d) => s + d.questions.length, 0);
+  <!-- ══════ PROJEKTRAHMEN ══════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-tag">Projektrahmen</span>
+      <h2>Praxisnah, verbindlich und effizient</h2>
+      <div class="split-grid" style="margin-top: 1.5rem;">
+        <div>
+          <p>Das Projekt verbindet gezielte Präsenz-Workshops im Unternehmen mit Online-Live-Modulen sowie regelmäßigem Austausch über erfolgreiche Anwendungen für alle beteiligten Firmen.</p>
+          <p>So entsteht einerseits genug Raum für die konkrete Umsetzung in deinem eigenen Unternehmenskontext, andererseits maximale Effizienz durch die gemeinsamen Lernerfahrungen und die wachsende Use-Case-Bibliothek.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Enthalten sind unter anderem</h3>
+          <ul>
+            <li>Mehrere Präsenzworkshops je Unternehmen</li>
+            <li>Interaktive Live-Module (online)</li>
+            <li>Live-Q&amp;A zur Lösung konkreter Fragen</li>
+            <li>Moderierter Austausch zwischen den Unternehmen</li>
+            <li>Aufbau der gemeinsamen Use-Case-Bibliothek</li>
+            <li>Analyse, Transfer und Erfolgskontrolle</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
-// ════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════
-(function init() {
-  const pills = document.getElementById("dim-pills");
-  DIMS.forEach(d => {
-    const sp = document.createElement("span");
-    sp.className = "dim-pill";
-    sp.textContent = d.icon + " " + d.name;
-    pills.appendChild(sp);
-  });
-})();
+  <!-- ══════ INVESTITION ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Investition</span>
+      <h2>Investition und Förderung</h2>
+      <div class="price-box">
+        <div class="price-main">
+          <div class="price-label">Projektwert</div>
+          <div class="price-value">14.400 €</div>
+        </div>
+        <div class="price-main">
+          <div class="price-label">Möglicher Eigenanteil mit INQA-Förderung</div>
+          <div class="price-value accent">2.880 €</div>
+        </div>
+      </div>
+      <p class="small-note">Ich unterstütze bei der Beantragung der Fördermittel und übernehme das komplette Reporting, damit der organisatorische Aufwand für dein Unternehmen möglichst gering bleibt.</p>
 
-// ════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById("screen-" + id).classList.add("active");
-  window.scrollTo(0, 0);
-}
+      <div class="inqa-process">
+        <h3 style="margin: 0 0 0.4rem; font-size: 1.3rem; color: var(--color-navy);">Der INQA-Coaching-Prozess im Überblick</h3>
+        <p style="color: var(--color-gray); font-size: 1rem; margin: 0 0 1.5rem;">Das Förderprogramm INQA-Coaching folgt einem klar definierten Ablauf in drei Schritten:</p>
+        <div class="inqa-step">
+          <div class="inqa-step-num">1</div>
+          <div>
+            <h4>Kostenlose Erstberatung bei der INQA-Beratungsstelle</h4>
+            <p>In einem unkomplizierten Gespräch mit der regionalen INQA-Beratungsstelle wird geprüft, ob dein Unternehmen die Fördervoraussetzungen erfüllt. Gemeinsam definieren wir das Coaching-Ziel. Sind alle Bedingungen erfüllt, erhält dein Unternehmen einen <strong>INQA-Coaching-Scheck</strong> – das ist der offizielle Startschuss.</p>
+            <span class="inqa-badge">Ich begleite dich durch diesen Schritt</span>
+          </div>
+        </div>
+        <div class="inqa-connector"></div>
+        <div class="inqa-step">
+          <div class="inqa-step-num">2</div>
+          <div>
+            <h4>Das Projekt – 6 Monate gemeinsam arbeiten</h4>
+            <p>Den INQA-Coaching-Scheck löst du bei mir als autorisiertem INQA-Coach ein. Dann arbeiten wir über 6 Monate an den vier Projektphasen: Standortbestimmung, Orientierung, Umsetzung und Verankerung. Deine Mitarbeitenden werden aktiv einbezogen und arbeiten an den Lösungen mit.</p>
+          </div>
+        </div>
+        <div class="inqa-connector"></div>
+        <div class="inqa-step">
+          <div class="inqa-step-num">3</div>
+          <div>
+            <h4>Abschlussgespräch und Erstattung</h4>
+            <p>Ca. 3–6 Monate nach dem Projektabschluss wertet die INQA-Beratungsstelle das Coaching mit dir aus. Für den dafür notwendigen Projektbericht stelle ich die Texte und Inhalte zur Verfügung – du übernimmst sie in das INQA-Berichtsformular. Bei erfolgreicher Auswertung werden die Fördermittel (80 % des Projektwerts) erstattet.</p>
+            <span class="inqa-badge">Ich begleite dich auch durch diesen Schritt</span>
+          </div>
+        </div>
+      </div>
 
-function startAssessment() {
-  curDim = 0; curQ = 0; answers = {};
-  showScreen("assess");
-  renderAssessment();
-}
+      <div class="hint-box orange">
+        <strong>Hinweis zur Finanzierung</strong>
+        <p>Dein Unternehmen geht bei den Projektkosten zunächst in Vorleistung. Die Abrechnung erfolgt während bzw. nach Abschluss des Projekts. Die INQA-Fördermittel (80 % des Projektwerts) werden nach der Auswertung durch die INQA-Beratungsstelle erstattet – erfahrungsgemäß 3–6 Monate nach Projektende. Nach Erstattung der Fördermittel beträgt dein Eigenanteil 2.880 €.</p>
+      </div>
+      <div class="hint-box green">
+        <strong>Dein Einstieg ist unverbindlich</strong>
+        <p>Die Platzreservierung hier auf der Seite ist kostenfrei und ohne Verpflichtung. Im nächsten Schritt prüfen wir gemeinsam mit der INQA-Beratungsstelle, ob die Fördervoraussetzungen erfüllt sind. Erst nach Erhalt des INQA-Coaching-Schecks entscheidest du verbindlich, ob das Projekt startet.</p>
+      </div>
+    </div>
+  </section>
 
-function renderAssessment() {
-  const dim = DIMS[curDim];
-  const q = dim.questions[curQ];
-  const key = curDim + "-" + curQ;
-  const qNum = DIMS.slice(0, curDim).reduce((s,d) => s + d.questions.length, 0) + curQ + 1;
-  const answered = Object.keys(answers).length;
-  const pct = Math.round((answered / TOTAL_Q) * 100);
+  <!-- ══════ SOCIAL PROOF ══════ -->
+  <section class="section">
+    <div class="container">
+      <span class="section-tag">Stimmen</span>
+      <h2>Was Unternehmer über die Zusammenarbeit sagen</h2>
+      <div class="testimonial-grid" style="margin-top: 1.5rem;">
+        <div class="testimonial-card">
+          <p class="testimonial-quote">„Die Strategieworkshops haben bei uns genau das gebracht, was im Alltag oft fehlt: Fokus. Wir haben die Verantwortlichen der Business Units so ausgerichtet, dass jeder Bereich sich auf die wirkungsvollsten Themen und den maximalen Kundennutzen konzentriert. Ergebnis: weniger Parallelbaustellen, klarere Prioritäten – und spürbar mehr Zug in der Umsetzung."</p>
+          <div class="testimonial-author">
+            <img class="testimonial-photo" src="./bilder/foto-arnd.jpg" alt="Arnd Pfeiffer">
+            <div>
+              <div class="testimonial-name">Arnd Pfeiffer</div>
+              <div class="testimonial-role">Pfeiffer GmbH &amp; Co. KG, Asslar</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">„Unser Workshop ‚G+B 2030' war kein Wohlfühl-Meeting, sondern ein echter Durchbruch. Wir haben unsere Wachstums-Engpässe klar herausgearbeitet und daraus eine ToDo-Liste gemacht, die jeder verstanden hat: Wer macht was bis wann. Entscheidend war auch die Begleitung danach – Umsetzungshilfe, Einführung wirkungsvoller Führungswerkzeuge und ein Follow-up zur Kontrolle. So bleibt es nicht bei Ideen, sondern führt zu spürbarer Weiterentwicklung. Speziell die interne Kommunikation untereinander hat sich deutlich verbessert."</p>
+          <div class="testimonial-author">
+            <img class="testimonial-photo" src="./bilder/foto-robert.jpg" alt="Robert Fischer">
+            <div>
+              <div class="testimonial-name">Robert Fischer</div>
+              <div class="testimonial-role">G+B Medientechnik GmbH, Köln</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">„In unserem Strategie- und Führungs-Workshop haben wir als Führungsteam eine gemeinsame Linie gefunden sowie Werte und Führungsgrundsätze erarbeitet. Im Tagesgeschäft hat dies sofort zu spürbar besserer Abstimmung und Kommunikation geführt. Die wichtigsten Maßnahmen gegen unsere Wachstums-Engpässe wurden konkret, terminiert und sauber verteilt. Durch die Umsetzungsbegleitung und den Follow-up-Workshop haben wir nachgehalten, nachgeschärft und weitere Schritte festgelegt. Das hat Struktur und Sicherheit in unsere Führung gebracht."</p>
+          <div class="testimonial-author">
+            <img class="testimonial-photo" src="./bilder/foto-arndt.jpg" alt="Arndt Nikolaus Loh">
+            <div>
+              <div class="testimonial-name">Arndt Nikolaus Loh</div>
+              <div class="testimonial-role">Theodor Stephan KG GmbH &amp; Co. KG, Burbach</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--color-orange)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <strong>4.9</strong> Bestbewerteter Anbieter · verifiziert von Trustindex
+      </div>
+    </div>
+  </section>
 
-  document.getElementById("q-counter").textContent = "Frage " + qNum + " von " + TOTAL_Q;
-  document.getElementById("progress-pct").textContent = pct + "%";
-  document.getElementById("progress-fill").style.width = pct + "%";
+  <!-- ══════ BEGLEITUNG ══════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="section-tag">Begleitung</span>
+      <h2>Warum ich dieses Projekt begleite</h2>
+      <div class="begleitung-grid" style="margin-top: 1.5rem;">
+        <img class="begleitung-photo" src="./bilder/thomas-brandenburger.jpg" alt="Thomas Brandenburger">
+        <div>
+          <h3 style="margin: 0 0 0.6rem; font-size: 1.4rem; color: var(--color-navy);">Thomas Brandenburger</h3>
+          <p>Ich begleite Unternehmer, Geschäftsführer und Führungskräfte dabei, neue Entwicklungen nicht nur zu verstehen, sondern wirksam in die betriebliche Praxis zu übersetzen.</p>
+          <p>Mit rund 40 Jahren Führungserfahrung in verschiedenen kleinen und mittleren Unternehmen mit bis zu 500 Mitarbeitern kenne ich nicht nur die Chancen neuer Technologien, sondern auch die Realität im Alltag: volle Kalender, knappe Ressourcen, hohe Verantwortung und wenig Zeit für Experimente.</p>
+          <p>Seit über 12 Monaten beschäftige ich mich intensiv mit der konkreten Nutzung von KI im Unternehmenskontext. Aktuell ergänze ich diese praktische Arbeit durch eine Weiterbildung zum zertifizierten KI-Strategieberater.</p>
+          <div class="credential-tags">
+            <span class="credential-tag">Dipl.-Ing. Maschinenbau</span>
+            <span class="credential-tag">~40 Jahre Führungserfahrung</span>
+            <span class="credential-tag">KI-Strategieberater (i.A.)</span>
+            <span class="credential-tag">Zert. Business Coach</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  // Dots
-  const dots = document.getElementById("dim-dots");
-  dots.innerHTML = "";
-  DIMS.forEach((d, i) => {
-    const dot = document.createElement("div");
-    const allDone = d.questions.every((_, qi) => answers[i + "-" + qi] !== undefined);
-    dot.className = "dim-dot" + (i === curDim ? " active" : "") + (allDone ? " done" : "");
-    dots.appendChild(dot);
-  });
+  <!-- ══════ CTA / FORMULAR ══════ -->
+  <section class="section cta-section" id="reservierung">
+    <div class="container">
+      <span class="section-tag" style="color: #ffd5b1;">Nächster Schritt</span>
+      <h2 style="color: var(--color-white);">Dein nächster Schritt</h2>
+      <p style="color: rgba(255,255,255,0.7); max-width: 52rem; margin-bottom: 2rem; font-size: 1.16rem;">Aktuell ist das Projekt exklusiv für TRUST-Unternehmergruppen-Mitglieder vorgesehen. Im ersten Schritt prüfen wir gemeinsam die INQA-Förderfähigkeit für dein Unternehmen. Die verbindliche Entscheidung steht erst nach der Förderzusage an – <strong style="color: var(--color-white);">kein Risiko, keine Vorabkosten.</strong></p>
 
-  document.getElementById("dim-icon").textContent = dim.icon;
-  document.getElementById("dim-name").textContent = dim.name;
-  document.getElementById("dim-leitfrage").textContent = dim.leitfrage;
-  document.getElementById("question-text").textContent = q.q;
+      <div class="reservation-form" style="max-width: 680px;">
+        <!-- Formspree-Formular – Benachrichtigung geht an thb@potentiale.de -->
+        <form id="reservierung-form" action="https://formspree.io/f/xeeprwvb" method="POST">
+          <div class="form-field">
+            <label for="interesse">Was möchtest du? *</label>
+            <select id="interesse" name="interesse" required>
+              <option value="">Bitte wählen</option>
+              <option value="Platz reservieren">Unverbindlich Platz reservieren</option>
+              <option value="Klärungsgespräch">Erst ein Klärungsgespräch führen</option>
+            </select>
+          </div>
+          <div class="form-grid">
+            <div class="form-field"><label for="name">Name *</label><input type="text" id="name" name="name" placeholder="Dein Name" required></div>
+            <div class="form-field"><label for="email">E-Mail *</label><input type="email" id="email" name="email" placeholder="deine@email.de" required></div>
+          </div>
+          <div class="form-grid">
+            <div class="form-field"><label for="firma">Firma *</label><input type="text" id="firma" name="firma" placeholder="Dein Unternehmen" required></div>
+            <div class="form-field"><label for="telefon">Telefon</label><input type="tel" id="telefon" name="telefon" placeholder="+49 ..."></div>
+          </div>
+          <div class="form-field">
+            <label for="teilnehmer">Anzahl Teilnehmer</label>
+            <select id="teilnehmer" name="teilnehmer">
+              <option value="">Bitte wählen</option>
+              <option value="1-2">1–2 Personen</option>
+              <option value="3-5">3–5 Personen</option>
+              <option value="6-10">6–10 Personen</option>
+            </select>
+          </div>
+          <div class="form-field"><label for="themen">Besondere Themenwünsche oder Fragen</label><textarea id="themen" name="themen" rows="3" placeholder="Optional: Was beschäftigt dich aktuell beim Thema KI?"></textarea></div>
+          <button type="submit" class="btn btn-primary btn-large" style="width:100%;">Absenden →</button>
+          <p style="font-size: 0.88rem; color: var(--color-gray); margin-top: 0.75rem; line-height: 1.5; text-align: center;">Keine Kosten, keine Verpflichtung. Ich melde mich zeitnah persönlich bei dir.</p>
+        </form>
+      </div>
 
-  const list = document.getElementById("answer-list");
-  list.innerHTML = "";
-  q.a.forEach((txt, lvl) => {
-    const btn = document.createElement("button");
-    const stufe = lvl + 1;
-    const sel = answers[key] === stufe;
-    btn.className = "answer-btn" + (sel ? " selected" : "");
-    btn.innerHTML = '<span class="stufe-badge stufe-' + stufe + '">Stufe ' + stufe + '</span><span>' + txt + '</span>';
-    btn.onclick = () => selectAnswer(stufe);
-    list.appendChild(btn);
-  });
+      <p style="color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-top: 1.5rem; text-align: center; max-width: 680px;">
+        Oder direkt anrufen: <a href="tel:+4915125254853" style="color: var(--color-orange);">0151 252 548 53</a> · <a href="mailto:kontakt@thomas-brandenburger.de" style="color: var(--color-orange);">kontakt@thomas-brandenburger.de</a>
+      </p>
+    </div>
+  </section>
 
-  document.getElementById("btn-back").style.visibility = (curDim === 0 && curQ === 0) ? "hidden" : "visible";
-  document.getElementById("btn-finish").style.display = (Object.keys(answers).length === TOTAL_Q) ? "inline-flex" : "none";
-}
+  <!-- ══════ FOOTER ══════ -->
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <div><strong>UnternehmerImpulse</strong> by Thomas Brandenburger · TB UnternehmerImpulse eG</div>
+      <div>
+        <a href="mailto:kontakt@thomas-brandenburger.de">kontakt@thomas-brandenburger.de</a> ·
+        <a href="https://unternehmercoaching-zentrum.de/datenschutz/">Datenschutz</a> ·
+        <a href="https://unternehmercoaching-zentrum.de/impressum/">Impressum</a>
+      </div>
+    </div>
+  </footer>
 
-function selectAnswer(level) {
-  answers[curDim + "-" + curQ] = level;
-  setTimeout(() => {
-    if (curQ < DIMS[curDim].questions.length - 1) { curQ++; }
-    else if (curDim < DIMS.length - 1) { curDim++; curQ = 0; }
-    else { showResults(); return; }
-    renderAssessment();
-  }, 200);
-}
-
-function goBack() {
-  if (curQ > 0) { curQ--; }
-  else if (curDim > 0) { curDim--; curQ = DIMS[curDim].questions.length - 1; }
-  renderAssessment();
-}
-
-// ════════════════════════════════════════════
-// RESULTS
-// ════════════════════════════════════════════
-function showResults() {
-  showScreen("results");
-
-  const dimScores = DIMS.map((dim, di) => {
-    const vals = dim.questions.map((_, qi) => answers[di + "-" + qi] || 1);
-    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-    const score = Math.round((avg / 5) * 100);
-    const stufe = Math.max(1, Math.round(avg));
-    return { id: dim.id, name: dim.name, icon: dim.icon, score, stufe, avg };
-  });
-
-  const totalScore = Math.round(dimScores.reduce((s, d) => s + d.score, 0) / dimScores.length);
-  const minStufe = Math.min(...dimScores.map(d => d.stufe));
-  const weakest = dimScores.filter(d => d.stufe === minStufe);
-  const strongest = dimScores.reduce((b, d) => d.score > b.score ? d : b, dimScores[0]);
-
-  function label(s) {
-    if (s <= 20) return { stufe:1, label:"Initiierung", desc:"Erste Schritte – KI ist noch kein strukturiertes Thema." };
-    if (s <= 40) return { stufe:2, label:"Entwicklung", desc:"Einzelne Aktivitäten – aber noch keine breite Verankerung." };
-    if (s <= 60) return { stufe:3, label:"Anwendung", desc:"KI ist im Alltag angekommen – aber noch nicht integriert." };
-    if (s <= 80) return { stufe:4, label:"Integration", desc:"KI ist strategisch verankert und wird systematisch genutzt." };
-    return { stufe:5, label:"Optimierung", desc:"KI setzt Maßstäbe – Exzellenz und kontinuierliche Innovation." };
-  }
-
-  const info = label(totalScore);
-  const company = document.getElementById("company-input").value;
-  const dateStr = new Date().toLocaleDateString("de-DE", { day:"2-digit", month:"long", year:"numeric" });
-
-  let html = '';
-  html += '<div class="logo-results"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 150" role="img" aria-label="TRUST"><g fill="#00305b"><path transform="translate(20,78) scale(0.02832,-0.02832)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/><path transform="translate(57.599,78) scale(0.02832,-0.02832)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/><path transform="translate(99.785,78) scale(0.02832,-0.02832)" d="M169 1493H516V598Q516 413 570.5 333.5Q625 254 748 254Q872 254 926.5 333.5Q981 413 981 598V1493H1328V598Q1328 281 1184.5 126Q1041-29 748-29Q455-29 312 126Q169 281 169 598Z"/><path transform="translate(144.152,78) scale(0.02832,-0.02832)" d="M1104 1446V1130Q994 1185 888.5 1213Q783 1241 689 1241Q565 1241 505.5 1203Q446 1165 446 1085Q446 1025 486 991.5Q526 958 632 934L779 901Q1004 851 1098 749Q1192 647 1192 459Q1192 212 1060.5 91.5Q929-29 658-29Q530-29 401.5-2Q273 25 144 78V403Q273 327 393 288.5Q513 250 625 250Q738 250 798.5 292Q859 334 859 412Q859 482 818 520Q777 558 654 588L520 621Q319 669 225.5 774Q132 879 132 1057Q132 1280 262 1400Q392 1520 634 1520Q745 1520 862 1501.5Q979 1483 1104 1446Z"/><path transform="translate(183.733,78) scale(0.02832,-0.02832)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/></g><g fill="#54595f"><path transform="translate(20,104) scale(0.00732,-0.00732)" d="M169 1493H516V598Q516 413 570.5 333.5Q625 254 748 254Q872 254 926.5 333.5Q981 413 981 598V1493H1328V598Q1328 281 1184.5 126Q1041-29 748-29Q455-29 312 126Q169 281 169 598Z"/><path transform="translate(34.457,104) scale(0.00732,-0.00732)" d="M169 1493H556L1045 469V1493H1373V0H986L498 1024V0H169Z"/><path transform="translate(49.251,104) scale(0.00732,-0.00732)" d="M9 1493H1247V1202H802V0H455V1202H9Z"/><path transform="translate(61.958,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(74.679,104) scale(0.00732,-0.00732)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/><path transform="translate(88.572,104) scale(0.00732,-0.00732)" d="M169 1493H556L1045 469V1493H1373V0H986L498 1024V0H169Z"/><path transform="translate(103.366,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(116.087,104) scale(0.00732,-0.00732)" d="M169 1493H516V924H1027V1493H1373V0H1027V633H516V0H169Z"/><path transform="translate(130.881,104) scale(0.00732,-0.00732)" d="M169 1493H610L916 694L1224 1493H1664V0H1336V1092L1027 287H807L498 1092V0H169Z"/><path transform="translate(147.813,104) scale(0.00732,-0.00732)" d="M169 1493H1104V1202H516V924H1069V633H516V291H1124V0H169Z"/><path transform="translate(160.535,104) scale(0.00732,-0.00732)" d="M662 831Q770 831 817.5 876Q865 921 865 1024Q865 1126 817.5 1170Q770 1214 662 1214H516V831ZM516 565V0H169V1493H698Q964 1493 1087.5 1394Q1211 1295 1211 1081Q1211 933 1147 838Q1083 743 953 698Q1024 680 1080.5 616.5Q1137 553 1194 424L1382 0H1013L850 371Q800 483 749 524Q698 565 614 565Z"/></g><g fill="#54595f"><path transform="translate(20,132) scale(0.00928,-0.00928)" d="M311 1493H556L927 213L1152 1493H1329L1067 0H822L452 1288L227 0H50Z"/><path transform="translate(32.784,132) scale(0.00928,-0.00928)" d="M338 1556H503L463 1323H297ZM262 1120H428L230 0H65Z"/><path transform="translate(37.534,132) scale(0.00928,-0.00928)" d="M988 1077 955 895Q896 943 828.5 967Q761 991 689 991Q610 991 538.5 960Q467 929 418 872Q341 785 298.5 668Q256 551 256 426Q256 275 324 201Q392 127 531 127Q599 127 676 150Q753 173 837 219L806 37Q734 4 657.5-12.5Q581-29 501-29Q301-29 193 82.5Q85 194 85 401Q85 575 141 721.5Q197 868 308 985Q383 1065 485 1106Q587 1147 707 1147Q778 1147 847 1129.5Q916 1112 988 1077Z"/><path transform="translate(46.932,132) scale(0.00928,-0.00928)" d="M1027 676 909 0H742L860 669Q868 716 873 752Q878 788 878 809Q878 893 830 940Q782 987 697 987Q563 987 465.5 887Q368 787 339 621L230 0H65L338 1556H503L396 944Q459 1038 557 1092.5Q655 1147 763 1147Q896 1147 969.5 1067Q1043 987 1043 842Q1043 806 1039 765Q1035 724 1027 676Z"/><path transform="translate(57.768,132) scale(0.00928,-0.00928)" d="M779 1120 754 977H424L317 369Q311 335 308.5 312Q306 289 306 276Q306 212 340.5 183Q375 154 452 154H619L591 0H433Q285 0 212.5 64Q140 128 140 258Q140 281 143 308.5Q146 336 151 369L258 977H118L144 1120H282L338 1438H503L448 1120Z"/><path transform="translate(69.894,132) scale(0.00928,-0.00928)" d="M990 639 878 0H712L742 170Q670 70 576.5 20.5Q483-29 369-29Q240-29 158 58.5Q76 146 76 283Q76 479 216.5 593Q357 707 605 707H835L844 756Q846 764 847 773.5Q848 783 848 803Q848 892 782.5 941.5Q717 991 599 991Q518 991 433 968Q348 945 258 899L287 1069Q381 1108 470.5 1127.5Q560 1147 644 1147Q822 1147 915 1061Q1008 975 1008 811Q1008 778 1003.5 733.5Q999 689 990 639ZM811 563H645Q442 563 344.5 502.5Q247 442 247 315Q247 227 296.5 177Q346 127 435 127Q570 127 670.5 234.5Q771 342 804 522Z"/><path transform="translate(80.368,132) scale(0.00928,-0.00928)" d="M338 1556H503L230 0H65Z"/><path transform="translate(85.118,132) scale(0.00928,-0.00928)" d="M338 1556H503L230 0H65Z"/><path transform="translate(89.868,132) scale(0.00928,-0.00928)" d="M886 660Q889 676 890.5 693Q892 710 892 727Q892 849 827.5 920Q763 991 652 991Q529 991 434.5 904.5Q340 818 292 659ZM1030 516H260Q255 478 253 456Q251 434 251 418Q251 279 328 203Q405 127 545 127Q653 127 749.5 154Q846 181 929 233L897 51Q808 11 713-9Q618-29 520-29Q310-29 197.5 82.5Q85 194 85 399Q85 574 141 724.5Q197 875 306 993Q376 1067 473 1107Q570 1147 679 1147Q850 1147 951 1033Q1052 919 1052 727Q1052 681 1046.5 628.5Q1041 576 1030 516Z"/><path transform="translate(100.388,132) scale(0.00928,-0.00928)" d="M338 1556H503L463 1323H297ZM262 1120H428L230 0H65Z"/><path transform="translate(105.138,132) scale(0.00928,-0.00928)" d="M1027 676 909 0H742L860 669Q868 716 873 752Q878 788 878 809Q878 893 830 940Q782 987 697 987Q563 987 467 888.5Q371 790 341 621L230 0H65L260 1120H426L392 944Q462 1041 559 1094Q656 1147 763 1147Q896 1147 969.5 1067Q1043 987 1043 842Q1043 806 1039 765Q1035 724 1027 676Z"/></g><g fill="#f18423"><path transform="translate(115.974,132) scale(0.00928,-0.00928)" d="M188 387H512V0H188Z"/></g></svg></div>';
-  html += '<p class="results-header">KI-Reifegrad-Report' + (company ? ' · ' + esc(company) : '') + '</p>';
-  html += '<p class="results-date">' + dateStr + '</p>';
-
-  // Score Hero
-  html += '<div class="score-hero">';
-  html += '<div class="score-number">' + totalScore + '</div>';
-  html += '<div class="score-of">VON 100 PUNKTEN</div>';
-  html += '<div class="score-badge stufe-' + info.stufe + '">Stufe ' + info.stufe + ': ' + info.label + '</div>';
-  html += '<p class="score-desc">' + info.desc + '</p>';
-  if (minStufe < info.stufe) {
-    html += '<div class="score-warning">⚠️ <strong>Schwächstes Glied:</strong> ' + weakest.map(d => d.name).join(", ") + ' auf Stufe ' + minStufe + ' begrenzt die Gesamt-Reife.</div>';
-  }
-  html += '</div>';
-
-  // Radar
-  html += '<div class="radar-card"><p class="section-title">Reifegradprofil</p><div id="radar-container"></div></div>';
-
-  // Dimension cards
-  html += '<p class="section-title">Ergebnisse pro Dimension</p>';
-  html += '<div class="dim-results">';
-  dimScores.forEach(d => {
-    const emp = EMPFEHLUNGEN[d.id]?.[d.stufe - 1] || "";
-    html += '<div class="dim-result-card" style="border-left-color:var(--color-navy)">';
-    html += '<div class="dim-result-top"><span class="dim-result-name">' + d.icon + ' ' + d.name + '</span>';
-    html += '<div class="dim-result-right"><span class="dim-result-stufe stufe-' + d.stufe + '">Stufe ' + d.stufe + '</span>';
-    html += '<span class="dim-result-score">' + d.score + '</span></div></div>';
-    html += '<div class="dim-bar-track"><div class="dim-bar-fill bar-' + d.stufe + '" style="width:' + d.score + '%"></div></div>';
-    html += '<p class="dim-empfehlung">💡 ' + emp + '</p>';
-    html += '</div>';
-  });
-  html += '</div>';
-
-  html += '<p class="methodik-note">Methodik: 7 Dimensionen × 4 Fragen × 5 Stufen · Score = gewichteter Durchschnitt<br>Reifegradstufe bestimmt durch schwächstes Glied<br><br>© TRUST · Thomas Brandenburger</p>';
-  html += '<div class="restart-wrap" style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;"><button class="btn btn-primary" onclick="downloadPDF()">📄 Ergebnis als PDF herunterladen</button><button class="btn btn-outline-dark" onclick="startAssessment()">Neues Assessment starten</button></div>';
-
-  document.getElementById("results-inner").innerHTML = html;
-
-  // Draw radar
-  setTimeout(() => drawRadar(dimScores), 50);
-}
-
-function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
-
-// ════════════════════════════════════════════
-// RADAR CHART (pure SVG)
-// ════════════════════════════════════════════
-function drawRadar(scores) {
-  const container = document.getElementById("radar-container");
-  if (!container) return;
-  const W = 420, H = 420;
-  const cx = W / 2, cy = H / 2, R = 150;
-  const n = scores.length;
-  const slice = (Math.PI * 2) / n;
-
-  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="max-width:420px;margin:0 auto;">';
-
-  // Grid
-  for (let i = 1; i <= 5; i++) {
-    const r = (R / 5) * i;
-    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + (i === 5 ? 'rgba(0,48,91,0.12)' : 'rgba(0,48,91,0.06)') + '" stroke-width="1"/>';
-    // Level labels
-    svg += '<text x="' + (cx + 4) + '" y="' + (cy - r + 13) + '" fill="rgba(0,48,91,0.25)" font-size="10" font-family="Arial Narrow,Arial,sans-serif">' + (i * 20) + '</text>';
-  }
-
-  // Axes + labels
-  scores.forEach((d, i) => {
-    const angle = slice * i - Math.PI / 2;
-    const x = cx + Math.cos(angle) * R;
-    const y = cy + Math.sin(angle) * R;
-    svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x + '" y2="' + y + '" stroke="rgba(0,48,91,0.08)" stroke-width="1"/>';
-
-    const lR = R + 30;
-    const lx = cx + Math.cos(angle) * lR;
-    const ly = cy + Math.sin(angle) * lR;
-    const short = d.name.split("&")[0].replace("Geschäftsmodell","Strategie").trim();
-    svg += '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" dominant-baseline="central" fill="#00305b" font-size="11" font-weight="700" font-family="Arial Narrow,Arial,sans-serif">' + d.icon + ' ' + short + '</text>';
-  });
-
-  // Data polygon
-  let pts = scores.map((d, i) => {
-    const angle = slice * i - Math.PI / 2;
-    const r = (d.score / 100) * R;
-    return (cx + Math.cos(angle) * r) + ',' + (cy + Math.sin(angle) * r);
-  }).join(' ');
-  svg += '<polygon points="' + pts + '" fill="rgba(241,132,35,0.12)" stroke="#f18423" stroke-width="2.5"/>';
-
-  // Dots
-  scores.forEach((d, i) => {
-    const angle = slice * i - Math.PI / 2;
-    const r = (d.score / 100) * R;
-    const x = cx + Math.cos(angle) * r;
-    const y = cy + Math.sin(angle) * r;
-    svg += '<circle cx="' + x + '" cy="' + y + '" r="5" fill="#f18423" stroke="#fff" stroke-width="2"/>';
-  });
-
-  svg += '</svg>';
-  container.innerHTML = svg;
-}
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-<script>
-async function downloadPDF() {
-  const btn = event.target;
-  const origText = btn.textContent;
-  btn.textContent = "⏳ PDF wird erstellt...";
-  btn.disabled = true;
-
-  try {
-    const el = document.getElementById("results-inner");
-    const restartWrap = el.querySelector(".restart-wrap");
-    if (restartWrap) restartWrap.style.display = "none";
-
-    const canvas = await html2canvas(el, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#f7f8fa",
-      logging: false,
-      width: el.scrollWidth,
-      height: el.scrollHeight,
-      windowWidth: 900
-    });
-
-    if (restartWrap) restartWrap.style.display = "";
-
-    const imgData = canvas.toDataURL("image/png");
-    const { jsPDF } = window.jspdf;
-    const pdfW = 210;
-    const pdfH = 297;
-    const margin = 12;
-    const contentW = pdfW - margin * 2;
-    const imgRatio = canvas.height / canvas.width;
-    const contentH = contentW * imgRatio;
-
-    const pdf = new jsPDF({ unit: "mm", format: "a4" });
-    let yOffset = 0;
-    const pageContentH = pdfH - margin * 2;
-
-    if (contentH <= pageContentH) {
-      pdf.addImage(imgData, "PNG", margin, margin, contentW, contentH);
-    } else {
-      const totalPages = Math.ceil(contentH / pageContentH);
-      for (let i = 0; i < totalPages; i++) {
-        if (i > 0) pdf.addPage();
-        const srcY = (i * pageContentH / contentH) * canvas.height;
-        const srcH = Math.min((pageContentH / contentH) * canvas.height, canvas.height - srcY);
-        const sliceCanvas = document.createElement("canvas");
-        sliceCanvas.width = canvas.width;
-        sliceCanvas.height = srcH;
-        const ctx = sliceCanvas.getContext("2d");
-        ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-        const sliceData = sliceCanvas.toDataURL("image/png");
-        const sliceH = (srcH / canvas.height) * contentH;
-        pdf.addImage(sliceData, "PNG", margin, margin, contentW, sliceH);
-      }
-    }
-
-    const company = document.getElementById("company-input").value;
-    const dateStr = new Date().toISOString().slice(0, 10);
-    const filename = "KI-Reifegrad-Report" + (company ? "_" + company.replace(/[^a-zA-Z0-9äöüÄÖÜß]/g, "_") : "") + "_" + dateStr + ".pdf";
-    pdf.save(filename);
-  } catch (err) {
-    console.error("PDF-Erstellung fehlgeschlagen:", err);
-    alert("PDF konnte nicht erstellt werden. Bitte versuchen Sie es erneut.");
-  }
-
-  btn.textContent = origText;
-  btn.disabled = false;
-}
-</script>
 </body>
 </html>
