@@ -110,7 +110,7 @@ a { color: var(--color-navy); text-decoration: none; }
   text-decoration: none;
 }
 .btn-primary { background: var(--color-orange); color: var(--color-white); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(241, 132, 35, 0.3); }
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(241, 132, 35, 0.3); }
 .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 .btn-outline { background: transparent; color: var(--color-navy); border: 2px solid var(--color-navy); }
 .btn-large { font-size: 1.15rem; padding: 1rem 2.25rem; }
@@ -231,7 +231,7 @@ a { color: var(--color-navy); text-decoration: none; }
 .quiz-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
 @media (max-width: 640px) { .quiz-nav { flex-direction: column-reverse; } .quiz-nav .btn { width: 100%; } }
 
-/* Score-Donut (Lead-Gate und Result) */
+/* Score-Donut */
 .score-donut-card {
   background: var(--color-bg);
   border-radius: var(--radius-lg);
@@ -264,7 +264,7 @@ a { color: var(--color-navy); text-decoration: none; }
 /* Lead-Form */
 .lead-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 .lead-form label { display: block; font-size: 0.85rem; color: var(--color-gray); margin-bottom: 0.25rem; font-weight: 600; }
-.lead-form input {
+.lead-form input[type="text"], .lead-form input[type="email"] {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #E5E7EB;
@@ -275,6 +275,35 @@ a { color: var(--color-navy); text-decoration: none; }
 }
 .lead-form input:focus { outline: none; border-color: var(--color-orange); }
 @media (max-width: 640px) { .lead-form .form-row { grid-template-columns: 1fr; } }
+
+/* Consent-Box */
+.consent-box {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 48, 91, 0.08);
+  margin: 1.25rem 0;
+}
+.consent-box input[type="checkbox"] {
+  margin-top: 0.15rem;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: var(--color-orange);
+  cursor: pointer;
+}
+.consent-box label {
+  font-size: 0.9rem;
+  color: var(--color-gray);
+  line-height: 1.5;
+  cursor: pointer;
+  margin: 0;
+  font-weight: 400;
+}
+.consent-box a { color: var(--color-orange); text-decoration: underline; }
 
 /* Result: Stufen-Balken */
 .stufe-row { display: grid; grid-template-columns: 220px 1fr 50px; gap: 0.75rem; align-items: center; margin-bottom: 0.6rem; }
@@ -491,7 +520,15 @@ a { color: var(--color-navy); text-decoration: none; }
           <div><label>PLZ</label><input id="lead-plz" type="text" required></div>
           <div><label>Ort</label><input id="lead-ort" type="text" required></div>
         </div>
-        <button class="btn btn-primary btn-large" onclick="submitLead()" style="width:100%;margin-top:0.5rem">Auswertung senden →</button>
+
+        <div class="consent-box">
+          <input type="checkbox" id="lead-consent" onchange="updateConsent()">
+          <label for="lead-consent">
+            Ich willige ein, dass meine Testantworten und Kontaktdaten an Thomas Brandenburger (TB UnternehmerImpulse eG, Dillenburg) übermittelt und für die Auswertung sowie ein mögliches Klarheits-Gespräch verwendet werden dürfen. Die <a href="https://trust-unternehmer.de/datenschutz" target="_blank">Datenschutzhinweise</a> habe ich zur Kenntnis genommen.
+          </label>
+        </div>
+
+        <button id="btn-submit-lead" class="btn btn-primary btn-large" onclick="submitLead()" style="width:100%;margin-top:0.5rem" disabled>Auswertung senden →</button>
       </div>
     </div>
   </section>
@@ -606,7 +643,6 @@ a { color: var(--color-navy); text-decoration: none; }
 <script src="files/test.js"></script>
 
 <script>
-  // Bei DOM ready: Resume-Prüfung
   document.addEventListener('DOMContentLoaded', initStart);
 
   function tryStartTest() {

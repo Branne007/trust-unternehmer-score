@@ -1,6 +1,12 @@
 /* ============================================================
-   TRUST Unternehmer-Score · PDF-Generierung
+   TRUST Unternehmer-Score · PDF-Generierung (v2.1)
    Client-seitige Erzeugung mit pdfmake (Kunde + Coach)
+
+   Fixes gegenüber v2.0:
+   - Ligatur-Bug in Roboto (fi/fl) durch Zero-Width-Space behoben
+   - SVG-Diagramme durch pdfmake-Canvas ersetzt (renderten nicht sauber)
+   - Score-Donut durch elegante Zahl-Box ersetzt
+   - Metadaten für Kompass in PDF-Info-Feld (unsichtbar) statt Text
    ============================================================ */
 
 const NAVY = '#00305B';
@@ -9,6 +15,20 @@ const ORANGE = '#F18423';
 const GRAY = '#54595F';
 const GRAYLIGHT = '#9AA0A6';
 const BG = '#F7F8FA';
+const BG_WARM = '#FFF5EB';
+
+/* ---------- Ligatur-Fix für pdfmake/Roboto ----------
+   Fügt einen Zero-Width-Space (\u200B) in problematische Buchstaben-
+   kombinationen ein, damit Roboto die Ligaturen (fi, fl, ffi, ffl)
+   nicht bildet. Der ZWSP ist visuell unsichtbar. */
+function fix(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/ffi/g, 'ff\u200Bi')
+    .replace(/ffl/g, 'ff\u200Bl')
+    .replace(/fi/g, 'f\u200Bi')
+    .replace(/fl/g, 'f\u200Bl');
+}
 
 function dateStr() {
   const d = new Date();
@@ -16,46 +36,61 @@ function dateStr() {
   return d.getDate() + '. ' + monate[d.getMonth()] + ' ' + d.getFullYear();
 }
 
-/* ---------- SVG: Balkendiagramm der 5 Stufen ---------- */
-function stufenBarSvg(scores) {
-  const width = 480;
-  const rowHeight = 32;
-  const height = rowHeight * 5;
-  const labelWidth = 200;
-  const barMaxWidth = width - labelWidth - 50;
-
-  let bars = '';
-  for (let i = 0; i < 5; i++) {
-    const y = i * rowHeight + 10;
-    const p = scores.percent[i];
-    const barW = Math.max(2, p / 100 * barMaxWidth);
-    const color = STUFEN_FARBEN[i];
-    const isDom = i === scores.dom;
-    const fontWeight = isDom ? 'bold' : 'normal';
-    bars += '<text x="0" y="' + (y + 4) + '" font-family="Arial" font-size="10" fill="' + NAVY + '" font-weight="' + fontWeight + '">' +
-            'Stufe ' + (i + 1) + ': ' + STUFEN[i] + '</text>';
-    bars += '<rect x="' + labelWidth + '" y="' + (y - 6) + '" width="' + barMaxWidth + '" height="10" rx="5" fill="#EEEEEE"/>';
-    bars += '<rect x="' + labelWidth + '" y="' + (y - 6) + '" width="' + barW + '" height="10" rx="5" fill="' + color + '"/>';
-    bars += '<text x="' + (width - 5) + '" y="' + (y + 4) + '" font-family="Arial" font-size="10" fill="' + NAVY + '" font-weight="bold" text-anchor="end">' + p + '%</text>';
-  }
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + width + ' ' + height + '" width="' + width + '" height="' + height + '">' + bars + '</svg>';
+/* ---------- Score-Donut als eleganter Zahl-Block (statt SVG) ---------- */
+function scoreBlock(overall) {
+  return {
+    table: {
+      widths: [130],
+      body: [[{
+        stack: [
+          { text: '' + overall, fontSize: 44, bold: true, color: NAVY, alignment: 'center', margin: [0, 18, 0, 0] },
+          { text: fix('von 100'), fontSize: 10, color: GRAY, alignment: 'center', margin: [0, 0, 0, 18] },
+        ],
+        fillColor: BG_WARM,
+      }]],
+    },
+    layout: {
+      hLineWidth: () => 3,
+      vLineWidth: () => 3,
+      hLineColor: () => ORANGE,
+      vLineColor: () => ORANGE,
+      paddingLeft: () => 0,
+      paddingRight: () => 0,
+      paddingTop: () => 0,
+      paddingBottom: () => 0,
+    },
+  };
 }
 
-/* ---------- SVG: Score-Donut ---------- */
-function scoreDonutSvg(overall) {
-  const size = 120;
-  const stroke = 12;
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const filled = c * overall / 100;
-  const cx = size / 2;
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '" width="' + size + '" height="' + size + '">' +
-    '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" stroke="#EEEEEE" stroke-width="' + stroke + '" fill="none"/>' +
-    '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" stroke="' + ORANGE + '" stroke-width="' + stroke + '" fill="none" ' +
-      'stroke-dasharray="' + filled + ' ' + c + '" transform="rotate(-90 ' + cx + ' ' + cx + ')" stroke-linecap="round"/>' +
-    '<text x="' + cx + '" y="' + (cx + 4) + '" font-family="Arial" font-size="28" font-weight="900" fill="' + NAVY + '" text-anchor="middle">' + overall + '</text>' +
-    '<text x="' + cx + '" y="' + (cx + 24) + '" font-family="Arial" font-size="10" fill="' + GRAY + '" text-anchor="middle">von 100</text>' +
-  '</svg>';
+/* ---------- Stufen-Balken als pdfmake-Canvas ---------- */
+function stufenBars(scores) {
+  const BAR_WIDTH = 280;
+  const BAR_HEIGHT = 12;
+  const ROW_HEIGHT = 24;
+  const LABEL_W = 180;
+
+  const rows = scores.percent.map((p, i) => {
+    const filled = Math.max(2, Math.round(p / 100 * BAR_WIDTH));
+    const isDom = i === scores.dom;
+    return [
+      { text: fix('Stufe ' + (i + 1) + ': ' + STUFEN[i]), fontSize: 10, color: NAVY, bold: isDom, margin: [0, 4, 0, 0] },
+      {
+        canvas: [
+          { type: 'rect', x: 0, y: 6, w: BAR_WIDTH, h: BAR_HEIGHT, r: 6, color: '#EEEEEE' },
+          { type: 'rect', x: 0, y: 6, w: filled, h: BAR_HEIGHT, r: 6, color: STUFEN_FARBEN[i] },
+        ],
+      },
+      { text: p + '%', fontSize: 10, bold: true, color: NAVY, alignment: 'right', margin: [0, 4, 0, 0] },
+    ];
+  });
+
+  return {
+    table: {
+      widths: [LABEL_W, BAR_WIDTH, 30],
+      body: rows,
+    },
+    layout: 'noBorders',
+  };
 }
 
 /* ---------- Header und Footer ---------- */
@@ -64,15 +99,15 @@ function pageHeader(subtitle) {
     columns: [
       {
         stack: [
-          { text: 'TRUST UNTERNEHMER', style: 'brand' },
-          { text: 'Unternehmer-Score', style: 'brandLarge' },
-          { text: subtitle, style: 'brandSubtitle' },
+          { text: fix('TRUST UNTERNEHMER'), style: 'brand' },
+          { text: fix('Unternehmer-Score'), style: 'brandLarge' },
+          { text: fix(subtitle), style: 'brandSubtitle' },
         ],
         width: '*',
       },
       {
         stack: [
-          { text: 'Ergebnis vom', style: 'metaLabel', alignment: 'right' },
+          { text: fix('Ergebnis vom'), style: 'metaLabel', alignment: 'right' },
           { text: dateStr(), style: 'metaValue', alignment: 'right' },
         ],
         width: 'auto',
@@ -86,8 +121,8 @@ function footer(pageLabel) {
   return function (currentPage, pageCount) {
     return {
       columns: [
-        { text: 'TRUST Unternehmer-Score · trust-unternehmer.de', style: 'footerText', alignment: 'left' },
-        { text: (pageLabel || '') + ' · Seite ' + currentPage + ' / ' + pageCount, style: 'footerText', alignment: 'right' },
+        { text: fix('TRUST Unternehmer-Score · trust-unternehmer.de'), style: 'footerText', alignment: 'left' },
+        { text: fix((pageLabel || '') + ' · Seite ') + currentPage + ' / ' + pageCount, style: 'footerText', alignment: 'right' },
       ],
       margin: [40, 20, 40, 0],
     };
@@ -111,7 +146,6 @@ const commonStyles = {
   boxTitle: { fontSize: 11, bold: true, color: NAVY, margin: [0, 0, 0, 4] },
   tableHeader: { bold: true, fontSize: 9, color: '#FFFFFF', fillColor: NAVY, margin: [4, 4, 4, 4] },
   tableCell: { fontSize: 9, color: '#222', margin: [4, 3, 4, 3] },
-  metaHidden: { fontSize: 5, color: '#FFFFFF' },
 };
 
 /* ---------- Kunden-PDF ---------- */
@@ -124,7 +158,7 @@ async function generateCustomerPdf(scores, lead) {
 
   // Empfänger-Zeile
   content.push({
-    text: 'Für: ' + lead.vorname + ' ' + lead.name + (lead.firma ? ', ' + lead.firma : ''),
+    text: fix('Für: ' + lead.vorname + ' ' + lead.name + (lead.firma ? ', ' + lead.firma : '')),
     style: 'body',
     margin: [0, 0, 0, 12],
   });
@@ -134,67 +168,68 @@ async function generateCustomerPdf(scores, lead) {
     table: {
       widths: ['*'],
       body: [[{
-        text: 'Dies ist eine strukturierte Standortbestimmung – kein Urteil. Nutze das Ergebnis als Ausgangspunkt für die Reflexion und für unser Klarheits-Gespräch.',
+        text: fix('Dies ist eine strukturierte Standortbestimmung – kein Urteil. Nutze das Ergebnis als Ausgangspunkt für die Reflexion und für unser Klarheits-Gespräch.'),
         style: 'body', color: NAVY, fillColor: BG, margin: [10, 8, 10, 8],
       }]],
     }, layout: 'noBorders',
     margin: [0, 0, 0, 16],
   });
 
-  // ========== TEIL 1: SCORE-ÜBERSICHT ==========
-  content.push({ text: 'TEIL 1', style: 'sectionEyebrow' });
-  content.push({ text: 'Dein Gesamtergebnis', style: 'section' });
+  // ========== TEIL 1: GESAMT-ERGEBNIS ==========
+  content.push({ text: fix('TEIL 1'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Dein Gesamtergebnis'), style: 'section' });
 
   content.push({
     columns: [
-      { svg: scoreDonutSvg(scores.overall), width: 120, alignment: 'left' },
+      { width: 130, stack: [scoreBlock(scores.overall)] },
       {
         stack: [
-          { text: 'Dominante Stufe', style: 'metaLabel' },
-          { text: 'Stufe ' + (scores.dom + 1) + ': ' + STUFEN[scores.dom], style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 8] },
-          { text: 'Größter Hebel', style: 'metaLabel' },
-          { text: STUFEN[scores.weakest], style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
+          { text: fix('Dominante Stufe'), style: 'metaLabel' },
+          { text: fix('Stufe ' + (scores.dom + 1) + ': ' + STUFEN[scores.dom]), style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 12] },
+          { text: fix('Größter Hebel'), style: 'metaLabel' },
+          { text: fix(STUFEN[scores.weakest]), style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
         ],
         width: '*',
-        margin: [16, 8, 0, 0],
+        margin: [16, 15, 0, 0],
       },
     ],
-    margin: [0, 0, 0, 12],
+    margin: [0, 0, 0, 16],
   });
 
   // Stufen-Balken
-  content.push({ text: 'Deine Verteilung über die 5 Reifegrad-Stufen', style: 'h3' });
-  content.push({ svg: stufenBarSvg(scores), width: 480, margin: [0, 0, 0, 12] });
+  content.push({ text: fix('Deine Verteilung über die 5 Reifegrad-Stufen'), style: 'h3' });
+  content.push(stufenBars(scores));
+  content.push({ text: '', margin: [0, 0, 0, 8] });
 
   content.push({
-    text: 'Was diese Grafik zeigt: Wie viel Prozent deiner Verhaltensweisen fallen in welche Entwicklungsstufe. Deine dominante Stufe ist orange markiert – dort findet aktuell dein Alltag hauptsächlich statt.',
+    text: fix('Was diese Grafik zeigt: Wie viel Prozent deiner Verhaltensweisen fallen in welche Entwicklungsstufe. Deine dominante Stufe ist orange hervorgehoben – dort findet aktuell dein Alltag hauptsächlich statt.'),
     style: 'body',
     margin: [0, 0, 0, 16],
   });
 
   // ========== TEIL 2: WAS DAS BEDEUTET ==========
-  content.push({ text: 'TEIL 2', style: 'sectionEyebrow' });
-  content.push({ text: 'Was dein Ergebnis bedeutet', style: 'section' });
+  content.push({ text: fix('TEIL 2'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Was dein Ergebnis bedeutet'), style: 'section' });
 
   content.push({
     table: {
       widths: ['*'],
       body: [[{
         stack: [
-          { text: kern.kurz, style: 'boxTitle', color: ORANGE },
-          { text: kern.lang, style: 'body', margin: [0, 4, 0, 0] },
+          { text: fix(kern.kurz), style: 'boxTitle', color: ORANGE },
+          { text: fix(kern.lang), style: 'body', margin: [0, 4, 0, 0] },
         ],
-        fillColor: '#FFF5EB', margin: [12, 10, 12, 10],
+        fillColor: BG_WARM, margin: [12, 10, 12, 10],
       }]],
     }, layout: 'noBorders',
     margin: [0, 0, 0, 16],
   });
 
   // ========== TEIL 3: NÄCHSTE SCHRITTE ==========
-  content.push({ text: 'TEIL 3', style: 'sectionEyebrow' });
-  content.push({ text: 'Deine drei nächsten Schritte', style: 'section' });
+  content.push({ text: fix('TEIL 3'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Deine drei nächsten Schritte'), style: 'section' });
   content.push({
-    text: 'Konkrete Impulse, die du in den nächsten 30 Tagen anpacken kannst:',
+    text: fix('Konkrete Impulse, die du in den nächsten 30 Tagen anpacken kannst:'),
     style: 'body',
     margin: [0, 0, 0, 10],
   });
@@ -211,17 +246,17 @@ async function generateCustomerPdf(scores, lead) {
             }, layout: 'noBorders',
           }],
         },
-        { text: s, style: 'body', width: '*', margin: [0, 4, 0, 0] },
+        { text: fix(s), style: 'body', width: '*', margin: [0, 4, 0, 0] },
       ],
       margin: [0, 0, 0, 8],
     });
   });
 
   // ========== TEIL 4: FÜR DAS KLARHEITS-GESPRÄCH ==========
-  content.push({ text: 'TEIL 4', style: 'sectionEyebrow' });
-  content.push({ text: 'Für unser Klarheits-Gespräch', style: 'section' });
+  content.push({ text: fix('TEIL 4'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Für unser Klarheits-Gespräch'), style: 'section' });
   content.push({
-    text: 'Wenn du diesen Score als Grundlage für ein persönliches Gespräch nutzen möchtest, überlege dir vorher folgende drei Fragen. Notiere dir kurz eine Antwort:',
+    text: fix('Wenn du diesen Score als Grundlage für ein persönliches Gespräch nutzen möchtest, überlege dir vorher folgende drei Fragen. Notiere dir kurz eine Antwort:'),
     style: 'body', margin: [0, 0, 0, 10],
   });
   const gespraechsfragen = [
@@ -233,7 +268,7 @@ async function generateCustomerPdf(scores, lead) {
     content.push({
       columns: [
         { text: (i + 1) + '.', width: 15, style: { fontSize: 10, bold: true, color: ORANGE } },
-        { text: f, style: 'body', width: '*' },
+        { text: fix(f), style: 'body', width: '*' },
       ],
       margin: [0, 0, 0, 6],
     });
@@ -245,10 +280,10 @@ async function generateCustomerPdf(scores, lead) {
       widths: ['*'],
       body: [[{
         stack: [
-          { text: 'ÜBRIGENS', style: 'sectionEyebrow', margin: [0, 0, 0, 4] },
-          { text: 'Willst du auch wissen, wer du in deiner Unternehmerrolle bist?', style: 'boxTitle' },
-          { text: 'Das TRUST Unternehmer-Profil ergänzt den Score um die persönliche Perspektive: Verhaltensstil und Motive. Für Coaching-Kunden.', style: 'body', margin: [0, 2, 0, 6] },
-          { text: 'trust-unternehmer.de/profil', style: { fontSize: 10, bold: true, color: ORANGE } },
+          { text: fix('ÜBRIGENS'), style: 'sectionEyebrow', margin: [0, 0, 0, 4] },
+          { text: fix('Willst du auch wissen, wer du in deiner Unternehmerrolle bist?'), style: 'boxTitle' },
+          { text: fix('Das TRUST Unternehmer-Profil ergänzt den Score um die persönliche Perspektive: Verhaltensstil und Motive. Für Coaching-Kunden.'), style: 'body', margin: [0, 2, 0, 6] },
+          { text: fix('trust-unternehmer.de/profil'), style: { fontSize: 10, bold: true, color: ORANGE } },
         ],
         fillColor: BG, margin: [12, 10, 12, 10],
       }]],
@@ -263,6 +298,11 @@ async function generateCustomerPdf(scores, lead) {
     styles: commonStyles,
     defaultStyle: { font: 'Roboto', fontSize: 10, color: '#222' },
     footer: footer('Für ' + lead.vorname + ' ' + lead.name),
+    info: {
+      title: 'TRUST Unternehmer-Score',
+      author: 'Thomas Brandenburger',
+      subject: 'Reifegrad-Auswertung für ' + lead.vorname + ' ' + lead.name,
+    },
   };
 
   return await new Promise(resolve => {
@@ -282,91 +322,90 @@ async function generateCoachPdf(scores, lead, answers) {
     table: {
       widths: ['*'],
       body: [[{
-        text: 'COACH-VERSION – vertraulich\nKunde: ' + lead.vorname + ' ' + lead.name +
+        text: fix('COACH-VERSION – vertraulich\nKunde: ' + lead.vorname + ' ' + lead.name +
               (lead.firma ? ' · ' + lead.firma : '') +
               (lead.email ? ' · ' + lead.email : '') +
-              (lead.plz || lead.ort ? '\n' + (lead.plz ? lead.plz + ' ' : '') + (lead.ort || '') : ''),
-        style: 'body', color: NAVY, fillColor: '#FFF5EB', margin: [10, 8, 10, 8],
+              (lead.plz || lead.ort ? '\n' + (lead.plz ? lead.plz + ' ' : '') + (lead.ort || '') : '')),
+        style: 'body', color: NAVY, fillColor: BG_WARM, margin: [10, 8, 10, 8],
       }]],
     }, layout: 'noBorders',
     margin: [0, 0, 0, 16],
   });
 
   // ========== KURZÜBERSICHT ==========
-  content.push({ text: 'KURZÜBERSICHT', style: 'sectionEyebrow' });
-  content.push({ text: 'Profil auf einen Blick', style: 'section' });
+  content.push({ text: fix('KURZÜBERSICHT'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Profil auf einen Blick'), style: 'section' });
 
   content.push({
     table: {
       widths: [180, '*'],
       body: [
-        [{ text: 'Gesamtscore', style: 'tableCell', color: GRAY }, { text: scores.overall + ' / 100', style: 'tableCell', bold: true, color: ORANGE }],
-        [{ text: 'Dominante Stufe', style: 'tableCell', color: GRAY }, { text: 'Stufe ' + (scores.dom + 1) + ' – ' + STUFEN[scores.dom] + ' (' + scores.percent[scores.dom] + '%)', style: 'tableCell', bold: true }],
-        [{ text: 'Stärkste Stufe', style: 'tableCell', color: GRAY }, { text: 'Stufe ' + (scores.strongest + 1) + ' – ' + STUFEN[scores.strongest] + ' (' + scores.percent[scores.strongest] + '%)', style: 'tableCell' }],
-        [{ text: 'Größter Hebel (schwächste Stufe)', style: 'tableCell', color: GRAY }, { text: 'Stufe ' + (scores.weakest + 1) + ' – ' + STUFEN[scores.weakest] + ' (' + scores.percent[scores.weakest] + '%)', style: 'tableCell', bold: true, color: NAVY }],
-        [{ text: 'Bearbeitungszeit', style: 'tableCell', color: GRAY }, { text: scores.elapsedMin ? (Math.round(scores.elapsedMin * 10) / 10) + ' Min' : 'n/a', style: 'tableCell' }],
+        [{ text: fix('Gesamtscore'), style: 'tableCell', color: GRAY }, { text: scores.overall + ' / 100', style: 'tableCell', bold: true, color: ORANGE }],
+        [{ text: fix('Dominante Stufe'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.dom + 1) + ' – ' + STUFEN[scores.dom]) + ' (' + scores.percent[scores.dom] + '%)', style: 'tableCell', bold: true }],
+        [{ text: fix('Stärkste Stufe'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.strongest + 1) + ' – ' + STUFEN[scores.strongest]) + ' (' + scores.percent[scores.strongest] + '%)', style: 'tableCell' }],
+        [{ text: fix('Größter Hebel (schwächste Stufe)'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.weakest + 1) + ' – ' + STUFEN[scores.weakest]) + ' (' + scores.percent[scores.weakest] + '%)', style: 'tableCell', bold: true, color: NAVY }],
+        [{ text: fix('Bearbeitungszeit'), style: 'tableCell', color: GRAY }, { text: scores.elapsedMin ? (Math.round(scores.elapsedMin * 10) / 10) + ' Min' : 'n/a', style: 'tableCell' }],
       ],
     }, layout: 'noBorders',
     margin: [0, 0, 0, 16],
   });
 
   // Verteilungs-Balken
-  content.push({ text: 'Verteilung über die 5 Stufen', style: 'h3' });
-  content.push({ svg: stufenBarSvg(scores), width: 480, margin: [0, 4, 0, 16] });
+  content.push({ text: fix('Verteilung über die 5 Stufen'), style: 'h3' });
+  content.push(stufenBars(scores));
+  content.push({ text: '', margin: [0, 0, 0, 16] });
 
   // ========== COACH-HINWEISE ==========
-  content.push({ text: 'COACH-HINWEISE', style: 'sectionEyebrow' });
-  content.push({ text: 'Für die Vorbereitung des Klarheits-Gesprächs', style: 'section' });
+  content.push({ text: fix('COACH-HINWEISE'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Für die Vorbereitung des Klarheits-Gesprächs'), style: 'section' });
 
   content.push({
     table: {
       widths: ['*'],
       body: [[{
         stack: [
-          { text: 'Fokus', style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 } },
-          { text: hinweise.fokus, style: 'body', margin: [0, 3, 0, 8] },
-          { text: 'Formatvorschlag', style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 } },
-          { text: hinweise.formatvorschlag, style: 'body', margin: [0, 3, 0, 8] },
-          { text: 'Warnhinweis', style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 } },
-          { text: hinweise.warnhinweis, style: 'body', margin: [0, 3, 0, 0] },
+          { text: fix('Fokus'), style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 } },
+          { text: fix(hinweise.fokus), style: 'body', margin: [0, 3, 0, 8] },
+          { text: fix('Formatvorschlag'), style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 } },
+          { text: fix(hinweise.formatvorschlag), style: 'body', margin: [0, 3, 0, 8] },
+          { text: fix('Warnhinweis'), style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 } },
+          { text: fix(hinweise.warnhinweis), style: 'body', margin: [0, 3, 0, 0] },
         ],
-        fillColor: '#FFF5EB', margin: [12, 10, 12, 10],
+        fillColor: BG_WARM, margin: [12, 10, 12, 10],
       }]],
     }, layout: 'noBorders',
     margin: [0, 0, 0, 16], pageBreak: 'after',
   });
 
   // ========== ROHDATEN ==========
-  content.push({ text: 'ROHDATEN · ALLE 40 ANTWORTEN', style: 'sectionEyebrow' });
-  content.push({ text: 'Detaillierte Auswertung nach Stufen', style: 'section' });
+  content.push({ text: fix('ROHDATEN · ALLE 40 ANTWORTEN'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Detaillierte Auswertung nach Stufen'), style: 'section' });
 
   const antwortLabels = ['gar nicht', 'kaum', 'teilweise', 'überwiegend', 'voll'];
 
-  // Antworten nach Stufen gruppiert
   for (let ci = 0; ci < 5; ci++) {
     const stufenFragen = QUESTIONS.map((q, i) => ({ ...q, idx: i, answer: answers[i] !== null ? answers[i] : 0 })).filter(q => q.ci === ci);
     if (!stufenFragen.length) continue;
 
     content.push({
-      text: 'Stufe ' + (ci + 1) + ': ' + STUFEN[ci] + ' (' + scores.percent[ci] + '%)',
+      text: fix('Stufe ' + (ci + 1) + ': ' + STUFEN[ci]) + ' (' + scores.percent[ci] + '%)',
       style: 'h3', color: STUFEN_FARBEN[ci], margin: [0, 10, 0, 6],
     });
 
     const rows = [
       [
         { text: '#', style: 'tableHeader', alignment: 'center' },
-        { text: 'Frage', style: 'tableHeader' },
-        { text: 'Antw.', style: 'tableHeader', alignment: 'center' },
+        { text: fix('Frage'), style: 'tableHeader' },
+        { text: fix('Antw.'), style: 'tableHeader', alignment: 'center' },
         { text: 'Wert', style: 'tableHeader', alignment: 'center' },
       ]
     ];
     stufenFragen.forEach(q => {
-      // Der interne "Wert" (nach Invertierung, so wie er in die Berechnung eingeht)
       const berechnungsWert = q.inv ? (4 - q.answer) : q.answer;
       rows.push([
         { text: 'F' + String(q.idx + 1).padStart(2, '0'), style: 'tableCell', alignment: 'center', color: GRAYLIGHT },
-        { text: q.text + (q.inv ? ' (invers)' : ''), style: 'tableCell' },
-        { text: antwortLabels[q.answer], style: 'tableCell', alignment: 'center' },
+        { text: fix(q.text + (q.inv ? ' (invers)' : '')), style: 'tableCell' },
+        { text: fix(antwortLabels[q.answer]), style: 'tableCell', alignment: 'center' },
         { text: String(berechnungsWert), style: 'tableCell', alignment: 'center', bold: true, color: NAVY },
       ]);
     });
@@ -387,28 +426,28 @@ async function generateCoachPdf(scores, lead, answers) {
   }
 
   content.push({
-    text: 'Legende: 0 = gar nicht · 1 = kaum · 2 = teilweise · 3 = überwiegend · 4 = voll · „invers" = umgekehrt gewertet',
+    text: fix('Legende: 0 = gar nicht · 1 = kaum · 2 = teilweise · 3 = überwiegend · 4 = voll · „invers" = umgekehrt gewertet'),
     style: { fontSize: 8, color: GRAYLIGHT, italics: true },
     margin: [0, 4, 0, 16], pageBreak: 'after',
   });
 
-  // ========== KUNDENANSICHT (das, was der Kunde sieht) ==========
-  content.push({ text: 'AB HIER: WAS DER KUNDE SIEHT', style: 'sectionEyebrow' });
-  content.push({ text: 'Identisch mit dem Kunden-PDF', style: 'section', margin: [0, 0, 0, 14] });
+  // ========== KUNDENANSICHT ==========
+  content.push({ text: fix('AB HIER: WAS DER KUNDE SIEHT'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Identisch mit dem Kunden-PDF'), style: 'section', margin: [0, 0, 0, 14] });
 
-  content.push({ text: 'Dein Gesamtergebnis', style: 'h3' });
+  content.push({ text: fix('Dein Gesamtergebnis'), style: 'h3' });
   content.push({
     columns: [
-      { svg: scoreDonutSvg(scores.overall), width: 120, alignment: 'left' },
+      { width: 130, stack: [scoreBlock(scores.overall)] },
       {
         stack: [
-          { text: 'Dominante Stufe', style: 'metaLabel' },
-          { text: 'Stufe ' + (scores.dom + 1) + ': ' + STUFEN[scores.dom], style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 8] },
-          { text: 'Größter Hebel', style: 'metaLabel' },
-          { text: STUFEN[scores.weakest], style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
+          { text: fix('Dominante Stufe'), style: 'metaLabel' },
+          { text: fix('Stufe ' + (scores.dom + 1) + ': ' + STUFEN[scores.dom]), style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 12] },
+          { text: fix('Größter Hebel'), style: 'metaLabel' },
+          { text: fix(STUFEN[scores.weakest]), style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
         ],
         width: '*',
-        margin: [16, 8, 0, 0],
+        margin: [16, 15, 0, 0],
       },
     ],
     margin: [0, 0, 0, 12],
@@ -419,28 +458,29 @@ async function generateCoachPdf(scores, lead, answers) {
       widths: ['*'],
       body: [[{
         stack: [
-          { text: kern.kurz, style: 'boxTitle', color: ORANGE },
-          { text: kern.lang, style: 'body', margin: [0, 4, 0, 0] },
+          { text: fix(kern.kurz), style: 'boxTitle', color: ORANGE },
+          { text: fix(kern.lang), style: 'body', margin: [0, 4, 0, 0] },
         ],
-        fillColor: '#FFF5EB', margin: [12, 10, 12, 10],
+        fillColor: BG_WARM, margin: [12, 10, 12, 10],
       }]],
     }, layout: 'noBorders',
     margin: [0, 0, 0, 12],
   });
 
-  content.push({ text: 'Drei nächste Schritte für den Kunden', style: 'h3' });
+  content.push({ text: fix('Drei nächste Schritte für den Kunden'), style: 'h3' });
   STUFEN_SCHRITTE[scores.dom].forEach((s, i) => {
     content.push({
-      text: (i + 1) + '. ' + s,
+      text: fix((i + 1) + '. ' + s),
       style: 'body',
       margin: [0, 0, 0, 4],
     });
   });
 
-  // ========== METADATEN-ZEILE für den Kompass-Import ==========
-  // Diese Zeile ist maschinenlesbar und wird vom TRUST Klarheits-Kompass
-  // beim PDF-Upload automatisch geparst. Sehr klein und weiß, damit sie
-  // im ausgedruckten PDF nicht auffällt, aber in der Datei enthalten ist.
+  /* ========== METADATEN für den Kompass-Import ==========
+     Nicht mehr sichtbar im PDF: Die Metadaten werden im PDF-Info-Feld
+     hinterlegt (subject/keywords). Der Klarheits-Kompass kann sie später
+     über pdf.js aus dem Info-Feld auslesen, ohne dass sie im sichtbaren
+     PDF-Inhalt auftauchen. */
   const metadata = 'TRUSTSCORE_META|' +
     'ov:' + scores.overall + '|' +
     'dom:' + scores.dom + '|' +
@@ -454,12 +494,6 @@ async function generateCoachPdf(scores, lead, answers) {
     'email:' + encodeURIComponent(lead.email || '') + '|' +
     'end';
 
-  content.push({
-    text: metadata,
-    style: 'metaHidden',
-    margin: [0, 20, 0, 0],
-  });
-
   const docDefinition = {
     pageSize: 'A4',
     pageMargins: [40, 40, 40, 60],
@@ -467,6 +501,12 @@ async function generateCoachPdf(scores, lead, answers) {
     styles: commonStyles,
     defaultStyle: { font: 'Roboto', fontSize: 10, color: '#222' },
     footer: footer('COACH · ' + lead.vorname + ' ' + lead.name),
+    info: {
+      title: 'TRUST Unternehmer-Score Coach-Version',
+      author: 'Thomas Brandenburger',
+      subject: 'Coach-Auswertung für ' + lead.vorname + ' ' + lead.name,
+      keywords: metadata,  // ← Metadaten hier drin, unsichtbar
+    },
   };
 
   return await new Promise(resolve => {

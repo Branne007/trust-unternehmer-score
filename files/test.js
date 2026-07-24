@@ -1,6 +1,7 @@
 /* ============================================================
-   TRUST Unternehmer-Score · Test-Logik
+   TRUST Unternehmer-Score · Test-Logik (v2.1)
    Berechnung, Lead-Handling, Versand-Flow
+   Neu: Consent-Checkbox-Validierung
    ============================================================ */
 
 /* ---------- State ---------- */
@@ -134,7 +135,6 @@ function setAnswer(val) {
   state.answers[state.currentQ] = val;
   saveState();
   renderQuestion();
-  // Autoadvance nach 250ms
   setTimeout(() => {
     if (state.answers[state.currentQ] !== null) nextQuestion();
   }, 250);
@@ -180,8 +180,6 @@ function computeScores() {
   const rawOverall = percent.reduce((s, v, i) => s + v * GEWICHTUNG[i], 0) / totalWeight;
   const overall = isNaN(rawOverall) ? 0 : Math.round(rawOverall);
 
-  // Dominante Stufe: höchste Stufe bei der der Prozentwert >= vorheriger dominanter
-  // (Bei Gleichstand gewinnt die höhere Stufe – bewusst, weil weiter entwickelt.)
   let dom = 0, strongest = 0, weakest = 0;
   for (let i = 1; i < 5; i++) {
     if (percent[i] >= percent[dom]) dom = i;
@@ -192,12 +190,7 @@ function computeScores() {
   const elapsedMin = state.startedAt ? Math.max(0.1, (Date.now() - state.startedAt) / 60000) : null;
 
   return {
-    percent,        // Array: Prozentwert je Stufe
-    overall,        // Gesamtscore 0-100
-    dom,            // Index dominante Stufe
-    strongest,      // Index stärkste Stufe (strengster Vergleich)
-    weakest,        // Index schwächste Stufe = größter Hebel
-    elapsedMin,     // Bearbeitungszeit in Minuten
+    percent, overall, dom, strongest, weakest, elapsedMin,
   };
 }
 
@@ -206,7 +199,6 @@ function gateToLead() {
   saveState();
   switchScreen('screen-lead');
   const scores = computeScores();
-  // Teaser-Score anzeigen
   const teaserNum = document.getElementById('teaser-num');
   const teaserStage = document.getElementById('teaser-stage');
   const teaserArc = document.getElementById('teaser-arc');
@@ -216,10 +208,28 @@ function gateToLead() {
     const c = 534.07;
     teaserArc.style.strokeDashoffset = c - c * scores.overall / 100;
   }
+  updateConsent();
+}
+
+/* ---------- Consent-Handling ----------
+   Der Absende-Button wird disabled bis die Consent-Checkbox angehakt ist. */
+function updateConsent() {
+  const cb = document.getElementById('lead-consent');
+  const btn = document.getElementById('btn-submit-lead');
+  if (!cb || !btn) return;
+  btn.disabled = !cb.checked;
+  btn.style.opacity = cb.checked ? '1' : '0.5';
+  btn.style.cursor = cb.checked ? 'pointer' : 'not-allowed';
 }
 
 /* ---------- Lead-Formular absenden ---------- */
 function submitLead() {
+  const consentBox = document.getElementById('lead-consent');
+  if (!consentBox || !consentBox.checked) {
+    alert('Bitte bestätige die Einwilligung, damit dein Score-Report an dich versendet werden kann.');
+    return;
+  }
+
   const fields = ['lead-vorname', 'lead-name', 'lead-firma', 'lead-email', 'lead-plz', 'lead-ort'];
   let ok = true;
   fields.forEach(id => {
@@ -239,6 +249,7 @@ function submitLead() {
     email: document.getElementById('lead-email').value.trim(),
     plz: document.getElementById('lead-plz').value.trim(),
     ort: document.getElementById('lead-ort').value.trim(),
+    consentAt: new Date().toISOString(),  // Zeitstempel für die Einwilligung
   };
   saveState();
   showProcessing();
@@ -298,7 +309,6 @@ async function showProcessing() {
 function showResults(scores, mailSent) {
   switchScreen('screen-result');
 
-  // Bestätigungsbanner Mail / Fallback
   const banner = document.getElementById('confirm-banner');
   const fallback = document.getElementById('fallback-download');
   if (mailSent) {
@@ -313,7 +323,6 @@ function showResults(scores, mailSent) {
     if (fallback) fallback.style.display = 'block';
   }
 
-  // Score-Zahl
   const num = document.getElementById('result-num');
   if (num) num.textContent = scores.overall;
   const arc = document.getElementById('result-arc');
@@ -324,7 +333,6 @@ function showResults(scores, mailSent) {
   const stage = document.getElementById('result-stage');
   if (stage) stage.textContent = 'Deine stärkste Stufe: ' + STUFEN[scores.strongest];
 
-  // Stufen-Balken (kompakt)
   const barContainer = document.getElementById('stufen-bars');
   if (barContainer) {
     barContainer.innerHTML = scores.percent.map((p, i) => {
@@ -337,13 +345,11 @@ function showResults(scores, mailSent) {
     }).join('');
   }
 
-  // Kernaussage & Hebel
   const rec = document.getElementById('result-kernaussage');
   if (rec) rec.textContent = STUFEN_KERNAUSSAGE[scores.dom].lang;
   const hebel = document.getElementById('result-hebel');
   if (hebel) hebel.textContent = STUFEN_KERNAUSSAGE[scores.dom].hebel;
 
-  // 3 nächste Schritte
   const steps = document.getElementById('result-steps');
   if (steps) {
     steps.innerHTML = STUFEN_SCHRITTE[scores.dom].map((s, i) =>

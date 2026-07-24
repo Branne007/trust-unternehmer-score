@@ -17,3 +17,6 @@ Thumbs.db
 
 # Archive (nicht im Repo)
 *.zip
+
+# PDFs (Test-Ausdrucke)
+*.pdf
