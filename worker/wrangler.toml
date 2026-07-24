@@ -1,0 +1,30 @@
+name = "score-mail"
+main = "worker.js"
+compatibility_date = "2025-10-01"
+
+# EU-Region (DSGVO-relevant) – der Worker läuft dann in EU-Rechenzentren.
+# Cloudflare bietet standardmäßig einen Data Localization Suite, der Workers
+# global platziert. Für strenge EU-Datenlokalisierung ggf. Enterprise-Plan
+# oder Regional Services aktivieren.
+[placement]
+mode = "smart"
+
+# Umgebungsvariablen (nicht sensibel, im Klartext ok)
+[vars]
+COACH_EMAIL = "tb@trust-unternehmer.de"
+FROM_ADDRESS = "TRUST Unternehmer <score@trust-unternehmer.de>"
+
+# CORS wird im Worker-Code global gesetzt (Access-Control-Allow-Origin: *).
+# Für Production auf konkrete Domain einschränken:
+#   'Access-Control-Allow-Origin': 'https://score.trust-unternehmer.de'
+
+# Secrets werden über CLI gesetzt (nicht in dieser Datei):
+#   wrangler secret put RESEND_API_KEY
+
+# Optional: Route für Custom Domain nach Deploy
+# routes = [
+#   { pattern = "api.trust-unternehmer.de/score-mail", zone_name = "trust-unternehmer.de" }
+# ]
+
+# Für einfachen Start reicht der Standard-Endpunkt:
+# https://score-mail.<dein-account>.workers.dev

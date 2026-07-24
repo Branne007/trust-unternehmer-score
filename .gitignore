@@ -1,0 +1,19 @@
+﻿# Wrangler
+.wrangler/
+worker/.wrangler/
+
+# Node
+node_modules/
+
+# Environment / Secrets
+.env
+.env.local
+.env.*.local
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Archive (nicht im Repo)
+*.zip

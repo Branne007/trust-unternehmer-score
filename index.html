@@ -1,744 +1,625 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRUST Unternehmer-Score | Dein Quick Check</title>
-  <style>
-:root{
-  --color-navy:#00305b;--color-navy-dark:#082742;--color-orange:#f18423;
-  --color-gray:#54595f;--color-text:#161616;--color-white:#fff;--color-bg:#f7f8fa;
-  --font-main:"Myriad Pro Condensed","Arial Narrow",Arial,sans-serif;
-  --container-width:1140px;--container-narrow:780px;
-  --radius-sm:8px;--radius-md:16px;--radius-lg:24px;
-  --shadow-soft:0 12px 30px rgba(0,48,91,.08);--shadow-card:0 10px 24px rgba(0,48,91,.06);
-  --space-2xl:5rem;
-  --lc-4-bg:#d4edda;--lc-4-bd:#27ae60;--lc-4-tx:#1a7a40;
-  --lc-3-bg:#c8e6c9;--lc-3-bd:#52b788;--lc-3-tx:#2d6a4f;
-  --lc-2-bg:#fff3cd;--lc-2-bd:#f0a500;--lc-2-tx:#7d5a00;
-  --lc-1-bg:#fde8d8;--lc-1-bd:#e07b39;--lc-1-tx:#8c3a00;
-  --lc-0-bg:#fdd;  --lc-0-bd:#c0392b;--lc-0-tx:#7b0d0d;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRUST Unternehmer-Score</title>
+<meta name="description" content="Reifegrad-Check der Unternehmensführung – 40 Fragen, 10 Minuten, individuelle Standortbestimmung.">
+<link rel="icon" type="image/svg+xml" href="bilder/TRUST-Hauptlogo-horizontal.svg">
+<script>
+  window.SCORE_CONFIG = {
+    workerUrl: 'https://score-mail.thb-ad8.workers.dev',
+  };
+</script>
+<style>
+:root {
+  --color-navy: #00305B;
+  --color-navy-dark: #082742;
+  --color-orange: #F18423;
+  --color-gray: #54595F;
+  --color-graylight: #9AA0A6;
+  --color-text: #161616;
+  --color-white: #FFFFFF;
+  --color-bg: #F7F8FA;
+  --color-bg-warm: #FFF5EB;
+  --font-main: "Myriad Pro Condensed", "Arial Narrow", Arial, sans-serif;
+  --container-narrow: 780px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-soft: 0 12px 30px rgba(0, 48, 91, .08);
+  --shadow-card: 0 10px 24px rgba(0, 48, 91, .06);
 }
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:var(--font-main);color:var(--color-text);background:var(--color-white);line-height:1.55}
-img{max-width:100%;display:block}a{color:var(--color-navy);text-decoration:none}
-.container{width:min(100% - 2rem,var(--container-width));margin:0 auto}
-.narrow{width:min(100%,var(--container-narrow));margin:0 auto}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.55;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--color-navy); text-decoration: none; }
 
-/* HEADER */
-.site-header{position:sticky;top:0;z-index:20;background:var(--color-navy-dark);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px)}
-.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem 0}
-.brand-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
-.brand-logo img{height:44px;width:auto}
-.header-nav{display:flex;gap:1.5rem;font-size:.95rem;align-items:center}
-.header-nav a{color:rgba(255,255,255,.8);transition:color .2s}
-.header-nav a:hover{color:var(--color-orange)}
-.header-nav .btn-nav{background:var(--color-orange);color:#fff;padding:.5rem 1.1rem;border-radius:999px;font-weight:700;font-size:.9rem;transition:opacity .2s}
-.header-nav .btn-nav:hover{opacity:.88;color:#fff}
+.container { width: min(100% - 2rem, var(--container-narrow)); margin: 0 auto; }
 
-/* HERO */
-.hero{background:linear-gradient(135deg,rgba(0,48,91,.98),rgba(0,48,91,.88));color:#fff;padding:5rem 0 4rem}
-.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:2.5rem;align-items:center}
-.hero h1{margin:0 0 1rem;font-size:clamp(2.5rem,5vw,4.2rem);line-height:.98;letter-spacing:-.02em}
-.eyebrow{display:inline-block;margin:0 0 1rem;font-size:.95rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--color-orange)}
-.hero-text{max-width:42rem;margin:0 0 1.5rem;font-size:1.25rem;color:rgba(255,255,255,.92)}
-.hero-highlights{display:flex;flex-wrap:wrap;gap:.75rem;margin:0 0 1.75rem}
-.hero-highlights span{display:inline-flex;align-items:center;padding:.55rem .85rem;border:1px solid rgba(255,255,255,.16);border-radius:999px;font-size:.98rem;color:rgba(255,255,255,.96);background:rgba(255,255,255,.06)}
-.hero-image{border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-.hero-image img{width:100%;height:auto}
+/* Header */
+.site-header {
+  background: var(--color-navy-dark);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+.brand-logo img { height: 40px; width: auto; }
+.header-text { color: var(--color-white); font-size: 0.9rem; opacity: 0.7; }
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.85rem 1.2rem;border-radius:999px;border:2px solid transparent;font-size:1rem;font-weight:700;font-family:var(--font-main);cursor:pointer;transition:transform .2s,opacity .2s}
-.btn:hover{transform:translateY(-1px);opacity:.96}
-.btn-primary{background:var(--color-orange);color:#fff}
-.btn-outline{background:transparent;color:var(--color-navy);border-color:rgba(0,48,91,.16)}
-.btn-ghost{background:transparent;color:var(--color-gray);border-color:rgba(0,48,91,.12);font-weight:400}
-.btn-large{padding:1rem 1.5rem;min-height:54px;font-size:1.06rem}
-.btn-block{width:100%}
+/* Screens */
+.screen { display: none; padding: 2.5rem 0; }
+.screen.active { display: block; }
 
-/* SECTIONS */
-.section{padding:var(--space-2xl) 0}.section-alt{background:var(--color-bg)}
-.section h2{margin:0 0 1rem;font-size:clamp(2rem,4vw,3rem);line-height:1.02;color:var(--color-navy)}
-.section p{margin:0 0 1rem;font-size:1.16rem}
-.steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:2rem}
-.step-card{text-align:center;padding:1.25rem .75rem;background:var(--color-white);border:1px solid rgba(0,48,91,.08);border-radius:var(--radius-md);box-shadow:var(--shadow-card)}
-.step-num{width:44px;height:44px;display:inline-grid;place-items:center;border-radius:50%;background:var(--color-orange);color:#fff;font-size:1.2rem;font-weight:700;margin-bottom:.6rem}
-.step-card h3{margin:0;font-size:1.05rem;color:var(--color-navy)}
+/* Start-Screen */
+.hero {
+  text-align: center;
+  padding: 2rem 0 3rem;
+}
+.hero-eyebrow {
+  color: var(--color-orange);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.hero h1 {
+  color: var(--color-navy);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  line-height: 1.15;
+}
+.hero-text {
+  color: var(--color-gray);
+  font-size: 1.15rem;
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+}
+.hero-highlights {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: var(--color-navy);
+  margin: 1.5rem 0 2rem;
+}
+.hero-highlights span { background: var(--color-white); padding: 0.5rem 1rem; border-radius: 999px; box-shadow: var(--shadow-card); }
 
-/* QUIZ */
-.quiz-container{display:none}.quiz-container.active{display:block}
-.progress-bar-wrap{width:100%;height:8px;background:rgba(0,48,91,.08);border-radius:999px;margin-bottom:.75rem;overflow:hidden}
-.progress-bar-fill{height:100%;background:var(--color-orange);border-radius:999px;transition:width .4s}
-.progress-label{font-size:.95rem;color:var(--color-gray);margin-bottom:2rem}
-.cluster-label{display:inline-block;margin-bottom:.75rem;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--color-orange)}
-.question-card{background:#fff;border:1px solid rgba(0,48,91,.08);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:2rem;margin-bottom:1.5rem;animation:fadeIn .35s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.question-card h3{margin:0 0 1.5rem;font-size:1.4rem;color:var(--color-navy);line-height:1.3}
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.75rem;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+}
+.btn-primary { background: var(--color-orange); color: var(--color-white); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(241, 132, 35, 0.3); }
+.btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-outline { background: transparent; color: var(--color-navy); border: 2px solid var(--color-navy); }
+.btn-large { font-size: 1.15rem; padding: 1rem 2.25rem; }
 
-/* LIKERT – neu mit A-E Badges und Farben */
-.likert-group{display:flex;flex-direction:column;gap:.55rem}
-.likert-option{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;border:2px solid rgba(0,48,91,.09);border-radius:var(--radius-sm);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;font-size:1.05rem;background:#fafafa}
-.likert-option:hover{border-color:var(--color-orange);background:#fff5eb;transform:translateX(3px)}
-.likert-option input{display:none}
-.likert-badge{width:32px;height:32px;border-radius:50%;background:var(--color-navy-dark);color:#fff;font-size:.82rem;font-weight:900;display:grid;place-items:center;flex-shrink:0;transition:background .15s}
-.likert-chip{display:inline-block;padding:.18rem .65rem;border-radius:999px;font-size:.88rem;font-weight:700}
-.chip-4{background:var(--lc-4-bg);color:var(--lc-4-tx)}.chip-3{background:var(--lc-3-bg);color:var(--lc-3-tx)}
-.chip-2{background:var(--lc-2-bg);color:var(--lc-2-tx)}.chip-1{background:var(--lc-1-bg);color:var(--lc-1-tx)}
-.chip-0{background:var(--lc-0-bg);color:var(--lc-0-tx)}
-.likert-option.sel-4{border-color:var(--lc-4-bd);background:var(--lc-4-bg)}.likert-option.sel-4 .likert-badge{background:var(--lc-4-bd)}
-.likert-option.sel-3{border-color:var(--lc-3-bd);background:var(--lc-3-bg)}.likert-option.sel-3 .likert-badge{background:var(--lc-3-bd)}
-.likert-option.sel-2{border-color:var(--lc-2-bd);background:var(--lc-2-bg)}.likert-option.sel-2 .likert-badge{background:var(--lc-2-bd);color:#333}
-.likert-option.sel-1{border-color:var(--lc-1-bd);background:var(--lc-1-bg)}.likert-option.sel-1 .likert-badge{background:var(--lc-1-bd)}
-.likert-option.sel-0{border-color:var(--lc-0-bd);background:var(--lc-0-bg)}.likert-option.sel-0 .likert-badge{background:var(--lc-0-bd)}
-.quiz-nav{display:flex;justify-content:space-between;gap:1rem;margin-top:1rem}
+/* Card */
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 1.5rem;
+}
+.card h2 { color: var(--color-navy); margin-top: 0; }
+.eyebrow {
+  display: block;
+  color: var(--color-orange);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
 
-/* LEAD GATE */
-.lead-gate{display:none}.lead-gate.active{display:block}
-.lead-card{background:#fff;border:2px solid var(--color-orange);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:2.5rem;margin-bottom:2rem;text-align:center}
-.lead-card h3{margin:0 0 .5rem;font-size:1.6rem;color:var(--color-navy)}
-.lead-subtitle{color:var(--color-gray);font-size:1.1rem;margin-bottom:1.5rem}
-.lead-perks{display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-bottom:1.75rem}
-.lead-perks span{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;background:rgba(241,132,35,.08);border-radius:999px;font-size:.95rem;color:var(--color-navy);font-weight:600}
-.lead-form{text-align:left;max-width:480px;margin:0 auto}
-.lead-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.lead-form .form-field{margin-bottom:1rem}
-.lead-form label{display:block;margin-bottom:.4rem;font-weight:700;color:var(--color-navy);font-size:.95rem}
-.lead-form input{width:100%;padding:.85rem 1rem;border:1px solid rgba(0,48,91,.18);border-radius:12px;font:inherit;color:var(--color-text);background:#fff}
-.lead-form input:focus{outline:none;border-color:var(--color-orange);box-shadow:0 0 0 4px rgba(241,132,35,.12)}
-.form-note{font-size:.85rem;color:var(--color-gray);margin-top:.25rem;text-align:center}
+/* Treppe */
+.treppe {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+.treppe-step {
+  background: var(--color-bg);
+  padding: 1rem 0.75rem;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  border-top: 4px solid var(--color-navy);
+}
+.treppe-step:nth-child(1) { border-top-color: #C0392B; }
+.treppe-step:nth-child(2) { border-top-color: #E07B39; }
+.treppe-step:nth-child(3) { border-top-color: #D4A017; }
+.treppe-step:nth-child(4) { border-top-color: #27AE60; }
+.treppe-step:nth-child(5) { border-top-color: #00305B; }
+.treppe-step-num { font-size: 0.85rem; color: var(--color-graylight); font-weight: 700; }
+.treppe-step-name { font-size: 0.9rem; color: var(--color-navy); font-weight: 700; margin-top: 0.25rem; }
 
-/* ERGEBNISSE */
-.result-container{display:none}.result-container.active{display:block}
-.result-header{text-align:center;margin-bottom:2rem}
-.result-header .result-eyebrow{font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray);margin-bottom:.5rem}
-.result-header h2{margin:0;font-size:2.2rem;color:var(--color-navy)}
-.score-donut-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center;margin-bottom:1.5rem}
-.donut-wrap{position:relative;width:200px;height:200px;margin:0 auto 1.5rem}
-.donut-wrap svg{width:200px;height:200px;transform:rotate(-90deg)}
-.donut-track{fill:none;stroke:rgba(0,48,91,.08);stroke-width:14}
-.donut-value{fill:none;stroke:var(--color-orange);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease}
-.donut-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.donut-number{font-size:3.5rem;font-weight:700;color:var(--color-navy);line-height:1}
-.donut-sub{font-size:1rem;color:var(--color-gray)}
-.stage-badge{display:inline-block;padding:.65rem 1.25rem;background:rgba(0,48,91,.06);border-radius:999px;font-size:1.05rem;color:var(--color-navy);font-weight:600}
-.detail-section{margin-bottom:1.5rem}
-.detail-eyebrow{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray);margin-bottom:1rem;font-weight:700}
-.phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.phase-card{background:var(--color-bg);border-radius:var(--radius-md);padding:1.25rem 1.4rem;border:2px solid transparent;position:relative}
-.phase-card.highlight-hebel{border-color:var(--color-orange);background:#fff}
-.phase-card.full-width{grid-column:1/-1}
-.phase-phase{font-size:.85rem;color:var(--color-orange);font-weight:600;margin-bottom:.2rem}
-.phase-name{font-size:1.2rem;font-weight:700;color:var(--color-navy);margin-bottom:.6rem}
-.phase-top{display:flex;justify-content:space-between;align-items:flex-start}
-.phase-pct{font-size:1.8rem;font-weight:700;color:var(--color-navy);line-height:1}
-.phase-bar{height:6px;border-radius:999px;background:rgba(0,48,91,.1);margin-bottom:.4rem;overflow:hidden}
-.phase-bar-fill{height:100%;border-radius:999px;background:var(--color-navy);transition:width .8s}
-.phase-tag{font-size:.82rem;font-weight:700}.phase-tag.strength{color:var(--color-navy)}.phase-tag.hebel{color:var(--color-orange)}
-.reco-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;border-left:4px solid var(--color-navy)}
-.reco-card h3{margin:0 0 .75rem;font-size:1.3rem;color:var(--color-navy)}
-.reco-card p{margin:0 0 1.25rem;font-size:1.1rem;color:var(--color-text)}
-.reco-cta{display:inline-block;padding:.6rem 1rem;background:rgba(241,132,35,.1);border-radius:999px;font-size:.95rem;font-weight:700;color:var(--color-orange)}
-.bench-card{background:var(--color-bg);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem}
-.bench-card h3{margin:0 0 1.25rem;font-size:1.3rem;color:var(--color-navy)}
-.bench-item{margin-bottom:1.25rem}
-.bench-item-label{font-size:.95rem;font-weight:700;color:var(--color-navy);margin-bottom:.5rem}
-.bench-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem}
-.bench-row-tag{min-width:22px;font-size:.78rem;font-weight:700;color:var(--color-gray)}
-.bench-bar-bg{flex:1;height:14px;background:rgba(0,48,91,.06);border-radius:999px;overflow:hidden}
-.bench-bar-you{height:100%;border-radius:999px;background:var(--color-orange);transition:width .8s}
-.bench-bar-avg{height:100%;border-radius:999px;background:rgba(0,48,91,.22);transition:width .8s}
-.bench-val{min-width:38px;text-align:right;font-weight:700;font-size:.88rem;color:var(--color-navy)}
-.bench-val-avg{color:var(--color-gray)}
-.bench-legend{display:flex;gap:1.5rem;margin-top:.75rem;font-size:.88rem;color:var(--color-gray)}
-.bench-legend span{display:inline-flex;align-items:center;gap:.4rem}
-.bench-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
-.bench-dot.you{background:var(--color-orange)}.bench-dot.avg{background:rgba(0,48,91,.22)}
-.bench-verdict{margin-top:1.25rem;padding:1rem 1.25rem;background:#fff;border-radius:var(--radius-md);border:1px solid rgba(0,48,91,.08);font-size:1.05rem;color:var(--color-text)}
-.cta-section{background:var(--color-navy);color:#fff;padding:2.5rem;border-radius:var(--radius-lg);text-align:center;margin-bottom:1.5rem}
-.cta-section h3{margin:0 0 .6rem;font-size:1.6rem;color:#fff}
-.cta-section p{color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:1.25rem}
-.email-status{margin-bottom:1.5rem;padding:1.25rem 1.5rem;border-radius:var(--radius-md);text-align:center;font-size:1.05rem;font-weight:600;display:none}
-.email-status.success{background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.2);color:#1a7a40}
-.email-status.error{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);color:#7b0d0d}
+/* Progress-Bar */
+.progress-outer {
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.progress-inner { height: 100%; background: var(--color-orange); border-radius: 999px; transition: width 0.3s; }
+.progress-label { color: var(--color-gray); font-size: 0.9rem; margin-bottom: 1.5rem; }
 
-/* FOOTER */
-.site-footer{background:var(--color-navy-dark);color:rgba(255,255,255,.86);padding:3rem 0 1.5rem}
-.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:1.5rem}
-.footer-brand{display:flex;flex-direction:column;gap:1rem}
-.footer-logos{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
-.footer-logos img{height:46px;width:auto}
-.footer-logos .bvmw-logo{height:54px}
-.footer-address{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.7}
-.footer-brand-desc{font-size:.86rem;color:rgba(255,255,255,.38);max-width:300px;line-height:1.55}
-.footer-col h4{font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.32);margin:0 0 .75rem}
-.footer-col a{display:block;color:rgba(255,255,255,.62);font-size:.9rem;margin-bottom:.4rem;transition:color .2s}
-.footer-col a:hover{color:var(--color-orange)}
-.footer-bottom{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.28)}
+/* Question-Card */
+.question-card {
+  background: var(--color-white);
+  border: 1px solid rgba(0, 48, 91, .08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.cluster-label {
+  display: inline-block;
+  background: var(--color-bg);
+  color: var(--color-navy);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.question-card h3 {
+  margin: 0 0 1.5rem;
+  font-size: 1.4rem;
+  color: var(--color-navy);
+  line-height: 1.3;
+}
 
-@media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero-image{max-width:480px}.steps-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr;gap:1.5rem}}
-@media(max-width:640px){.container{width:min(100% - 1.25rem,var(--container-width))}.question-card{padding:1.25rem}.quiz-nav{flex-direction:column}.quiz-nav .btn{width:100%}.steps-grid{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}.lead-form .form-row{grid-template-columns:1fr}.hero-highlights{flex-direction:column}.cta-section{padding:2rem 1.25rem}.header-nav a:not(.btn-nav){display:none}}
-@media print{.site-header,.site-footer,.quiz-nav,.btn,.cta-section{display:none!important}body{color:#000}.result-header h2{color:#00305b}}
-  </style>
+/* Likert-Group */
+.likert-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.likert-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--color-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.likert-btn:hover { background: #EAECEF; }
+.likert-btn.selected { border-color: var(--color-orange); background: var(--color-bg-warm); font-weight: 600; }
+.likert-btn .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-navy);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1px solid rgba(0, 48, 91, .15);
+}
+.likert-btn.selected .badge { background: var(--color-orange); color: var(--color-white); border-color: var(--color-orange); }
+
+/* Quiz-Nav */
+.quiz-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+@media (max-width: 640px) { .quiz-nav { flex-direction: column-reverse; } .quiz-nav .btn { width: 100%; } }
+
+/* Score-Donut (Lead-Gate und Result) */
+.score-donut-card {
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.donut-wrapper { position: relative; width: 200px; height: 200px; margin: 0 auto; }
+.donut-wrapper svg { width: 100%; height: 100%; }
+.donut-num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.donut-num-val { font-size: 3.5rem; font-weight: 900; color: var(--color-navy); line-height: 1; }
+.donut-num-max { font-size: 0.9rem; color: var(--color-graylight); }
+.stage-badge {
+  display: inline-block;
+  padding: 0.65rem 1.25rem;
+  background: rgba(0, 48, 91, .06);
+  border-radius: 999px;
+  font-size: 1.05rem;
+  color: var(--color-navy);
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+/* Lead-Form */
+.lead-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.lead-form label { display: block; font-size: 0.85rem; color: var(--color-gray); margin-bottom: 0.25rem; font-weight: 600; }
+.lead-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #E5E7EB;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.15s;
+}
+.lead-form input:focus { outline: none; border-color: var(--color-orange); }
+@media (max-width: 640px) { .lead-form .form-row { grid-template-columns: 1fr; } }
+
+/* Result: Stufen-Balken */
+.stufe-row { display: grid; grid-template-columns: 220px 1fr 50px; gap: 0.75rem; align-items: center; margin-bottom: 0.6rem; }
+.stufe-label { font-size: 0.9rem; color: var(--color-navy); }
+.tag-dom { background: var(--color-orange); color: var(--color-white); font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 999px; margin-left: 0.35rem; font-weight: 700; }
+.stufe-bar-bg { height: 10px; background: #EEEEEE; border-radius: 999px; overflow: hidden; }
+.stufe-bar-fill { height: 100%; border-radius: 999px; transition: width 0.5s; }
+.stufe-pct { font-size: 0.9rem; font-weight: 700; color: var(--color-navy); text-align: right; }
+@media (max-width: 640px) { .stufe-row { grid-template-columns: 1fr; gap: 0.25rem; } .stufe-pct { text-align: left; } }
+
+/* Result: Steps */
+.step-row { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start; }
+.step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-orange);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.step-text { font-size: 1rem; padding-top: 0.15rem; }
+
+/* Processing */
+.processing-card { text-align: center; padding: 3rem 2rem; }
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #EEEEEE;
+  border-top-color: var(--color-orange);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Confirm & Fallback */
+.confirm-banner {
+  background: linear-gradient(135deg, #27AE60, #1F8F4F);
+  color: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.confirm-banner h2 { color: var(--color-white); margin: 0 0 0.5rem; }
+.confirm-banner .email {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-weight: 700;
+}
+.fallback-actions { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+
+/* Modal (Resume) */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-content {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 480px;
+  width: 100%;
+}
+.modal-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+/* CTA */
+.cta-section {
+  background: var(--color-navy);
+  color: var(--color-white);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.cta-section h3 { color: var(--color-white); margin: 0 0 0.5rem; font-size: 1.4rem; }
+
+/* Footer */
+.site-footer {
+  background: var(--color-navy-dark);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 3rem;
+}
+.site-footer a { color: var(--color-orange); }
+</style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="site-header">
-  <div class="container">
-    <div class="header-inner">
-      <a href="#" class="brand-logo">
-        <img src="bilder/TRUST-Negativ-horizontal.svg" alt="TRUST Unternehmer">
-      </a>
-      <nav class="header-nav">
-        <a href="#about">Über den Score</a>
-        <a href="#quiz-section">Quick Check starten</a>
-        <a href="#quiz-section" class="btn-nav">Score starten</a>
-      </nav>
-    </div>
+  <div class="container header-inner">
+    <a href="https://trust-unternehmer.de" class="brand-logo">
+      <img src="bilder/TRUST-Negativ-horizontal.svg" alt="TRUST Unternehmer">
+    </a>
+    <div class="header-text">Unternehmer-Score</div>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-grid">
-      <div>
-        <span class="eyebrow">TRUST Unternehmer-Score Quick Check</span>
-        <h1>Wo stehst du als Unternehmer?</h1>
-        <p class="hero-text">40 Fragen – 10 Minuten – eine fundierte Standortbestimmung deines unternehmerischen Reifegrads. Finde heraus, auf welcher Stufe der Entwicklungs-Treppe du dich befindest.</p>
-        <div class="hero-highlights">
-          <span>📊 40 wissenschaftliche Indikatoren</span><span>🎯 5 Reifegrad-Stufen</span>
-          <span>⏱ ca. 10 Minuten</span><span>🔒 100 % anonym</span>
+<main class="container">
+
+  <!-- ============ START ============ -->
+  <section id="screen-start" class="screen active">
+    <div class="hero">
+      <div class="hero-eyebrow">TRUST Unternehmer-Score</div>
+      <h1>Wo stehst du gerade als Unternehmer?</h1>
+      <p class="hero-text">
+        40 Fragen · 10 Minuten · eine fundierte Standortbestimmung deines unternehmerischen Reifegrads.
+        Am Ende erhältst du dein Ergebnis als PDF per E-Mail.
+      </p>
+      <div class="hero-highlights">
+        <span>📊 40 wissenschaftliche Indikatoren</span>
+        <span>🎯 5 Reifegrad-Stufen</span>
+        <span>📧 PDF-Report per Mail</span>
+      </div>
+      <button class="btn btn-primary btn-large" onclick="tryStartTest()">Score starten →</button>
+    </div>
+
+    <div class="card">
+      <span class="eyebrow">Die 5 Stufen der Entwicklungs-Treppe</span>
+      <h2>Wie du deinen Weg vom „getriebenen Macher" zum „gestaltenden Unternehmer" verortest</h2>
+      <div class="treppe">
+        <div class="treppe-step">
+          <div class="treppe-step-num">Stufe 1</div>
+          <div class="treppe-step-name">Getriebener Macher</div>
         </div>
-        <a href="#quiz-section" class="btn btn-primary btn-large">Jetzt Score ermitteln →</a>
-      </div>
-      <div class="hero-image">
-        <img src="bilder/Unternehmer-Entwicklungs-Treppe.png" alt="Die 5 Stufen der Unternehmer-Entwicklungs-Treppe">
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 5 STUFEN -->
-<section class="section section-alt" id="about">
-  <div class="container">
-    <div class="narrow" style="margin-bottom:2rem">
-      <h2>Die 5 Stufen der Entwicklungs-Treppe</h2>
-      <p>Jeder Unternehmer durchläuft typische Entwicklungsphasen – vom operativ getriebenen Macher bis zum strategisch souveränen Gestalter. Der TRUST Unternehmer-Score zeigt dir, wo du gerade stehst.</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card"><div class="step-num">1</div><h3>Getriebener Macher</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Hamsterrad &amp; Feuerwehr</p></div>
-      <div class="step-card"><div class="step-num">2</div><h3>Alltagsgestalter</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Erste Strukturen</p></div>
-      <div class="step-card"><div class="step-num">3</div><h3>Leader</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Führung &amp; Delegation</p></div>
-      <div class="step-card"><div class="step-num">4</div><h3>Systembauer</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Prozesse &amp; Standards</p></div>
-      <div class="step-card"><div class="step-num">5</div><h3>Gestaltender Unternehmer</h3><p style="font-size:.92rem;color:var(--color-gray);margin:.5rem 0 0">Strategie &amp; Souveränität</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- QUIZ -->
-<section class="section" id="quiz-section">
-  <div class="container narrow">
-
-    <!-- START -->
-    <div id="quiz-start" class="quiz-container active">
-      <h2>Quick Check starten</h2>
-      <p>Beantworte die folgenden 40 Fragen ehrlich auf Basis deines Verhaltens in den <strong>letzten 4 Wochen</strong>. Es gibt keine richtigen oder falschen Antworten.</p>
-      <p>Du erhältst keine starre Einordnung, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe?</p>
-      <p style="color:var(--color-gray)"><strong>Skala: 0 = trifft gar nicht zu → 4 = trifft voll zu</strong></p>
-      <button class="btn btn-primary btn-large" onclick="startQuiz()" style="margin-top:1rem">Los geht's →</button>
-    </div>
-
-    <!-- FRAGEN -->
-    <div id="quiz-questions" class="quiz-container">
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
-      <div class="progress-label" id="progress-label"></div>
-      <div id="question-area"></div>
-      <div class="quiz-nav">
-        <button class="btn btn-outline" id="btn-prev" onclick="prevQuestion()">← Zurück</button>
-        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Weiter →</button>
-      </div>
-    </div>
-
-    <!-- LEAD GATE -->
-    <div id="lead-gate" class="lead-gate">
-      <div class="score-donut-card">
-        <h2 style="margin:0 0 1.5rem;font-size:1.6rem;color:var(--color-navy);text-align:center">Dein persönlicher TRUST Unternehmer-Score</h2>
-        <div class="donut-wrap">
-          <svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="teaser-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg>
-          <div class="donut-label"><div class="donut-number" id="teaser-num">–</div><div class="donut-sub">von 100</div></div>
+        <div class="treppe-step">
+          <div class="treppe-step-num">Stufe 2</div>
+          <div class="treppe-step-name">Alltagsgestalter</div>
         </div>
-        <div class="stage-badge" id="teaser-stage"></div>
-      </div>
-      <p style="text-align:center;font-size:1.1rem;color:var(--color-gray);margin-bottom:1.5rem">Dein Quick Check ist ausgewertet! Trage bitte deine Daten ein, um deinen persönlichen Report per E-Mail zu erhalten.</p>
-      <div class="lead-card">
-        <h3>🎁 Dein persönlicher TRUST Unternehmer-Score Report</h3>
-        <p class="lead-subtitle">Trage deine Daten ein und erhalte deinen Report per E-Mail:</p>
-        <div class="lead-perks">
-          <span>📈 Entwicklungsprofil im Detail</span>
-          <span>🎯 Individuelle Handlungsempfehlungen</span>
-          <span>📋 Deine Antworten im Überblick</span>
+        <div class="treppe-step">
+          <div class="treppe-step-num">Stufe 3</div>
+          <div class="treppe-step-name">Leader</div>
         </div>
-        <div class="lead-form">
-          <div class="form-row">
-            <div class="form-field"><label for="lead-vorname">Vorname *</label><input type="text" id="lead-vorname" placeholder="Max" required></div>
-            <div class="form-field"><label for="lead-name">Nachname *</label><input type="text" id="lead-name" placeholder="Mustermann" required></div>
-          </div>
-          <div class="form-field"><label for="lead-firma">Firma *</label><input type="text" id="lead-firma" placeholder="Mustermann GmbH" required></div>
-          <div class="form-field"><label for="lead-email">E-Mail-Adresse *</label><input type="email" id="lead-email" placeholder="max@mustermann.de" required></div>
-          <div class="form-row">
-            <div class="form-field"><label for="lead-plz">PLZ *</label><input type="text" id="lead-plz" placeholder="10115" maxlength="5" required></div>
-            <div class="form-field"><label for="lead-ort">Ort *</label><input type="text" id="lead-ort" placeholder="Berlin" required></div>
-          </div>
-          <button class="btn btn-primary btn-large btn-block" onclick="submitLead()" style="margin-top:.5rem">Report per E-Mail anfordern →</button>
-          <p class="form-note" style="margin-top:1rem">Deine Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.</p>
+        <div class="treppe-step">
+          <div class="treppe-step-num">Stufe 4</div>
+          <div class="treppe-step-name">Systembauer</div>
+        </div>
+        <div class="treppe-step">
+          <div class="treppe-step-num">Stufe 5</div>
+          <div class="treppe-step-name">Gestaltender Unternehmer</div>
         </div>
       </div>
-      <p style="text-align:center"><a href="#" onclick="skipLead();return false;" style="color:var(--color-gray);font-size:.95rem;text-decoration:underline">Ohne Angabe fortfahren →</a></p>
+      <p>Du erhältst kein starres Etikett, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe? Dazu deine dominante Stufe und deinen größten Hebel für den nächsten Entwicklungsschritt.</p>
     </div>
 
-    <!-- ERGEBNISSE -->
-    <div id="quiz-results" class="result-container">
-      <!-- Bestätigungs-Banner -->
-      <div id="confirm-banner" style="display:none;background:linear-gradient(135deg,#00305b,#082742);border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center;margin-bottom:1.5rem;color:#fff">
-        <div style="font-size:3rem;margin-bottom:.75rem">✅</div>
-        <h2 style="margin:0 0 .75rem;font-size:1.8rem;color:#fff">Dein Report ist unterwegs!</h2>
-        <p style="color:rgba(255,255,255,.8);font-size:1.1rem;margin:0 0 .5rem">Wir haben deinen persönlichen TRUST Unternehmer-Score Report an</p>
-        <p style="color:var(--color-orange);font-size:1.2rem;font-weight:700;margin:0 0 1rem" id="confirm-email">–</p>
-        <p style="color:rgba(255,255,255,.7);font-size:.95rem;margin:0">verschickt. Bitte schau in den nächsten Minuten in dein Postfach.<br><span style="font-size:.88rem;opacity:.7">Tipp: Auch den Spam-Ordner prüfen!</span></p>
-      </div>
-      <div class="score-donut-card" style="padding-top:2rem">
-        <h2 style="margin:0 0 1.5rem;font-size:1.6rem;color:var(--color-navy);text-align:center">Dein persönlicher TRUST Unternehmer-Score</h2>
-        <div class="donut-wrap">
-          <svg viewBox="0 0 200 200"><circle class="donut-track" cx="100" cy="100" r="85"/><circle class="donut-value" id="result-arc" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg>
-          <div class="donut-label"><div class="donut-number" id="result-num">–</div><div class="donut-sub">von 100</div></div>
+    <div class="card">
+      <span class="eyebrow">So läuft es ab</span>
+      <h2>In 10 Minuten zur Standortbestimmung</h2>
+      <p>Beantworte 40 Fragen ehrlich auf Basis deines Verhaltens in den <strong>letzten 4 Wochen</strong>. Es gibt keine richtigen oder falschen Antworten – nur ehrliche und schöngefärbte.</p>
+      <p>Nach Abschluss brauchen wir noch kurz deine Kontaktdaten, um dir dein persönliches PDF-Ergebnis zu schicken.</p>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="screen-quiz" class="screen">
+    <div class="progress-outer"><div id="progress-bar" class="progress-inner" style="width:0%"></div></div>
+    <div id="progress-label" class="progress-label">Frage 1 von 40</div>
+    <div id="question-area"></div>
+    <div class="quiz-nav">
+      <button id="btn-back" class="btn btn-outline" onclick="prevQuestion()">← Zurück</button>
+      <button id="btn-next" class="btn btn-primary" onclick="nextQuestion()" disabled>Weiter →</button>
+    </div>
+  </section>
+
+  <!-- ============ LEAD-GATE ============ -->
+  <section id="screen-lead" class="screen">
+    <div class="score-donut-card">
+      <div class="donut-wrapper">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="85" stroke="#EEEEEE" stroke-width="12" fill="none"/>
+          <circle id="teaser-arc" cx="100" cy="100" r="85" stroke="#F18423" stroke-width="12" fill="none"
+            stroke-dasharray="534.07" stroke-dashoffset="534.07"
+            transform="rotate(-90 100 100)" stroke-linecap="round"
+            style="transition:stroke-dashoffset 0.8s"/>
+        </svg>
+        <div class="donut-num">
+          <div class="donut-num-val" id="teaser-num">0</div>
+          <div class="donut-num-max">von 100</div>
         </div>
-        <div class="stage-badge" id="result-stage"></div>
       </div>
-      <div class="detail-section">
-        <div class="detail-eyebrow">Deine Auswertung im Detail</div>
-        <div class="phase-grid" id="phase-grid"></div>
+      <div class="stage-badge" id="teaser-stage">Deine stärkste Stufe: –</div>
+    </div>
+
+    <div class="card">
+      <span class="eyebrow">Fast fertig</span>
+      <h2>Wohin sollen wir dein persönliches PDF schicken?</h2>
+      <p>Damit du deinen ausführlichen Score-Report als PDF bekommst und ich ihn (falls du ein Klarheits-Gespräch möchtest) für die Vorbereitung nutzen kann, brauche ich kurz deine Kontaktdaten.</p>
+      <div class="lead-form">
+        <div class="form-row">
+          <div><label>Vorname</label><input id="lead-vorname" type="text" required></div>
+          <div><label>Name</label><input id="lead-name" type="text" required></div>
+        </div>
+        <div class="form-row">
+          <div><label>Firma</label><input id="lead-firma" type="text" required></div>
+          <div><label>E-Mail</label><input id="lead-email" type="email" required></div>
+        </div>
+        <div class="form-row">
+          <div><label>PLZ</label><input id="lead-plz" type="text" required></div>
+          <div><label>Ort</label><input id="lead-ort" type="text" required></div>
+        </div>
+        <button class="btn btn-primary btn-large" onclick="submitLead()" style="width:100%;margin-top:0.5rem">Auswertung senden →</button>
       </div>
-      <div class="cta-section">
-        <h3>Klarheitsgespräch buchen</h3>
-        <p>Besprich dein Score-Ergebnis persönlich mit Thomas Brandenburger — 30 Minuten, 1:1, kostenfrei.</p>
-        <a href="mailto:tb@trust-unternehmer.de?subject=Klarheitsgespräch%20anfragen&body=Hallo%20Thomas,%0A%0Aich%20habe%20den%20TRUST%20Unternehmer-Score%20ausgefüllt%20und%20möchte%20gerne%20ein%20Klarheitsgespräch%20vereinbaren.%0A%0AViele%20Grüße" class="btn btn-primary btn-large">Jetzt Termin vereinbaren →</a>
-      </div>
-      <div style="margin-top:2rem;text-align:center">
-        <button class="btn btn-ghost" onclick="resetQuiz()">Score erneut durchführen</button>
+    </div>
+  </section>
+
+  <!-- ============ PROCESSING ============ -->
+  <section id="screen-processing" class="screen">
+    <div class="card processing-card">
+      <div class="spinner"></div>
+      <h2>Deine Auswertung wird erstellt...</h2>
+      <p id="processing-msg">Wir bereiten deinen persönlichen Score-Report als PDF vor und senden ihn an deine E-Mail-Adresse. Das dauert nur einen Moment.</p>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="screen-result" class="screen">
+
+    <div id="confirm-banner" class="confirm-banner" style="display:none">
+      <h2>✅ Dein Score-Report ist unterwegs!</h2>
+      <p>Dein persönliches PDF geht an</p>
+      <div class="email" id="confirm-email">–</div>
+      <p>Bitte schau in den nächsten Minuten in dein Postfach. Tipp: auch den Spam-Ordner prüfen.</p>
+    </div>
+
+    <div id="fallback-download" class="card" style="display:none; background:#FFF5EB; border-left:4px solid var(--color-orange)">
+      <p><strong>Hinweis:</strong> Der Mail-Versand ist gerade nicht erreichbar. Du kannst deinen Score-Report hier direkt als PDF herunterladen:</p>
+      <div class="fallback-actions">
+        <button class="btn btn-primary" onclick="downloadFallback('customer')">📄 Score-PDF</button>
       </div>
     </div>
 
-  </div>
-</section>
+    <div class="score-donut-card">
+      <div class="donut-wrapper">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="85" stroke="#EEEEEE" stroke-width="12" fill="none"/>
+          <circle id="result-arc" cx="100" cy="100" r="85" stroke="#F18423" stroke-width="12" fill="none"
+            stroke-dasharray="534.07" stroke-dashoffset="534.07"
+            transform="rotate(-90 100 100)" stroke-linecap="round"
+            style="transition:stroke-dashoffset 0.8s"/>
+        </svg>
+        <div class="donut-num">
+          <div class="donut-num-val" id="result-num">0</div>
+          <div class="donut-num-max">von 100</div>
+        </div>
+      </div>
+      <div class="stage-badge" id="result-stage">Deine stärkste Stufe: –</div>
+    </div>
 
-<!-- FOOTER -->
+    <div class="card">
+      <span class="eyebrow">Dein Profil im Detail</span>
+      <h2>So verteilst du dich auf die 5 Reifegrad-Stufen</h2>
+      <div id="stufen-bars" style="margin-top:1.5rem"></div>
+    </div>
+
+    <div class="card" style="background:#FFF5EB;border-left:4px solid var(--color-orange)">
+      <span class="eyebrow">Deine Kernaussage</span>
+      <h3 id="result-hebel" style="color:var(--color-navy)">–</h3>
+      <p id="result-kernaussage">–</p>
+    </div>
+
+    <div class="card">
+      <span class="eyebrow">Deine drei nächsten Schritte</span>
+      <h2>Konkrete Impulse für die nächsten 30 Tage</h2>
+      <div id="result-steps" style="margin-top:1.5rem"></div>
+    </div>
+
+    <div class="cta-section">
+      <h3>Bereit für ein persönliches Klarheits-Gespräch?</h3>
+      <p>In 30 Minuten arbeiten wir gemeinsam heraus, wo dein größter Hebel liegt und welches Format zu dir passt.</p>
+      <a href="mailto:tb@trust-unternehmer.de?subject=Klarheits-Gespräch%20nach%20TRUST%20Unternehmer-Score" class="btn btn-primary btn-large">Termin vereinbaren →</a>
+    </div>
+
+    <div class="card" style="background:var(--color-bg)">
+      <span class="eyebrow">Übrigens</span>
+      <h4 style="color:var(--color-navy);margin-top:0">Willst du auch wissen, wer du in deiner Unternehmerrolle bist?</h4>
+      <p>Das <strong>TRUST Unternehmer-Profil</strong> ergänzt den Score um die persönliche Perspektive: Verhaltensstil und Motive. Für Coaching-Kunden.</p>
+      <a href="https://profil.trust-unternehmer.de" target="_blank" style="color:var(--color-orange);font-weight:700">Zum Unternehmer-Profil →</a>
+    </div>
+  </section>
+
+</main>
+
 <footer class="site-footer">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logos">
-          <img src="bilder/TRUST-Hauptlogo-horizontal.svg" alt="TRUST Unternehmer">
-          <img src="bilder/Mitgliedsunternehmen-Der-Mittelstand-BVMW.svg" alt="BVMW Mitglied" class="bvmw-logo">
-        </div>
-        <div class="footer-address">TB UnternehmerImpulse eG<br>Am Zwingel 2<br>35683 Dillenburg</div>
-        <div class="footer-brand-desc">Der TRUST Unternehmer-Score ist ein psychometrisches Framework zur Standortbestimmung für Inhaber &amp; Geschäftsführer von KMU.</div>
-      </div>
-      <div class="footer-col">
-        <h4>Angebote</h4>
-        <a href="#">TRUST Unternehmer-Score</a><a href="#">Klarheitsgespräch</a>
-        <a href="#">Unternehmergruppen</a><a href="#">Entwicklungs-Treppe</a><a href="#">KI-Implementierung</a>
-      </div>
-      <div class="footer-col">
-        <h4>Verbinden</h4>
-        <a href="#">LinkedIn</a>
-        <a href="mailto:tb@trust-unternehmer.de">E-Mail schreiben</a>
-        <a href="tel:015125254853">0151 2525 4853</a>
-        <h4 style="margin-top:1.25rem">Rechtliches</h4>
-        <a href="#">Datenschutz</a><a href="#">Impressum</a><a href="#">AGB</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 TB UnternehmerImpulse eG · TRUST Unternehmer-Score</span>
-      <span>Psychometrisches Framework v1</span>
+    <div>© 2026 TB UnternehmerImpulse eG · Am Zwingel 2 · 35683 Dillenburg</div>
+    <div style="margin-top:0.5rem">
+      <a href="https://trust-unternehmer.de/impressum" target="_blank">Impressum</a> ·
+      <a href="https://trust-unternehmer.de/datenschutz" target="_blank">Datenschutz</a> ·
+      <a href="mailto:tb@trust-unternehmer.de">Kontakt</a>
     </div>
   </div>
 </footer>
 
+<!-- Resume-Modal -->
+<div id="resume-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 style="margin-top:0;color:var(--color-navy)">Möchtest du weitermachen?</h3>
+    <p>Du hast einen Score bereits begonnen und bist bei <strong id="resume-progress">0%</strong>. Möchtest du an der Stelle weitermachen, an der du aufgehört hast?</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="resumeSaved()">Ja, weitermachen</button>
+      <button class="btn btn-outline" onclick="discardSaved()">Nein, neu starten</button>
+    </div>
+  </div>
+</div>
+
+<!-- Externe Bibliothek: pdfmake -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<!-- Score-Module -->
+<script src="files/data.js"></script>
+<script src="files/pdf.js"></script>
+<script src="files/test.js"></script>
+
 <script>
-/* ══ FRAGEN ══ */
-const Q=[
-{ci:0,text:'Ich musste in den letzten 4 Wochen häufig als \u201EFeuerwehr\u201C einspringen, um Stillstand zu vermeiden.',inv:true},
-{ci:0,text:'Wenn ich 2 Tage ausgefallen wäre, hätten viele Themen sofort eskaliert.',inv:true},
-{ci:0,text:'Mitarbeiter haben Probleme regelmäßig an mich zurückdelegiert.',inv:true},
-{ci:0,text:'Ich habe Aufgaben meiner Mitarbeiter übernommen, weil es \u201Eschneller ging\u201C.',inv:true},
-{ci:0,text:'Ich habe abends oder am Wochenende gearbeitet, um das Tagesgeschäft zu bewältigen.',inv:true},
-{ci:0,text:'Ich hatte beim Arbeitsstart klare Top-3-Prioritäten und habe sie eingehalten.',inv:false},
-{ci:0,text:'Ich hatte mindestens 2 Stunden ungestörte Fokuszeit pro Tag.',inv:false},
-{ci:0,text:'Ich wurde durch mehr als 10 Themenwechsel pro Tag unterbrochen.',inv:true},
-{ci:0,text:'Ich hatte das Gefühl, der Hauptengpass zu sein, der alles zusammenhalten muss.',inv:true},
-{ci:1,text:'Ich hatte eine stabile Wochen-/Tagesstruktur mit festen Fokuszeiten.',inv:false},
-{ci:1,text:'Ich hatte wöchentlich geblockte Zeit für Führung und Steuerung (nicht operativ).',inv:false},
-{ci:1,text:'Entscheidungen, die Führungskräfte hätten treffen können, landeten bei mir.',inv:true},
-{ci:1,text:'Ich habe delegierbare Routineaufgaben selbst erledigt.',inv:true},
-{ci:1,text:'Die Zuständigkeiten (wer entscheidet was) waren in Kernbereichen klar.',inv:false},
-{ci:1,text:'Ich habe Aufgaben/Projekte sichtbar per Tool oder Liste nachgehalten.',inv:false},
-{ci:1,text:'Ich habe \u201EJa\u201C gesagt, obwohl die Kapazitäten eigentlich nicht reichten.',inv:true},
-{ci:1,text:'Ich habe konsequent meine Führungskräfte genutzt, statt selbst einzuspringen.',inv:false},
-{ci:2,text:'Wir nutzen ein aktuelles Organigramm aktiv im Alltag.',inv:false},
-{ci:2,text:'Für alle Schlüsselrollen existieren klare Stellenbeschreibungen.',inv:false},
-{ci:2,text:'Ich habe strukturierte Mitarbeitergespräche mit Zielen und Feedback geführt.',inv:false},
-{ci:2,text:'Unsere Team-Meetings haben eine Agenda, ein Protokoll und Nachverfolgung.',inv:false},
-{ci:2,text:'Ich habe echte Verantwortung inklusive Entscheidungsspielraum übertragen.',inv:false},
-{ci:2,text:'Abläufe hingen stark von einzelnen \u201EHelden\u201C im Team ab.',inv:true},
-{ci:2,text:'Identische Fehler sind wiederholt aufgetreten, ohne dauerhafte Beseitigung.',inv:true},
-{ci:2,text:'Führungskennzahlen sind im Team bekannt und werden besprochen.',inv:false},
-{ci:3,text:'Unsere Kernprozesse sind dokumentiert und die Standards werden genutzt.',inv:false},
-{ci:3,text:'Für alle wichtigen Prozesse gibt es klare Verantwortliche und Stellvertreter.',inv:false},
-{ci:3,text:'Wir haben aktiv bestehende Prozesse vereinfacht und optimiert.',inv:false},
-{ci:3,text:'Für das Onboarding neuer Mitarbeiter gibt es Checklisten und Standards.',inv:false},
-{ci:3,text:'Wir nutzen systematische Fehleranalysen (z.\u00a0B. 5-Why) mit Standard-Anpassung.',inv:false},
-{ci:3,text:'Es gibt ein System zur Erfassung und Auswertung von Prozessabweichungen.',inv:false},
-{ci:3,text:'Unsere Abläufe sind weitgehend automatisiert oder toolgestützt.',inv:false},
-{ci:3,text:'Zentrale Kennzahlen (Liquidität, Auslastung etc.) sind in Echtzeit verfügbar.',inv:false},
-{ci:4,text:'Wir haben eine klare, im Führungsteam verbindliche Strategie.',inv:false},
-{ci:4,text:'Ich priorisiere konsequent durch Fokusentscheidungen und \u201EStop-Doing\u201C-Listen.',inv:false},
-{ci:4,text:'Unsere Strategie wurde aktiv an veränderte Rahmenbedingungen angepasst.',inv:false},
-{ci:4,text:'Das Unternehmen könnte mehrere Wochen ohne mich stabil laufen.',inv:false},
-{ci:4,text:'Ich arbeite hauptsächlich AM Unternehmen (Innovation, Markt) statt im Betrieb.',inv:false},
-{ci:4,text:'Wir haben einen klaren Rhythmus für Strategie- und Zielreviews.',inv:false},
-{ci:4,text:'Die Qualität unserer Arbeit ist unabhängig von einzelnen Schlüsselpersonen.',inv:false},
-{ci:4,text:'Ich verstehe meine Rolle primär als Gestalter, nicht als Problemlöser.',inv:false}
-];
+  // Bei DOM ready: Resume-Prüfung
+  document.addEventListener('DOMContentLoaded', initStart);
 
-/* Anzeige-Reihenfolge: beste Antwort oben */
-const LL=[
-  {val:4,label:'Trifft voll zu',       chip:'chip-4',badge:'A'},
-  {val:3,label:'Trifft überwiegend zu',chip:'chip-3',badge:'B'},
-  {val:2,label:'Trifft teilweise zu',  chip:'chip-2',badge:'C'},
-  {val:1,label:'Trifft kaum zu',       chip:'chip-1',badge:'D'},
-  {val:0,label:'Trifft gar nicht zu',  chip:'chip-0',badge:'E'},
-];
-const CN=['Getriebener Macher','Alltagsgestalter','Leader','Systembauer','Gestaltender Unternehmer'];
-let A=new Array(40).fill(null),cQ=0,CR=null,LEAD={};
-
-/* ══ QUIZ ══ */
-function startQuiz(){hide('quiz-start');show('quiz-questions');renderQ();}
-function show(id){const e=document.getElementById(id);if(e)e.classList.add('active');}
-function hide(id){const e=document.getElementById(id);if(e)e.classList.remove('active');}
-
-function renderQ(){
-  const q=Q[cQ],s=A[cQ];
-  document.getElementById('progress-fill').style.width=((cQ+1)/40*100)+'%';
-  document.getElementById('progress-label').textContent=`Frage ${cQ+1} von 40 · ${CN[q.ci]}`;
-  document.getElementById('btn-prev').style.visibility=cQ===0?'hidden':'visible';
-  document.getElementById('btn-next').textContent=cQ===39?'Auswertung anzeigen →':'Weiter →';
-  let h=`<div class="question-card"><span class="cluster-label">Cluster: ${CN[q.ci]}</span><h3>${q.text}</h3><div class="likert-group">`;
-  LL.forEach(opt=>{
-    const sel=s===opt.val?`sel-${opt.val}`:'';
-    h+=`<label class="likert-option ${sel}" onclick="sel(${opt.val},this)">
-      <span class="likert-badge">${opt.badge}</span>
-      <input type="radio" name="q${cQ}" value="${opt.val}" ${s===opt.val?'checked':''}>
-      <span class="likert-chip ${opt.chip}">${opt.label}</span>
-    </label>`;
-  });
-  h+='</div></div>';
-  document.getElementById('question-area').innerHTML=h;
-}
-
-function sel(v,el){
-  A[cQ]=v;
-  document.querySelectorAll('.likert-option').forEach(o=>{
-    o.className=o.className.replace(/\bsel-\d\b/g,'').trim();
-  });
-  el.classList.add(`sel-${v}`);
-}
-
-function nextQuestion(){
-  if(A[cQ]===null){const c=document.querySelector('.question-card');if(c)c.style.borderColor='var(--color-orange)';return;}
-  if(cQ<39){cQ++;renderQ();scrollQ();}else gate();
-}
-function prevQuestion(){if(cQ>0){cQ--;renderQ();}}
-function scrollQ(){window.scrollTo({top:document.getElementById('quiz-section').offsetTop-80,behavior:'smooth'});}
-
-/* ══ BERECHNUNG – NaN-sicher ══ */
-function calc(){
-  const sc=[0,0,0,0,0],ct=[0,0,0,0,0];
-  Q.forEach((q,i)=>{
-    let v=A[i];
-    if(v===null||v===undefined||isNaN(v))v=0;
-    v=Number(v);
-    if(q.inv)v=4-v;
-    sc[q.ci]+=v;ct[q.ci]++;
-  });
-  const p=sc.map((s,i)=>{
-    if(!ct[i])return 0;
-    const r=Math.round(s/(ct[i]*4)*100);
-    return isNaN(r)?0:Math.max(0,Math.min(100,r));
-  });
-  const w=[1,1.5,2,2.5,3],tw=10;
-  const raw=p.reduce((s,v,i)=>s+v*w[i],0)/tw;
-  const ov=isNaN(raw)?0:Math.round(raw);
-  let dom=0,str=0,wk=0;
-  for(let i=1;i<5;i++){
-    if(p[i]>=p[dom])dom=i;
-    if(p[i]>p[str])str=i;
-    if(p[i]<p[wk])wk=i;
-  }
-  return{p,ov,dom,str,wk};
-}
-
-function setD(arcId,numId,v){
-  const c=534.07,sv=isNaN(v)||v===null?0:Math.max(0,Math.min(100,Number(v)));
-  const a=document.getElementById(arcId),n=document.getElementById(numId);
-  if(a)a.style.strokeDashoffset=c-c*sv/100;
-  if(n)n.textContent=sv;
-}
-
-/* ══ GATE ══ */
-function gate(){
-  CR=calc();hide('quiz-questions');show('lead-gate');
-  setTimeout(()=>setD('teaser-arc','teaser-num',CR.ov),100);
-  document.getElementById('teaser-stage').textContent='Deine aktuell stärkste Stufe: '+CN[CR.str];
-  scrollQ();
-}
-
-/* ══ LEAD SUBMIT ══ */
-function submitLead(){
-  const fs=['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'];
-  let ok=true;
-  fs.forEach(id=>{const e=document.getElementById(id);if(!e.value.trim()){e.style.borderColor='#c0392b';ok=false;}else e.style.borderColor='';});
-  const em=document.getElementById('lead-email');
-  if(em.value&&!em.value.includes('@')){em.style.borderColor='#c0392b';ok=false;}
-  if(!ok)return;
-  LEAD={
-    vorname:document.getElementById('lead-vorname').value.trim(),
-    name:document.getElementById('lead-name').value.trim(),
-    firma:document.getElementById('lead-firma').value.trim(),
-    email:document.getElementById('lead-email').value.trim(),
-    plz:document.getElementById('lead-plz').value.trim(),
-    ort:document.getElementById('lead-ort').value.trim()
-  };
-
-  /* Formspree – Backup für Thomas mit allen 40 Antworten */
-  const lines=Q.map((q,i)=>{
-    const v=A[i]!==null?A[i]:0;
-    const lb=['gar nicht','kaum','teilweise','überwiegend','voll'];
-    return `F${String(i+1).padStart(2,'0')} [${CN[q.ci]}]: ${q.text} → ${v} (trifft ${lb[v]} zu)`;
-  }).join('\n');
-  fetch('https://formspree.io/f/mlgovkyp',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
-    vorname:LEAD.vorname,name:LEAD.name,firma:LEAD.firma,email:LEAD.email,plz:LEAD.plz,ort:LEAD.ort,
-    gesamtscore:CR.ov,stufe:CR.dom+1,stufe_name:CN[CR.dom],staerke:CN[CR.str],hebel:CN[CR.wk],
-    cluster:CR.p.map((p,i)=>`${CN[i]}: ${p}%`).join(' | '),antworten:lines,
-    timestamp:new Date().toISOString(),
-    _subject:`[TRUST Score] ${LEAD.vorname} ${LEAD.name} – ${CR.ov}/100 – ${CN[CR.dom]}`
-  })}).catch(e=>console.warn(e));
-
-  /* Encharge */
-  sendToEncharge();
-  results();
-}
-
-function skipLead(){LEAD={vorname:'',name:'',firma:'',email:'',plz:'',ort:''};results();}
-
-/* ══ ENCHARGE ══ */
-function sendToEncharge(){
-  if(!LEAD.email)return;
-  const KEY='DEIN_ENCHARGE_API_KEY'; // ← hier deinen Key eintragen
-  const h={'Content-Type':'application/json','X-Encharge-Token':KEY};
-
-  fetch('https://api.encharge.io/v1/people',{method:'POST',headers:h,body:JSON.stringify({
-    email:LEAD.email,firstName:LEAD.vorname,lastName:LEAD.name,
-    fields:{
-      firma:LEAD.firma,plz:LEAD.plz,ort:LEAD.ort,
-      trust_score:CR.ov,trust_stufe:CR.dom+1,trust_stufe_name:CN[CR.dom],
-      trust_staerke:CN[CR.str],trust_hebel:CN[CR.wk],
-      trust_p1:CR.p[0],trust_p2:CR.p[1],trust_p3:CR.p[2],trust_p4:CR.p[3],trust_p5:CR.p[4],
-      trust_datum:new Date().toLocaleDateString('de-DE'),
-      trust_empfehlung:buildRec(),
-      trust_schritt1:buildEmp()[0],trust_schritt2:buildEmp()[1],trust_schritt3:buildEmp()[2],
-      trust_report_html:buildReportHTML()
-    },
-    tags:['trust-score',`stufe-${CR.dom+1}`]
-  })})
-  .then(r=>r.json())
-  .then(()=>fetch('https://api.encharge.io/v1/events',{method:'POST',headers:h,body:JSON.stringify({
-    name:'trust_score_completed',email:LEAD.email,
-    properties:{score:CR.ov,stufe:CN[CR.dom]}
-  })}))
-  .then(()=>{
-    const st=document.getElementById('email-status');
-    if(st){st.className='email-status success';st.style.display='block';
-      st.innerHTML=`✅ Dein persönlicher TRUST Unternehmer-Score Report wurde an <strong>${LEAD.email}</strong> versandt!`;}
-  })
-  .catch(err=>{
-    console.warn('Encharge:',err);
-    const st=document.getElementById('email-status');
-    if(st){st.className='email-status error';st.style.display='block';
-      st.innerHTML='⚠️ Report konnte nicht versendet werden. Bitte melde dich direkt: <a href="mailto:tb@trust-unternehmer.de">tb@trust-unternehmer.de</a>';}
-  });
-}
-
-/* ══ REPORT HTML (für Encharge E-Mail) ══ */
-function buildReportHTML(){
-  const now=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
-  const nm=LEAD.vorname?`${LEAD.vorname} ${LEAD.name}`:'Teilnehmer/in';
-  const rec=['Du steckst noch tief im operativen Hamsterrad. Dein wichtigster Hebel: Verschaffe dir mehr Zeit, indem du lernst, konsequent loszulassen und erste Strukturen zu schaffen.',
-    'Du hast bereits erste Strukturen, aber Entscheidungen landen noch zu oft bei dir. Dein Hebel: Lerne, konsequent zu delegieren und Führungskräfte einzusetzen.',
-    'Führung ist bei dir etabliert. Dein Hebel: Schaffe jetzt Systeme und Standards, die unabhängig von Einzelpersonen funktionieren.',
-    'Deine Prozesse stehen solide. Dein Hebel: Entwickle strategische Souveränität und arbeite mehr AM statt IM Unternehmen.',
-    'Du arbeitest bereits hauptsächlich AM Unternehmen. Dein Hebel: Verfeinere deine strategische Ausrichtung und identifiziere neue Wachstumshebel.'];
-  const emp=[
-    ['Schaffe täglich mindestens 2 Stunden ungestörte Fokuszeit.','Definiere 3 Aufgaben, die du diese Woche vollständig delegierst.','Führe eine Unterbrechungs-Liste: Was landet immer wieder bei dir, obwohl andere es lösen könnten?'],
-    ['Erstelle eine Zuständigkeitskarte: Wer entscheidet was – ohne dich?','Führe wöchentliche Steuerungsmeetings ein – Ziele statt Tagesgeschäft.','Etabliere feste Zeiten für Führung, Strategie und Fokusarbeit.'],
-    ['Dokumentiere eure 5 wichtigsten Führungsprozesse als Vorlage.','Identifiziere Helden-Abhängigkeiten und schaffe Stellvertreter.','Führe ein monatliches Führungsteam-Review ein.'],
-    ['Lege in 30 Tagen Standards für alle undokumentierten Kernprozesse fest.','Baue ein Dashboard mit 5–7 zentralen Kennzahlen.','Plane einmal pro Quartal einen halben Tag Prozess-Review.'],
-    ['Führe ein jährliches Strategiereview ein.','Erstelle einen Stop-Doing-Plan.','Identifiziere die wichtigste Marktchance des nächsten Jahres.']
-  ];
-  const sc=['#c0392b','#e07b39','#d4a017','#27ae60','#00305b'];
-  const lb=['0 – Gar nicht','1 – Kaum','2 – Teilweise','3 – Überwiegend','4 – Voll'];
-
-  let ph='';
-  CR.p.forEach((pct,i)=>{ph+=`<tr>
-    <td style="padding:7px 12px;font-size:13px;font-weight:600;color:#00305b;white-space:nowrap">Phase ${i+1}: ${i===4?'Gestaltender Unternehmer':CN[i]}</td>
-    <td style="padding:7px 12px"><div style="background:#eee;border-radius:999px;height:10px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${sc[i]};border-radius:999px"></div></div></td>
-    <td style="padding:7px 12px;font-weight:700;font-size:14px;color:#00305b;text-align:right">${pct}%</td>
-  </tr>`;});
-
-  let aw='';
-  [0,1,2,3,4].forEach(ci=>{
-    aw+=`<tr><td colspan="3" style="background:#00305b;color:#fff;font-weight:700;font-size:12px;letter-spacing:.04em;padding:7px 12px;text-transform:uppercase">Phase ${ci+1}: ${CN[ci]}</td></tr>`;
-    Q.map((q,i)=>({...q,idx:i,a:A[i]!==null?A[i]:0})).filter(q=>q.ci===ci).forEach(q=>{
-      aw+=`<tr style="border-bottom:1px solid #eee">
-        <td style="padding:6px 12px;font-size:11px;color:#999;white-space:nowrap">F${String(q.idx+1).padStart(2,'0')}</td>
-        <td style="padding:6px 12px;font-size:13px;color:#222">${q.text}</td>
-        <td style="padding:6px 12px;text-align:center"><span style="display:inline-block;padding:2px 8px;border-radius:999px;background:${sc[q.a]}20;color:${sc[q.a]};font-weight:700;font-size:11px">${lb[q.a]}</span></td>
-      </tr>`;
-    });
-  });
-
-  return `<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRUST Unternehmer-Score Report</title></head>
-<body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:28px 0"><tr><td align="center">
-<table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%">
-<tr><td style="background:#082742;border-radius:12px 12px 0 0;padding:24px 32px">
-  <table width="100%" cellpadding="0" cellspacing="0"><tr>
-    <td>
-      <div style="color:#f18423;font-size:24px;font-weight:900;letter-spacing:.06em;line-height:1">TRUST</div>
-      <div style="color:rgba(255,255,255,.6);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">UNTERNEHMER</div>
-      <div style="color:rgba(255,255,255,.35);font-size:10px;font-style:italic;margin-top:1px">Nicht allein.</div>
-    </td>
-    <td align="right" style="color:rgba(255,255,255,.3);font-size:10px;text-transform:uppercase;letter-spacing:.06em;vertical-align:top">TRUST Unternehmer-Score</td>
-  </tr></table>
-</td></tr>
-<tr><td style="background:#00305b;padding:18px 32px">
-  <div style="color:#fff;font-size:19px;font-weight:700">Dein persönlicher TRUST Unternehmer-Score Report</div>
-  <div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:3px">Erstellt am ${now} · Individuelles Entwicklungsprofil</div>
-</td></tr>
-<tr><td style="background:#fff;padding:28px 32px">
-  <table width="100%" cellpadding="0" cellspacing="0"><tr>
-    <td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #eee">
-      <div style="width:120px;height:120px;border-radius:50%;border:8px solid #f18423;display:inline-flex;align-items:center;justify-content:center">
-        <div><div style="font-size:36px;font-weight:900;color:#00305b;line-height:1">${CR.ov}</div><div style="font-size:11px;color:#999">von 100</div></div>
-      </div>
-      <div style="margin-top:10px;font-size:14px;font-weight:700;color:#00305b">Stärkste Stufe: ${CN[CR.str]}</div>
-    </td>
-    <td style="padding:0 0 20px 20px;border-bottom:1px solid #eee;vertical-align:top">
-      <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;font-weight:700">Dein Profil</div>
-      <div style="font-size:13px;color:#222;line-height:1.7"><b>Name:</b> ${nm}<br><b>Firma:</b> ${LEAD.firma||'–'}<br><b>Ort:</b> ${LEAD.plz?LEAD.plz+' ':''}${LEAD.ort||'–'}<br><b>Score:</b> ${CR.ov}/100<br><b>Dom. Stufe:</b> ${CN[CR.dom]}<br><b>Größter Hebel:</b> ${CN[CR.wk]}</div>
-    </td>
-  </tr></table>
-  <div style="margin-top:20px">
-    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#aaa;margin-bottom:10px">1. Entwicklungsprofil im Detail</div>
-    <table width="100%" cellpadding="0" cellspacing="0">${ph}</table>
-  </div>
-  <div style="margin-top:20px;padding:16px;background:#fff3e0;border-radius:8px;">
-    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#aaa;margin-bottom:8px">2. Deine Kernempfehlung</div>
-    <div style="font-size:13px;color:#222;line-height:1.65">${rec[CR.dom]}</div>
-  </div>
-  <div style="margin-top:20px">
-    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#aaa;margin-bottom:10px">3. Konkrete nächste Schritte</div>
-    ${emp[CR.dom].map((t,i)=>`<div style="display:flex;gap:10px;margin-bottom:10px;align-items:flex-start"><div style="min-width:24px;height:24px;border-radius:50%;background:#f18423;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div><div style="font-size:13px;color:#222;line-height:1.6;padding-top:2px">${t}</div></div>`).join('')}
-  </div>
-  <div style="margin-top:24px">
-    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#aaa;margin-bottom:10px">4. Deine Antworten im Detail – alle 40 Fragen</div>
-    <div style="font-size:11px;color:#bbb;margin-bottom:6px">0 = gar nicht | 1 = kaum | 2 = teilweise | 3 = überwiegend | 4 = voll</div>
-    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:6px;overflow:hidden">
-      <thead><tr style="background:#00305b"><th style="color:#fff;font-size:11px;padding:7px 12px;text-align:left">#</th><th style="color:#fff;font-size:11px;padding:7px 12px;text-align:left">Frage</th><th style="color:#fff;font-size:11px;padding:7px 12px;text-align:center">Antwort</th></tr></thead>
-      <tbody>${aw}</tbody>
-    </table>
-  </div>
-</td></tr>
-<tr><td style="background:#00305b;padding:24px 32px;text-align:center;border-radius:0 0 12px 12px">
-  <div style="color:#fff;font-size:17px;font-weight:700;margin-bottom:6px">Bereit für den nächsten Schritt?</div>
-  <div style="color:rgba(255,255,255,.65);font-size:13px;margin-bottom:16px">30 Minuten · Persönlich · Vertraulich · Kein Verkaufsgespräch</div>
-  <a href="mailto:tb@trust-unternehmer.de?subject=Klarheitsgespräch" style="display:inline-block;background:#f18423;color:#fff;text-decoration:none;padding:11px 26px;border-radius:999px;font-weight:700;font-size:13px">Klarheitsgespräch anfragen →</a>
-  <div style="color:rgba(255,255,255,.45);font-size:12px;margin-top:10px">oder: 0151 2525 4853</div>
-  <div style="color:rgba(255,255,255,.6);font-size:10px;margin-top:16px;border-top:1px solid rgba(255,255,255,.15);padding-top:14px">TB UnternehmerImpulse eG · Am Zwingel 2 · 35683 Dillenburg<br>© 2026 TRUST Unternehmer-Score</div>
-</td></tr>
-</table></td></tr></table></body></html>`;
-}
-
-/* ══ ERGEBNISSE ANZEIGEN ══ */
-function buildRec(){
-  const rec=['Du steckst noch tief im operativen Hamsterrad. Dein wichtigster Hebel: Verschaffe dir als erstes mehr Zeit, indem du lernst, konsequent loszulassen und erste Strukturen zu schaffen.',
-    'Du hast bereits erste Strukturen, aber Entscheidungen und Routineaufgaben landen noch zu oft bei dir. Dein Hebel: Lerne, konsequent zu delegieren und Führungskräfte einzusetzen.',
-    'Führung ist bei dir etabliert. Dein Hebel: Schaffe jetzt Systeme und Standards, die unabhängig von Einzelpersonen funktionieren.',
-    'Deine Prozesse stehen solide. Dein Hebel: Entwickle strategische Souveränität und arbeite mehr AM statt IM Unternehmen.',
-    'Du arbeitest bereits hauptsächlich AM Unternehmen. Dein Hebel: Verfeinere deine strategische Ausrichtung und identifiziere neue Wachstumshebel.'];
-  return rec[CR.dom];
-}
-function buildEmp(){
-  const emp=[
-    ['Schaffe täglich mindestens 2 Stunden ungestörte Fokuszeit.','Definiere 3 Aufgaben, die du diese Woche vollständig delegierst.','Führe eine Unterbrechungs-Liste: Was landet immer wieder bei dir, obwohl andere es lösen könnten?'],
-    ['Erstelle eine Zuständigkeitskarte: Wer entscheidet was – ohne dich?','Führe wöchentliche Steuerungsmeetings ein – Ziele statt Tagesgeschäft.','Etabliere feste Zeiten für Führung, Strategie und Fokusarbeit.'],
-    ['Dokumentiere eure 5 wichtigsten Führungsprozesse als Vorlage.','Identifiziere Helden-Abhängigkeiten und schaffe Stellvertreter.','Führe ein monatliches Führungsteam-Review ein.'],
-    ['Lege in 30 Tagen Standards für alle undokumentierten Kernprozesse fest.','Baue ein Dashboard mit 5–7 zentralen Kennzahlen.','Plane einmal pro Quartal einen halben Tag Prozess-Review.'],
-    ['Führe ein jährliches Strategiereview ein.','Erstelle einen Stop-Doing-Plan.','Identifiziere die wichtigste Marktchance des nächsten Jahres.']
-  ];
-  return emp[CR.dom];
-}
-
-function results(){
-  hide('lead-gate');show('quiz-results');
-  const r=CR;
-
-  // Bestätigungsbanner anzeigen wenn Lead ausgefüllt
-  const banner=document.getElementById('confirm-banner');
-  if(banner){
-    if(LEAD.email){
-      banner.style.display='block';
-      const ce=document.getElementById('confirm-email');
-      if(ce)ce.textContent=LEAD.email;
+  function tryStartTest() {
+    const saved = loadState();
+    if (saved && saved.answers && saved.answers.some(a => a !== null)) {
+      const progress = Math.round(saved.answers.filter(a => a !== null).length / QUESTIONS.length * 100);
+      document.getElementById('resume-progress').textContent = progress + '%';
+      document.getElementById('resume-modal').style.display = 'flex';
     } else {
-      banner.style.display='none';
+      startTest(false);
     }
   }
-
-  setTimeout(()=>setD('result-arc','result-num',r.ov),100);
-  document.getElementById('result-stage').textContent='Deine aktuell stärkste Stufe: '+CN[r.str];
-
-  let g='';
-  for(let i=0;i<5;i++){
-    const hb=i===r.wk,st=i===r.str&&i!==r.wk,fw=i===4?'full-width':'',hl=hb?'highlight-hebel':'';
-    let tag='';if(st)tag='<div class="phase-tag strength">Deine Stärke</div>';if(hb)tag='<div class="phase-tag hebel">Größter Hebel</div>';
-    g+=`<div class="phase-card ${hl} ${fw}"><div class="phase-top"><div><div class="phase-phase">Phase ${i+1}</div><div class="phase-name">${CN[i]}</div></div><div class="phase-pct">${r.p[i]}%</div></div><div class="phase-bar"><div class="phase-bar-fill" style="width:${r.p[i]}%"></div></div>${tag}</div>`;
-  }
-  document.getElementById('phase-grid').innerHTML=g;
-  scrollQ();
-}
-
-/* ══ RESET ══ */
-function resetQuiz(){
-  A=new Array(40).fill(null);cQ=0;CR=null;LEAD={};
-  hide('quiz-results');hide('lead-gate');show('quiz-start');
-  ['lead-vorname','lead-name','lead-firma','lead-email','lead-plz','lead-ort'].forEach(id=>{const e=document.getElementById(id);if(e){e.value='';e.style.borderColor='';}});
-  ['teaser-arc','result-arc'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.strokeDashoffset='534.07';});
-  ['teaser-num','result-num'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='–';});
-  scrollQ();
-}
 </script>
+
 </body>
 </html>
