@@ -252,12 +252,55 @@ async function generateCustomerPdf(scores, lead) {
     });
   });
 
-  // ========== TEIL 4: FÜR DAS KLARHEITS-GESPRÄCH ==========
+  // ========== TEIL 4: KLARHEITS-GESPRÄCH — Nutzen-Framing ==========
   content.push({ text: fix('TEIL 4'), style: 'sectionEyebrow' });
-  content.push({ text: fix('Für unser Klarheits-Gespräch'), style: 'section' });
+  content.push({ text: fix('Dein nächster Schritt: 30 Minuten Klarheit'), style: 'section' });
+
   content.push({
-    text: fix('Wenn du diesen Score als Grundlage für ein persönliches Gespräch nutzen möchtest, überlege dir vorher folgende drei Fragen. Notiere dir kurz eine Antwort:'),
-    style: 'body', margin: [0, 0, 0, 10],
+    text: fix('Der Score gibt dir eine Standortbestimmung. Was er nicht leisten kann: die individuelle Übersetzung in deinen Alltag. Genau dafür ist das Klarheits-Gespräch da.'),
+    style: 'body', margin: [0, 0, 0, 12],
+  });
+
+  // Was wir gemeinsam sortieren
+  content.push({ text: fix('In 30 Minuten sortieren wir gemeinsam:'), style: 'h4' });
+  const sortierpunkte = [
+    'Was steckt hinter deinem Ergebnis wirklich?',
+    'Wo liegt dein größter Hebel für die nächsten Monate?',
+    'Welches Format passt zu deiner Situation – oder brauchst du gerade gar keins?',
+  ];
+  sortierpunkte.forEach(p => {
+    content.push({
+      columns: [
+        { text: '•', width: 12, style: { fontSize: 11, bold: true, color: ORANGE } },
+        { text: fix(p), style: 'body', width: '*' },
+      ],
+      margin: [0, 0, 0, 4],
+    });
+  });
+
+  // Format-Details in einer warm-orangen Box
+  content.push({
+    table: {
+      widths: ['*'],
+      body: [[{
+        stack: [
+          { text: fix('DAS FORMAT'), style: { fontSize: 9, bold: true, color: ORANGE, characterSpacing: 1.5 }, margin: [0, 0, 0, 6] },
+          { text: fix('• 30 Minuten, online über Zoom oder Teams'), style: 'body', margin: [0, 0, 0, 2] },
+          { text: fix('• Kostenfrei, keine Verpflichtung'), style: 'body', margin: [0, 0, 0, 2] },
+          { text: fix('• Am Ende entscheidest du frei, wie du weitergehen möchtest'), style: 'body', margin: [0, 0, 0, 2] },
+          { text: fix('• Keine Verkaufsschleife, kein Nachfassen ohne dein OK'), style: 'body', margin: [0, 0, 0, 0] },
+        ],
+        fillColor: BG_WARM, margin: [12, 10, 12, 10],
+      }]],
+    }, layout: 'noBorders',
+    margin: [0, 14, 0, 14],
+  });
+
+  // Zur Vorbereitung
+  content.push({ text: fix('Zur Vorbereitung'), style: 'h4' });
+  content.push({
+    text: fix('Falls du dich für ein Gespräch entscheidest, notiere dir vorher kurze Antworten auf diese drei Fragen. Das macht das Gespräch für dich am wertvollsten:'),
+    style: 'body', margin: [0, 0, 0, 8],
   });
   const gespraechsfragen = [
     'Wenn dein Ergebnis dich überrascht: Womit hättest du selbst gerechnet – und woran könnte der Unterschied liegen?',
@@ -272,6 +315,23 @@ async function generateCustomerPdf(scores, lead) {
       ],
       margin: [0, 0, 0, 6],
     });
+  });
+
+  // Kontakt
+  content.push({
+    table: {
+      widths: ['*'],
+      body: [[{
+        stack: [
+          { text: fix('TERMIN ANFRAGEN'), style: { fontSize: 9, bold: true, color: '#FFFFFF', characterSpacing: 1.5 }, margin: [0, 0, 0, 4] },
+          { text: fix('Ein kurzer Zwei-Zeiler mit ein bis zwei Terminvorschlägen reicht.'), style: { fontSize: 10, color: '#FFFFFF' }, margin: [0, 0, 0, 2] },
+          { text: fix('Ich melde mich innerhalb von 24 Stunden.'), style: { fontSize: 10, color: '#FFFFFF' }, margin: [0, 0, 0, 6] },
+          { text: fix('tb@trust-unternehmer.de'), style: { fontSize: 12, bold: true, color: '#FFFFFF' } },
+        ],
+        fillColor: NAVY, margin: [14, 12, 14, 12],
+      }]],
+    }, layout: 'noBorders',
+    margin: [0, 12, 0, 0],
   });
 
   // Cross-Reference auf Profil

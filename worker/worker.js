@@ -149,8 +149,26 @@ function buildCustomerMail(lead) {
     </p>
     <div style="background:#FFF5EB;border-left:4px solid #F18423;padding:16px 20px;border-radius:0 8px 8px 0;margin:20px 0">
       <div style="font-size:11px;font-weight:700;color:#F18423;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Was jetzt hilft</div>
-      <div style="font-size:14px;line-height:1.5">Lies dir den Report einmal ganz durch. Notiere dir Stellen, die dich überraschen oder wo du inhaltlich anders siehst als beschrieben. Wenn du magst, sprechen wir in einem 30-minütigen Klarheits-Gespräch über deine Ergebnisse und den passenden nächsten Schritt.</div>
+      <div style="font-size:14px;line-height:1.5">Lies dir den Report einmal ganz durch. Notiere dir Stellen, die dich überraschen oder wo du inhaltlich anders siehst als beschrieben.</div>
     </div>
+
+    <div style="background:#00305b;color:#fff;padding:22px 24px;border-radius:12px;margin:24px 0">
+      <div style="font-size:11px;font-weight:700;color:#F18423;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Ein Angebot noch</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:10px">30 Minuten Klarheits-Gespräch – kostenfrei</div>
+      <div style="font-size:14px;line-height:1.6;margin-bottom:14px">
+        Wir gehen deinen Score gemeinsam durch, sortieren, was dich aktuell am meisten frisst, und arbeiten heraus, wo dein größter Hebel liegt. Am Ende hast du Klarheit – und entscheidest völlig frei, wie du weitergehen möchtest.
+      </div>
+      <div style="font-size:13px;line-height:1.6;color:rgba(255,255,255,.85);margin-bottom:16px">
+        <strong style="color:#fff">Keine Verkaufsschleife, kein Nachfassen ohne dein OK.</strong>
+      </div>
+      <div style="background:#F18423;padding:12px 18px;border-radius:8px;display:inline-block">
+        <a href="mailto:tb@trust-unternehmer.de?subject=Klarheits-Gespräch%20nach%20TRUST%20Unternehmer-Score" style="color:#fff;text-decoration:none;font-weight:700;font-size:15px">Termin anfragen: tb@trust-unternehmer.de</a>
+      </div>
+      <div style="font-size:12px;line-height:1.5;color:rgba(255,255,255,.75);margin-top:12px">
+        Ein kurzer Zwei-Zeiler mit ein bis zwei Terminvorschlägen reicht. Ich melde mich innerhalb von 24 Stunden.
+      </div>
+    </div>
+
     <p style="font-size:15px;line-height:1.6;margin:20px 0 0">
       Bei Rückfragen erreichst du mich jederzeit unter <a href="mailto:tb@trust-unternehmer.de" style="color:#F18423">tb@trust-unternehmer.de</a> oder telefonisch unter 0151 2525 4853.
     </p>
