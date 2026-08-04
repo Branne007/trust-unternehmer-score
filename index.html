@@ -264,16 +264,23 @@ a { color: var(--color-navy); text-decoration: none; }
 /* Lead-Form */
 .lead-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 .lead-form label { display: block; font-size: 0.85rem; color: var(--color-gray); margin-bottom: 0.25rem; font-weight: 600; }
-.lead-form input[type="text"], .lead-form input[type="email"] {
+.lead-form input[type="text"], .lead-form input[type="email"], .lead-form select {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #E5E7EB;
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 1rem;
+  background: var(--color-white);
   transition: border-color 0.15s;
 }
-.lead-form input:focus { outline: none; border-color: var(--color-orange); }
+.lead-form select { appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2354595F' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+.lead-form input:focus, .lead-form select:focus { outline: none; border-color: var(--color-orange); }
+.lead-form .form-sep { margin: 1.5rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid #E5E7EB; }
+.lead-form .form-sep-title { font-size: 0.95rem; font-weight: 700; color: var(--color-navy); margin-bottom: 0.25rem; }
+.lead-form .form-sep-hint { font-size: 0.85rem; color: var(--color-gray); line-height: 1.5; }
 @media (max-width: 640px) { .lead-form .form-row { grid-template-columns: 1fr; } }
 
 /* Consent-Box */
@@ -521,6 +528,19 @@ a { color: var(--color-navy); text-decoration: none; }
           <div><label>Ort</label><input id="lead-ort" type="text" required></div>
         </div>
 
+        <div class="form-sep">
+          <div class="form-sep-title">Noch drei Angaben zu deinem Unternehmen</div>
+          <div class="form-sep-hint">Sie sorgen dafür, dass die Auswertung zu deiner Situation passt. Der Reifegrad eines Inhabers mit 25 Mitarbeitenden bedeutet etwas anderes als der eines Geschäftsführers mit 150.</div>
+        </div>
+
+        <div class="form-row">
+          <div><label>Deine Rolle im Unternehmen</label><select id="lead-rolle"></select></div>
+          <div><label>Mitarbeitende</label><select id="lead-mitarbeiter"></select></div>
+        </div>
+        <div class="form-row" style="grid-template-columns:1fr">
+          <div><label>Was macht dein Unternehmen</label><select id="lead-betriebsart"></select></div>
+        </div>
+
         <div class="consent-box">
           <input type="checkbox" id="lead-consent" onchange="updateConsent()">
           <label for="lead-consent">
@@ -594,11 +614,24 @@ a { color: var(--color-navy); text-decoration: none; }
       <div id="result-steps" style="margin-top:1.5rem"></div>
     </div>
 
-    <div class="cta-section">
-      <h3>Bereit für ein persönliches Klarheits-Gespräch?</h3>
-      <p>In 30 Minuten arbeiten wir gemeinsam heraus, wo dein größter Hebel liegt und welches Format zu dir passt.</p>
-      <a href="mailto:tb@trust-unternehmer.de?subject=Klarheits-Gespräch%20nach%20TRUST%20Unternehmer-Score" class="btn btn-primary btn-large">Termin vereinbaren →</a>
+    <div class="card" style="background:var(--color-navy);color:#fff">
+      <span class="eyebrow" style="color:var(--color-orange)">Eine Frage zum Schluss</span>
+      <h2 style="color:#fff;margin-top:0.5rem">Wie läuft dein Unternehmen, wenn du drei Wochen nicht da bist?</h2>
+      <p style="color:rgba(255,255,255,.85)">
+        Nimm dir dafür einen Moment. Nicht: Wie sollte es laufen. Sondern: Wie war es beim letzten Mal?
+      </p>
+      <ul style="color:rgba(255,255,255,.85);line-height:1.9;margin:1rem 0">
+        <li>Wie oft hast du im letzten Urlaub ins Firmenhandy geschaut?</li>
+        <li>Was ist liegengeblieben, bis du zurück warst?</li>
+        <li>Wer hat entschieden, wenn du nicht erreichbar warst?</li>
+      </ul>
+      <p style="color:rgba(255,255,255,.85)">
+        Diese drei Nachfragen sagen mehr über den Reifegrad deiner Organisation als jeder Test –
+        auch mehr als dieser hier.
+      </p>
     </div>
+
+    <div id="result-cta"></div>
 
     <div class="card" style="background:var(--color-bg)">
       <span class="eyebrow">Übrigens</span>

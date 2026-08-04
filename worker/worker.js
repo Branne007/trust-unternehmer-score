@@ -1,23 +1,81 @@
 /**
- * TRUST Unternehmer-Score · Mail-Worker
+ * TRUST Unternehmer-Score · Mail- und Encharge-Worker · v2.1
  *
  * Empfängt POST vom Frontend mit:
- *   { lead: { vorname, name, firma, email, plz, ort },
+ *   { lead: { vorname, name, firma, email, plz, ort,
+ *             rolle, mitarbeiter, betriebsart, zielgruppe, region, consentAt },
  *     customerPdf: base64,
  *     coachPdf: base64,
  *     summary: { overall, domStufeName, strongestName, weakestName, percent[], elapsedMin } }
  *
- * Verschickt via Resend:
+ * Tut drei Dinge, in dieser Reihenfolge:
  *   1. Kunden-Mail mit customerPdf im Anhang
- *   2. Coach-Mail an tb@trust-unternehmer.de mit coachPdf im Anhang + Summary
+ *   2. Coach-Mail an tb@trust-unternehmer.de mit coachPdf + Summary
+ *   3. Kontakt an Encharge (REST API)
+ *
+ * Schritt 3 darf scheitern, ohne dass der Nutzer etwas merkt — die Mails sind
+ * dann schon raus. Der Fehler landet im Worker-Log und in der Antwort.
+ *
+ * NEU in v2.1
+ *   - Encharge-Anbindung über die REST API statt der Ingest API: letztere
+ *     ist nur im Premium-Tarif freigeschaltet und antwortet sonst mit 403.
+ *   - Zuordnungstabelle FELD ganz oben: weicht ein API-Name in Encharge ab,
+ *     wird nur dort eine Zeile geändert
+ *   - Der Worker schreibt Tatsachen, keine Stage. Stage-Übergänge gehören in
+ *     einen Encharge-Flow, der den aktuellen Stand prüft (sonst würde ein
+ *     zweiter Score-Durchlauf einen Kontakt von Stage 4 auf 2 zurückstufen).
  *
  * Secrets (via `wrangler secret put`):
- *   - RESEND_API_KEY: Resend API-Key
+ *   - RESEND_API_KEY     Resend API-Key
+ *   - ENCHARGE_API_KEY   API Key aus app.encharge.io/account/info
+ *                       (der untere der beiden – NICHT der Write Key)
  *
  * Konfiguration in wrangler.toml (vars):
- *   - COACH_EMAIL: Ziel-E-Mail für Coach-Version (Default: tb@trust-unternehmer.de)
- *   - FROM_ADDRESS: Absender (Default: TRUST Unternehmer <score@trust-unternehmer.de>)
+ *   - COACH_EMAIL   Ziel-E-Mail für Coach-Version
+ *   - FROM_ADDRESS  Absender
  */
+
+/* ============================================================
+   ZUORDNUNG DER ENCHARGE-FELDER
+   Links steht der Name, den der Worker verwendet, rechts der
+   API-Name des Feldes in Encharge. Weicht dort etwas ab:
+   nur die rechte Seite ändern, sonst nichts.
+   ============================================================ */
+const FELD = {
+  /* Standardfelder von Encharge */
+  vorname:       'firstName',
+  nachname:      'lastName',
+  vollname:      'name',
+  firma:         'company',
+  plz:           'postcode',
+  ort:           'city',
+
+  /* Eigene Felder – vorher in Encharge anlegen */
+  mitarbeitende: 'mitarbeitende',
+  rolle:         'rolle',
+  betriebsart:   'betriebsart',
+  eigentum:      'eigentum',
+  ring:          'ring',
+  einzugsgebiet: 'einzugsgebiet',
+  scoreWert:     'scorewert',   /* kleines w — so von Encharge vergeben */
+  scoreStufe:    'scoreStufe',
+  scoreStaerke:  'scoreStaerke',
+  scoreHebel:    'scoreHebel',
+  scoreDatum:    'scoreDatum',
+  einwilligung:  'einwilligungAm',
+  aktivierung:   'letzteAktivierung'
+};
+
+/* Tag, das jeder Score-Kontakt bekommt. Bewusst KEIN Double-Opt-in:
+   die Einwilligung im Score deckt Auswertung und Klarheits-Gespräch,
+   nicht den Newsletter. */
+const SCORE_TAG = 'Score gemacht';
+
+/* REST API, nicht Ingest API. Die Ingest API ist nur im Premium-Tarif
+   freigeschaltet (403), die REST API ist im Bestandstarif enthalten.
+   Authentifizierung mit dem API Key, NICHT mit dem Write Key.
+   Die Personendaten stehen direkt auf oberster Ebene, ohne Umschlag. */
+const ENCHARGE_URL = 'https://api.encharge.io/v1/people';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -57,14 +115,13 @@ export default {
 
     const fullName = `${lead.vorname} ${lead.name}`.trim();
 
-    /* ------- Kunden-Mail ------- */
-    const customerHtml = buildCustomerMail(lead);
+    /* ------- 1 · Kunden-Mail ------- */
     const customerResult = await sendResend(env.RESEND_API_KEY, {
       from: FROM,
       to: lead.email,
       reply_to: COACH_EMAIL,
       subject: 'Dein TRUST Unternehmer-Score',
-      html: customerHtml,
+      html: buildCustomerMail(lead),
       attachments: [{
         filename: 'TRUST-Unternehmer-Score.pdf',
         content: customerPdf,
@@ -75,14 +132,13 @@ export default {
       return json({ error: 'Customer mail failed', details: customerResult.error }, 502);
     }
 
-    /* ------- Coach-Mail ------- */
-    const coachHtml = buildCoachMail(lead, summary);
+    /* ------- 2 · Coach-Mail ------- */
     const coachResult = await sendResend(env.RESEND_API_KEY, {
       from: FROM,
       to: COACH_EMAIL,
       reply_to: lead.email,
-      subject: `TRUST Score · ${fullName}${lead.firma ? ' · ' + lead.firma : ''} · ${summary?.overall ?? '?'}/100`,
-      html: coachHtml,
+      subject: `TRUST Score · ${zgKuerzel(lead.zielgruppe)} · ${fullName}${lead.firma ? ' · ' + lead.firma : ''} · ${summary?.overall ?? '?'}/100`,
+      html: buildCoachMail(lead, summary),
       attachments: [{
         filename: `TRUST-Score-Coach-${lead.name || 'Kunde'}.pdf`,
         content: coachPdf,
@@ -94,11 +150,113 @@ export default {
       console.error('Coach mail failed:', coachResult.error);
     }
 
-    return json({ ok: true, customerSent: true, coachSent: coachResult.ok });
+    /* ------- 3 · Encharge ------- */
+    const enchargeResult = await sendEncharge(env.ENCHARGE_API_KEY, lead, summary);
+    if (!enchargeResult.ok) {
+      console.error('Encharge failed:', enchargeResult.error);
+    }
+
+    return json({
+      ok: true,
+      customerSent: true,
+      coachSent: coachResult.ok,
+      enchargeSent: enchargeResult.ok,
+    });
   },
 };
 
-/* ---------- Helpers ---------- */
+/* ============================================================
+   ENCHARGE · Ingest API
+   ============================================================ */
+
+/**
+ * Schreibt den Kontakt über die Encharge REST API.
+ *
+ * Bewusst NICHT geschrieben werden trustStage und erstAktivierung:
+ * beide dürfen nur unter Bedingungen gesetzt werden (Stage nur nach oben,
+ * Erstaktivierung nur wenn leer). Das gehört in einen Encharge-Flow, der
+ * durch das Tag bzw. eine Feldänderung ausgelöst wird.
+ *
+ * Achtung: Encharge legt unbekannte Feldnamen still als neues Custom Field
+ * an, statt einen Fehler zu melden. Ein Tippfehler in FELD fällt deshalb
+ * nicht auf. Nach jeder Änderung an FELD einmal in Settings → Custom Fields
+ * nachsehen, ob dort etwas Unerwartetes aufgetaucht ist.
+ */
+async function sendEncharge(apiKey, lead, summary) {
+  if (!apiKey) {
+    return { ok: false, error: 'ENCHARGE_API_KEY fehlt' };
+  }
+
+  const s = summary || {};
+  const jetzt = new Date().toISOString();
+
+  const person = {
+    email: lead.email,
+    tags: SCORE_TAG,
+  };
+
+  /* Identität und Firma */
+  setzen(person, FELD.vorname,  lead.vorname);
+  setzen(person, FELD.nachname, lead.name);
+  setzen(person, FELD.vollname, `${lead.vorname || ''} ${lead.name || ''}`.trim());
+  setzen(person, FELD.firma,    lead.firma);
+  setzen(person, FELD.plz,      lead.plz);
+  setzen(person, FELD.ort,      lead.ort);
+
+  /* Zielgruppen-Merkmale · stabile Codes aus data.js */
+  setzen(person, FELD.mitarbeitende, lead.mitarbeiter);
+  setzen(person, FELD.rolle,         lead.rolle);
+  setzen(person, FELD.betriebsart,   lead.betriebsart);
+  setzen(person, FELD.ring,          lead.zielgruppe);
+
+  /* Abgeleitete Wahrheitswerte. Die Eigentumsfrage folgt derselben Regel
+     wie classifyZielgruppe() im Frontend – wird sie dort geändert, hier
+     nachziehen. */
+  person[FELD.eigentum] =
+    lead.rolle === 'inhaber' || lead.rolle === 'nachfolger_beteiligt';
+  person[FELD.einzugsgebiet] = lead.region === true;
+
+  /* Score-Ergebnis */
+  if (typeof s.overall === 'number') person[FELD.scoreWert] = s.overall;
+  setzen(person, FELD.scoreStufe,   s.domStufeName);
+  setzen(person, FELD.scoreStaerke, s.strongestName);
+  setzen(person, FELD.scoreHebel,   s.weakestName);
+  person[FELD.scoreDatum]  = jetzt;
+  person[FELD.aktivierung] = 'Unternehmer-Score';
+
+  /* Einwilligung mit Zeitstempel aus dem Frontend, sonst jetzt */
+  person[FELD.einwilligung] = lead.consentAt || jetzt;
+
+  try {
+    const res = await fetch(ENCHARGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Encharge-Token': apiKey,
+      },
+      body: JSON.stringify(person),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      return { ok: false, error: `HTTP ${res.status}: ${text}` };
+    }
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+}
+
+/* Setzt ein Feld nur, wenn ein Wert vorhanden ist. Verhindert, dass ein
+   vorhandener Wert in Encharge durch einen leeren überschrieben wird. */
+function setzen(ziel, feld, wert) {
+  if (wert !== undefined && wert !== null && String(wert).trim() !== '') {
+    ziel[feld] = wert;
+  }
+}
+
+/* ============================================================
+   HELFER
+   ============================================================ */
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -162,10 +320,10 @@ function buildCustomerMail(lead) {
         <strong style="color:#fff">Keine Verkaufsschleife, kein Nachfassen ohne dein OK.</strong>
       </div>
       <div style="background:#F18423;padding:12px 18px;border-radius:8px;display:inline-block">
-        <a href="mailto:tb@trust-unternehmer.de?subject=Klarheits-Gespräch%20nach%20TRUST%20Unternehmer-Score" style="color:#fff;text-decoration:none;font-weight:700;font-size:15px">Termin anfragen: tb@trust-unternehmer.de</a>
+        <a href="https://sprint.trust-unternehmer.de/#gespraech" style="color:#fff;text-decoration:none;font-weight:700;font-size:15px">Gespräch anfragen →</a>
       </div>
       <div style="font-size:12px;line-height:1.5;color:rgba(255,255,255,.75);margin-top:12px">
-        Ein kurzer Zwei-Zeiler mit ein bis zwei Terminvorschlägen reicht. Ich melde mich innerhalb von 24 Stunden.
+        Ein kurzes Formular, vier Klicks. Ich melde mich innerhalb von 24 Stunden mit zwei Terminvorschlägen.
       </div>
     </div>
 
@@ -207,6 +365,10 @@ function buildCoachMail(lead, summary) {
     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:16px 0">
       <tr><td style="padding:6px 0;color:#54595F;font-size:13px;width:160px">Kontakt</td>
           <td style="padding:6px 0;font-size:13px"><a href="mailto:${escapeHtml(lead.email)}" style="color:#00305b">${escapeHtml(lead.email)}</a></td></tr>
+      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Ring</td>
+          <td style="padding:6px 0;font-size:13px;font-weight:700;color:${zgFarbe(lead.zielgruppe)}">${escapeHtml(s.zielgruppeLabel || zgKuerzel(lead.zielgruppe))}${lead.region === false ? ' · außerhalb des Einzugsgebiets' : ''}</td></tr>
+      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Rolle / Größe / Betrieb</td>
+          <td style="padding:6px 0;font-size:13px">${escapeHtml(lead.rolle || '–')} · ${escapeHtml(lead.mitarbeiter || '–')} · ${escapeHtml(lead.betriebsart || '–')}</td></tr>
       <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Gesamtscore</td>
           <td style="padding:6px 0;font-size:13px;font-weight:700;color:#F18423">${s.overall ?? '–'} / 100</td></tr>
       <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Dominante Stufe</td>
@@ -223,11 +385,30 @@ function buildCoachMail(lead, summary) {
 
     <div style="background:#FFF5EB;border-left:4px solid #F18423;padding:14px 18px;border-radius:0 8px 8px 0;margin:18px 0">
       <div style="font-size:11px;font-weight:700;color:#F18423;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Nächster Schritt</div>
-      <div style="font-size:14px;line-height:1.5">Coach-PDF enthält Coach-Hinweise pro Stufe (Fokus / Formatvorschlag / Warnhinweis), alle 40 Antworten mit Werten, sowie die versteckte Metadaten-Zeile am Ende für den Kompass-Import.</div>
+      <div style="font-size:14px;line-height:1.5">Kontakt steht in Encharge mit Ring, Firmografie und Score-Werten. Bei Ring „kern" innerhalb von 48 Stunden persönlich melden. Coach-PDF enthält alle 40 Antworten und die Metadaten-Zeile für den Kompass-Import.</div>
     </div>
   </td></tr>
 </table>
 </body></html>`;
+}
+
+/* Kurzbezeichnung und Farbe des Zielgruppen-Rings für die Coach-Mail */
+function zgKuerzel(status) {
+  return ({
+    kern: 'KERN',
+    kern_einzelfall: 'KERN?',
+    peer: 'PEER',
+    suchfeld: 'SUCHFELD',
+  })[status] || 'OHNE ANGABE';
+}
+
+function zgFarbe(status) {
+  return ({
+    kern: '#27AE60',
+    kern_einzelfall: '#D4A017',
+    peer: '#00305b',
+    suchfeld: '#54595F',
+  })[status] || '#54595F';
 }
 
 function escapeHtml(str) {

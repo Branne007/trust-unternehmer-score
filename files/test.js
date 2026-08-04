@@ -194,6 +194,56 @@ function computeScores() {
   };
 }
 
+/* ---------- Zielgruppen-Einordnung ----------
+   Rein interne Klassifikation nach Zielgruppen-Definition v1.
+   Wird dem Nutzer nicht angezeigt, sondern nur im Coach-PDF und in der
+   Coach-Mail ausgewiesen und später an Encharge übergeben. */
+function classifyZielgruppe(lead) {
+  const eigentum   = lead.rolle === 'inhaber' || lead.rolle === 'nachfolger_beteiligt';
+  const betriebOk  = lead.betriebsart === 'fertigung';
+  const groesseKern = lead.mitarbeiter === '15_30' || lead.mitarbeiter === '31_60';
+  const groesseRand = lead.mitarbeiter === '61_100';
+  const grossfirma  = lead.mitarbeiter === 'ueber100';
+  const fuehrend    = eigentum || lead.rolle === 'gf_ohne_beteiligung';
+
+  let status = 'suchfeld';
+  if (eigentum && betriebOk && groesseKern)      status = 'kern';
+  else if (eigentum && betriebOk && groesseRand) status = 'kern_einzelfall';
+  else if (fuehrend && grossfirma)               status = 'peer';
+
+  const plz = String(lead.plz || '').replace(/\D/g, '');
+  const region = REGION_PLZ.some(pre => plz.indexOf(pre) === 0);
+
+  const gruende = [];
+  if (!eigentum)  gruende.push('kein Eigentum');
+  if (!betriebOk) gruende.push('keine eigene Wertschöpfung');
+  if (lead.mitarbeiter === 'bis14') gruende.push('unter 15 Mitarbeitende');
+  if (grossfirma) gruende.push('über 100 Mitarbeitende');
+  if (!region)    gruende.push('außerhalb des Einzugsgebiets');
+
+  return {
+    status: status,
+    label: ZIELGRUPPEN_LABEL[status],
+    region: region,
+    abweichungen: gruende,
+  };
+}
+
+/* ---------- Auswahlfelder befüllen ---------- */
+function fillSelect(id, options) {
+  const el = document.getElementById(id);
+  if (!el || el.options.length) return;
+  el.innerHTML = options.map(o =>
+    '<option value="' + o.val + '"' + (o.val ? '' : ' disabled selected') + '>' + o.label + '</option>'
+  ).join('');
+}
+
+function fillLeadSelects() {
+  fillSelect('lead-rolle', ROLLEN);
+  fillSelect('lead-mitarbeiter', MITARBEITER);
+  fillSelect('lead-betriebsart', BETRIEBSARTEN);
+}
+
 /* ---------- Lead-Gate ---------- */
 function gateToLead() {
   saveState();
@@ -208,6 +258,7 @@ function gateToLead() {
     const c = 534.07;
     teaserArc.style.strokeDashoffset = c - c * scores.overall / 100;
   }
+  fillLeadSelects();
   updateConsent();
 }
 
@@ -230,7 +281,8 @@ function submitLead() {
     return;
   }
 
-  const fields = ['lead-vorname', 'lead-name', 'lead-firma', 'lead-email', 'lead-plz', 'lead-ort'];
+  const fields = ['lead-vorname', 'lead-name', 'lead-firma', 'lead-email', 'lead-plz', 'lead-ort',
+                  'lead-rolle', 'lead-mitarbeiter', 'lead-betriebsart'];
   let ok = true;
   fields.forEach(id => {
     const e = document.getElementById(id);
@@ -249,8 +301,16 @@ function submitLead() {
     email: document.getElementById('lead-email').value.trim(),
     plz: document.getElementById('lead-plz').value.trim(),
     ort: document.getElementById('lead-ort').value.trim(),
+    /* Firmografische Filterfelder - stabile Codes, siehe data.js */
+    rolle: document.getElementById('lead-rolle').value,
+    mitarbeiter: document.getElementById('lead-mitarbeiter').value,
+    betriebsart: document.getElementById('lead-betriebsart').value,
     consentAt: new Date().toISOString(),  // Zeitstempel für die Einwilligung
   };
+  /* Interne Einordnung ergaenzen - nie im Kunden-PDF, nie in der Kunden-Mail */
+  const zg = classifyZielgruppe(state.lead);
+  state.lead.zielgruppe = zg.status;
+  state.lead.region = zg.region;
   saveState();
   showProcessing();
 }
@@ -277,6 +337,9 @@ async function showProcessing() {
             customerPdf,
             coachPdf,
             summary: {
+              zielgruppe: state.lead.zielgruppe,
+              zielgruppeLabel: ZIELGRUPPEN_LABEL[state.lead.zielgruppe],
+              region: state.lead.region,
               overall: scores.overall,
               domStufeName: STUFEN[scores.dom],
               strongestName: STUFEN[scores.strongest],
@@ -355,6 +418,63 @@ function showResults(scores, mailSent) {
     steps.innerHTML = STUFEN_SCHRITTE[scores.dom].map((s, i) =>
       '<div class="step-row"><div class="step-num">' + (i + 1) + '</div><div class="step-text">' + s + '</div></div>'
     ).join('');
+  }
+
+  renderCta();
+}
+
+/* ---------- Abschluss der Ergebnisseite ----------
+   Der Abschluss richtet sich nach dem Ring aus classifyZielgruppe().
+   Kern, Kern-Einzelfall und Peer bekommen den Weg ins Klarheits-Gespräch
+   ueber das Anfrageformular der Sprint-Seite. Suchfeld bekommt den
+   KI-Talk als niederschwelligen Einstieg – dort ist die Teilnahme
+   bewusst breiter angelegt.
+
+   Der Ring wird dem Nutzer NIE genannt. Er steuert nur, was angeboten
+   wird, nicht was zu lesen ist. */
+function renderCta() {
+  const ziel = document.getElementById('result-cta');
+  if (!ziel) return;
+
+  const ring = (state.lead && state.lead.zielgruppe) || '';
+  const naheDran = ring === 'kern' || ring === 'kern_einzelfall' || ring === 'peer';
+
+  if (naheDran) {
+    ziel.innerHTML =
+      '<div class="cta-section">' +
+        '<h3>Bereit für ein persönliches Klarheits-Gespräch?</h3>' +
+        '<p>30 Minuten, online, kostenfrei. Wir gehen deinen Score gemeinsam durch, ' +
+        'sortieren, was dich aktuell am meisten frisst, und arbeiten heraus, wo dein ' +
+        'größter Hebel liegt. Eine Absage ist dabei ein legitimes Ergebnis.</p>' +
+        '<a href="https://sprint.trust-unternehmer.de/#gespraech" class="btn btn-primary btn-large">' +
+        'Gespräch anfragen →</a>' +
+      '</div>' +
+      '<div class="card" style="background:var(--color-bg)">' +
+        '<span class="eyebrow">Wenn du weiter gehen willst</span>' +
+        '<h4 style="color:var(--color-navy);margin-top:0">Der TRUST Strategie-Sprint</h4>' +
+        '<p>Vier Wochen, neun Module, rund 15 Stunden deiner Zeit. Am Ende steht deine ' +
+        'Strategie auf einer Seite – geprüft nicht vom Berater, sondern von deinen eigenen Kunden.</p>' +
+        '<a href="https://sprint.trust-unternehmer.de" target="_blank" ' +
+        'style="color:var(--color-orange);font-weight:700">Zum Strategie-Sprint →</a>' +
+      '</div>';
+  } else {
+    ziel.innerHTML =
+      '<div class="cta-section">' +
+        '<h3>Der nächste Schritt, ohne Verpflichtung</h3>' +
+        '<p>Einmal im Monat, freitags von 8:30 bis 9:30 Uhr, spreche ich im TRUST KI-Talk ' +
+        'über konkrete Anwendungsfälle aus dem Unternehmeralltag. Online, kostenfrei, ' +
+        'ohne Anmeldeverpflichtung.</p>' +
+        '<a href="https://ki-talk.trust-unternehmer.de" class="btn btn-primary btn-large">' +
+        'Zum KI-Talk →</a>' +
+      '</div>' +
+      '<div class="card" style="background:var(--color-bg)">' +
+        '<span class="eyebrow">Oder direkt</span>' +
+        '<h4 style="color:var(--color-navy);margin-top:0">Ein kurzes Gespräch</h4>' +
+        '<p>Wenn du deinen Score lieber persönlich besprechen möchtest: Schreib mir zwei Zeilen, ' +
+        'ich melde mich innerhalb von 24 Stunden.</p>' +
+        '<a href="mailto:tb@trust-unternehmer.de?subject=Frage%20zu%20meinem%20TRUST%20Unternehmer-Score" ' +
+        'style="color:var(--color-orange);font-weight:700">tb@trust-unternehmer.de →</a>' +
+      '</div>';
   }
 }
 
