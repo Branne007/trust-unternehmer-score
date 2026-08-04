@@ -134,31 +134,74 @@ const STUFEN_SCHRITTE = [
 /* ---------- Farbschema für die 5 Stufen ---------- */
 const STUFEN_FARBEN = ['#C0392B', '#E07B39', '#D4A017', '#27AE60', '#00305B'];
 
+/* ---------- Firmografische Auswahlfelder (Zielgruppen-Filter) ----------
+   Grundlage: Zielgruppen-Definition v1 vom 3. August 2026.
+   `val` sind stabile Codes und wandern unverändert in Encharge bzw. später
+   in eine Datenbank. `label` ist reiner Anzeigetext und darf sich ändern. */
+const ROLLEN = [
+  { val: '',                     label: 'Bitte auswählen' },
+  { val: 'inhaber',              label: 'Inhaber oder Mitgesellschafter' },
+  { val: 'nachfolger_beteiligt', label: 'Nachfolger mit Beteiligung' },
+  { val: 'gf_ohne_beteiligung',  label: 'Geschäftsführer ohne Beteiligung' },
+  { val: 'fuehrungskraft',       label: 'Führungskraft' },
+  { val: 'sonstiges',            label: 'Sonstiges' },
+];
+
+const MITARBEITER = [
+  { val: '',        label: 'Bitte auswählen' },
+  { val: 'bis14',   label: 'bis 14' },
+  { val: '15_30',   label: '15 bis 30' },
+  { val: '31_60',   label: '31 bis 60' },
+  { val: '61_100',  label: '61 bis 100' },
+  { val: 'ueber100',label: 'über 100' },
+];
+
+const BETRIEBSARTEN = [
+  { val: '',              label: 'Bitte auswählen' },
+  { val: 'fertigung',     label: 'Fertigung, Montage oder technische Leistung' },
+  { val: 'handel',        label: 'Handel' },
+  { val: 'dienstleistung',label: 'Dienstleistung' },
+  { val: 'beratung',      label: 'Beratung, Kanzlei, Agentur' },
+  { val: 'sonstiges',     label: 'Sonstiges' },
+];
+
+/* Klartext-Bezeichnungen der Zielgruppen-Kreise (nur intern sichtbar) */
+const ZIELGRUPPEN_LABEL = {
+  kern:           'Kernzielgruppe',
+  kern_einzelfall:'Kernzielgruppe, Einzelfallprüfung',
+  peer:           'Peer-Kreis',
+  suchfeld:       'Suchfeld',
+};
+
+/* PLZ-Praefixe des Einzugsgebiets: Lahn-Dill, Siegerland, Westerwald,
+   Limburg-Weilburg. Bei Bedarf hier erweitern. */
+const REGION_PLZ = ['35', '56', '57', '65'];
+
 /* ---------- Coach-Hinweise pro dominanter Stufe (nur im Coach-PDF) ---------- */
 const COACH_HINWEISE = [
   {
     fokus: 'Der Kunde ist im Feuerwehr-Modus. Klarheits-Gespräch nutzt sich am besten, wenn er selbst benennen kann, was ihn im Alltag am meisten frisst.',
-    formatvorschlag: 'Monatsgruppe oder INQA-Projekt – je nach Firmengröße. Executive Sparring, wenn Peer-Format nicht gewünscht.',
+    formatvorschlag: 'Monatsgruppe bei Kernzielgruppen-Fit. INQA-Projekt, wenn Förderung das Risiko senken muss. Runder Tisch als niederschwelliger Einstieg.',
     warnhinweis: 'Vorsicht bei Preisgesprächen: Diese Zielgruppe rechnet reflexartig gegen operative Kosten. Wertfrage muss früh im Gespräch stehen.',
   },
   {
     fokus: 'Kunde hat erste Strukturen, aber die Führung greift noch nicht durch. Delegationsthema ist der Hebel.',
-    formatvorschlag: 'Monatsgruppe (bei Peer-Bereitschaft) oder Quartalsgruppe (bei Zeitknappheit). INQA-Projekt bei akutem Delegationsthema.',
+    formatvorschlag: 'Monatsgruppe bei Kernzielgruppe, Geschäftsführer-Kreis ab ca. 100 MA. INQA-Projekt bei akutem Delegationsthema. Beratungs-Projekt für Führungsteam-Diagnose.',
     warnhinweis: 'Achte darauf, ob der Kunde wirklich loslassen will – oder ob er nur „mehr Werkzeug" sucht. Letzteres führt zu unzufriedenen Kunden.',
   },
   {
     fokus: 'Kunde hat Führung im Griff, jetzt geht es um Systemreife. Prozesse und Standards sind das Thema.',
-    formatvorschlag: 'Monatsgruppe für strategisches Sparring; KI-Strategiesprint bei KI-Fokus; Beratungsprojekt bei konkretem Prozessthema.',
+    formatvorschlag: 'Monatsgruppe für strategisches Sparring. Strategie-Sprint Kompakt oder Team, je nachdem ob ein Führungskreis vorhanden ist. Beratungs-Projekt bei konkretem Prozessthema.',
     warnhinweis: 'Diese Kunden sind oft schon in anderen Netzwerken. Argumentiere den Peer-Group-Vorteil klar über die Qualität der Teilnehmer.',
   },
   {
     fokus: 'Kunde ist reif für strategische Arbeit AM Unternehmen. Das Sparring wird auf Augenhöhe – anspruchsvoll für dich, wertvoll für ihn.',
-    formatvorschlag: 'Executive Sparring 1:1 oder Monatsgruppe (nur bei Peer-Bereitschaft mit ähnlichem Reifegrad). KI-Strategiesprint Inhouse bei Firmengröße >30 MA.',
+    formatvorschlag: 'Strategie-Sprint Team, wenn ein Führungskreis existiert. Monatsgruppe nur bei Peer-Bereitschaft mit ähnlichem Reifegrad. Beratungs-Projekt für die Führungsteam-Entwicklung.',
     warnhinweis: 'Standardformate wirken hier schnell unterfordernd. Value-Frage besonders sauber führen – dieser Kunde zahlt gerne, aber nur für echten Mehrwert.',
   },
   {
     fokus: 'Kunde ist am oberen Ende. Sucht Austausch auf Peer-Ebene, keine Belehrung.',
-    formatvorschlag: 'Monatsgruppe (Bedingung: mindestens 2–3 weitere Kunden auf ähnlichem Reifegrad), Executive Sparring bei 1:1-Präferenz.',
+    formatvorschlag: 'Monatsgruppe, Bedingung: mindestens zwei bis drei weitere Mitglieder auf ähnlichem Reifegrad. Geschäftsführer-Kreis, wenn die Firma über 100 MA hat.',
     warnhinweis: 'Der Score kann bei dieser Gruppe artifiziell hoch sein (Selbstbild). Im Gespräch prüfen: Ist der Score echt oder ist da noch ein blinder Fleck?',
   },
 ];

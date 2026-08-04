@@ -30,6 +30,12 @@ function fix(s) {
     .replace(/fl/g, 'f\u200Bl');
 }
 
+/* Anzeigetext zu einem gespeicherten Code aus data.js finden */
+function labelOf(list, val) {
+  const hit = (list || []).find(o => o.val === val);
+  return hit ? hit.label : (val || '–');
+}
+
 function dateStr() {
   const d = new Date();
   const monate = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
@@ -392,6 +398,36 @@ async function generateCoachPdf(scores, lead, answers) {
     margin: [0, 0, 0, 16],
   });
 
+  // ========== ZIELGRUPPEN-EINORDNUNG ==========
+  const zg = classifyZielgruppe(lead);
+  const zgFarbe = (zg.status === 'kern') ? '#27AE60'
+                : (zg.status === 'kern_einzelfall') ? '#D4A017'
+                : (zg.status === 'peer') ? NAVY : GRAY;
+
+  content.push({ text: fix('ZIELGRUPPEN-EINORDNUNG'), style: 'sectionEyebrow' });
+  content.push({ text: fix('Nach Zielgruppen-Definition v1'), style: 'section' });
+
+  content.push({
+    table: {
+      widths: [180, '*'],
+      body: [
+        [{ text: fix('Kreis'), style: 'tableCell', color: GRAY },
+         { text: fix(zg.label), style: 'tableCell', bold: true, color: zgFarbe }],
+        [{ text: fix('Rolle'), style: 'tableCell', color: GRAY },
+         { text: fix(labelOf(ROLLEN, lead.rolle)), style: 'tableCell' }],
+        [{ text: fix('Mitarbeitende'), style: 'tableCell', color: GRAY },
+         { text: fix(labelOf(MITARBEITER, lead.mitarbeiter)), style: 'tableCell' }],
+        [{ text: fix('Betriebsart'), style: 'tableCell', color: GRAY },
+         { text: fix(labelOf(BETRIEBSARTEN, lead.betriebsart)), style: 'tableCell' }],
+        [{ text: fix('Einzugsgebiet'), style: 'tableCell', color: GRAY },
+         { text: fix(zg.region ? 'ja' : 'nein'), style: 'tableCell' }],
+        [{ text: fix('Abweichungen'), style: 'tableCell', color: GRAY },
+         { text: fix(zg.abweichungen.length ? zg.abweichungen.join(' · ') : 'keine'), style: 'tableCell' }],
+      ],
+    }, layout: 'noBorders',
+    margin: [0, 0, 0, 16],
+  });
+
   // ========== KURZÜBERSICHT ==========
   content.push({ text: fix('KURZÜBERSICHT'), style: 'sectionEyebrow' });
   content.push({ text: fix('Profil auf einen Blick'), style: 'section' });
@@ -552,6 +588,11 @@ async function generateCoachPdf(scores, lead, answers) {
     'lead:' + encodeURIComponent(lead.vorname + ' ' + lead.name) + '|' +
     'firma:' + encodeURIComponent(lead.firma || '') + '|' +
     'email:' + encodeURIComponent(lead.email || '') + '|' +
+    'rolle:' + (lead.rolle || '') + '|' +
+    'ma:' + (lead.mitarbeiter || '') + '|' +
+    'betrieb:' + (lead.betriebsart || '') + '|' +
+    'zg:' + (zg.status || '') + '|' +
+    'reg:' + (zg.region ? 1 : 0) + '|' +
     'end';
 
   const docDefinition = {
