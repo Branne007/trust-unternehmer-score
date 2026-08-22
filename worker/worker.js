@@ -63,7 +63,11 @@ const FELD = {
   scoreHebel:    'scoreHebel',
   scoreDatum:    'scoreDatum',
   einwilligung:  'einwilligungAm',
-  aktivierung:   'letzteAktivierung'
+  aktivierung:   'letzteAktivierung',
+
+  /* Zweite, freiwillige Einwilligung aus dem Score-Formular */
+  newsletter:    'newsletterEinwilligung',
+  newsletterAm:  'newsletterEinwilligungAm'
 };
 
 /* Tag, das jeder Score-Kontakt bekommt. Bewusst KEIN Double-Opt-in:
@@ -71,49 +75,82 @@ const FELD = {
    nicht den Newsletter. */
 const SCORE_TAG = 'Score gemacht';
 
+/* Zusaetzliches Tag, wenn die freiwillige zweite Checkbox gesetzt war.
+   Das Tag ist der Ausloeser, nicht der Zustand: Die tatsaechliche
+   Newsletter-Anmeldung wird ueber einen Encharge-Flow gesetzt, weil der
+   Abo-Status dort ueber Communication Categories gesteuert wird und nicht
+   ueber ein Custom Field. */
+const NEWSLETTER_TAG = 'Newsletter Einwilligung';
+
 /* REST API, nicht Ingest API. Die Ingest API ist nur im Premium-Tarif
    freigeschaltet (403), die REST API ist im Bestandstarif enthalten.
    Authentifizierung mit dem API Key, NICHT mit dem Write Key.
    Die Personendaten stehen direkt auf oberster Ebene, ohne Umschlag. */
 const ENCHARGE_URL = 'https://api.encharge.io/v1/people';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Max-Age': '86400',
-};
+/* Erlaubte Herkuenfte. Vorher stand hier '*', damit konnte jede beliebige
+   Seite den Endpunkt aufrufen und ueber deine Absenderadresse Mails mit
+   beliebigem Anhang verschicken lassen. Die localhost-Eintraege sind fuer
+   lokale Tests; wer sie nicht mehr braucht, entfernt sie. */
+const ALLOWED_ORIGINS = [
+  'https://unternehmer-score.trust-unternehmer.de',
+  'https://trust-unternehmer.de',
+  'https://www.trust-unternehmer.de',
+  'http://localhost:8000',
+  'http://127.0.0.1:8000',
+];
+
+function corsHeaders(request) {
+  const origin = request.headers.get('Origin') || '';
+  const erlaubt = ALLOWED_ORIGINS.includes(origin);
+  return {
+    'Access-Control-Allow-Origin': erlaubt ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
+  };
+}
 
 export default {
   async fetch(request, env) {
+    const CORS = corsHeaders(request);
+
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: CORS_HEADERS });
+      return new Response(null, { status: 204, headers: CORS });
     }
 
     if (request.method !== 'POST') {
-      return json({ error: 'Method not allowed' }, 405);
+      return json({ error: 'Method not allowed' }, 405, CORS);
+    }
+
+    /* Herkunft pruefen. Haelt keinen entschlossenen Angreifer auf, der
+       den Header faelscht, aber jeden Fremdaufruf aus dem Browser. */
+    const origin = request.headers.get('Origin') || '';
+    if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+      return json({ error: 'Origin not allowed' }, 403, CORS);
     }
 
     let body;
     try {
       body = await request.json();
     } catch {
-      return json({ error: 'Invalid JSON' }, 400);
+      return json({ error: 'Invalid JSON' }, 400, CORS);
     }
 
     const { lead, customerPdf, coachPdf, summary } = body || {};
     if (!lead || !lead.email || !customerPdf || !coachPdf) {
-      return json({ error: 'Missing required fields (lead, customerPdf, coachPdf)' }, 400);
+      return json({ error: 'Missing required fields (lead, customerPdf, coachPdf)' }, 400, CORS);
     }
 
     const FROM = env.FROM_ADDRESS || 'TRUST Unternehmer <score@trust-unternehmer.de>';
     const COACH_EMAIL = env.COACH_EMAIL || 'tb@trust-unternehmer.de';
 
     if (!env.RESEND_API_KEY) {
-      return json({ error: 'RESEND_API_KEY missing in worker env' }, 500);
+      return json({ error: 'RESEND_API_KEY missing in worker env' }, 500, CORS);
     }
 
-    const fullName = `${lead.vorname} ${lead.name}`.trim();
+    const fullName = vollerName(lead);
 
     /* ------- 1 · Kunden-Mail ------- */
     const customerResult = await sendResend(env.RESEND_API_KEY, {
@@ -129,7 +166,7 @@ export default {
     });
 
     if (!customerResult.ok) {
-      return json({ error: 'Customer mail failed', details: customerResult.error }, 502);
+      return json({ error: 'Customer mail failed', details: customerResult.error }, 502, CORS);
     }
 
     /* ------- 2 · Coach-Mail ------- */
@@ -161,7 +198,8 @@ export default {
       customerSent: true,
       coachSent: coachResult.ok,
       enchargeSent: enchargeResult.ok,
-    });
+      newsletter: !!lead.newsletter,
+    }, 200, CORS);
   },
 };
 
@@ -190,15 +228,18 @@ async function sendEncharge(apiKey, lead, summary) {
   const s = summary || {};
   const jetzt = new Date().toISOString();
 
+  const newsletterJa = lead.newsletter === true;
+
   const person = {
     email: lead.email,
-    tags: SCORE_TAG,
+    /* Encharge nimmt mehrere Tags als kommagetrennte Liste entgegen */
+    tags: newsletterJa ? `${SCORE_TAG}, ${NEWSLETTER_TAG}` : SCORE_TAG,
   };
 
   /* Identität und Firma */
   setzen(person, FELD.vorname,  lead.vorname);
   setzen(person, FELD.nachname, lead.name);
-  setzen(person, FELD.vollname, `${lead.vorname || ''} ${lead.name || ''}`.trim());
+  setzen(person, FELD.vollname, vollerName(lead));
   setzen(person, FELD.firma,    lead.firma);
   setzen(person, FELD.plz,      lead.plz);
   setzen(person, FELD.ort,      lead.ort);
@@ -226,6 +267,12 @@ async function sendEncharge(apiKey, lead, summary) {
 
   /* Einwilligung mit Zeitstempel aus dem Frontend, sonst jetzt */
   person[FELD.einwilligung] = lead.consentAt || jetzt;
+
+  /* Zweite, freiwillige Einwilligung. Wird immer geschrieben, auch als
+     false - sonst liesse sich spaeter nicht unterscheiden zwischen
+     "hat abgelehnt" und "wurde nie gefragt". */
+  person[FELD.newsletter] = newsletterJa;
+  if (newsletterJa) person[FELD.newsletterAm] = lead.newsletterAt || jetzt;
 
   try {
     const res = await fetch(ENCHARGE_URL, {
@@ -257,10 +304,10 @@ function setzen(ziel, feld, wert) {
 /* ============================================================
    HELFER
    ============================================================ */
-function json(data, status = 200) {
+function json(data, status = 200, cors = {}) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+    headers: { 'Content-Type': 'application/json', ...cors },
   });
 }
 
@@ -305,27 +352,27 @@ function buildCustomerMail(lead) {
     <p style="font-size:15px;line-height:1.6;margin:0 0 16px">
       Nimm dir am besten 15 Minuten Zeit, ihn in Ruhe durchzugehen. Besonders die drei nächsten Schritte und die Kernaussage sind konkrete Ansatzpunkte für deine Entwicklung in den nächsten 30 Tagen.
     </p>
-    <div style="background:#FFF5EB;border-left:4px solid #F18423;padding:16px 20px;border-radius:0 8px 8px 0;margin:20px 0">
-      <div style="font-size:11px;font-weight:700;color:#F18423;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Was jetzt hilft</div>
-      <div style="font-size:14px;line-height:1.5">Lies dir den Report einmal ganz durch. Notiere dir Stellen, die dich überraschen oder wo du inhaltlich anders siehst als beschrieben.</div>
-    </div>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:20px 0">
+      <tr><td style="background:#FFF5EB;border-left:4px solid #F18423;padding:16px 20px">
+        <div style="font-size:11px;font-weight:700;color:#D96F12;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 6px">Was jetzt hilft</div>
+        <div style="font-size:14px;line-height:1.6;color:#161616">Lies dir den Report einmal ganz durch. Notiere dir Stellen, die dich überraschen oder wo du inhaltlich anders siehst als beschrieben.</div>
+      </td></tr>
+    </table>
 
-    <div style="background:#00305b;color:#fff;padding:22px 24px;border-radius:12px;margin:24px 0">
-      <div style="font-size:11px;font-weight:700;color:#F18423;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Ein Angebot noch</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:10px">30 Minuten Klarheits-Gespräch – kostenfrei</div>
-      <div style="font-size:14px;line-height:1.6;margin-bottom:14px">
-        Wir gehen deinen Score gemeinsam durch, sortieren, was dich aktuell am meisten frisst, und arbeiten heraus, wo dein größter Hebel liegt. Am Ende hast du Klarheit – und entscheidest völlig frei, wie du weitergehen möchtest.
-      </div>
-      <div style="font-size:13px;line-height:1.6;color:rgba(255,255,255,.85);margin-bottom:16px">
-        <strong style="color:#fff">Keine Verkaufsschleife, kein Nachfassen ohne dein OK.</strong>
-      </div>
-      <div style="background:#F18423;padding:12px 18px;border-radius:8px;display:inline-block">
-        <a href="https://sprint.trust-unternehmer.de/#gespraech" style="color:#fff;text-decoration:none;font-weight:700;font-size:15px">Gespräch anfragen →</a>
-      </div>
-      <div style="font-size:12px;line-height:1.5;color:rgba(255,255,255,.75);margin-top:12px">
-        Ein kurzes Formular, vier Klicks. Ich melde mich innerhalb von 24 Stunden mit zwei Terminvorschlägen.
-      </div>
-    </div>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:24px 0">
+      <tr><td style="background:#F4F6F9;border-left:4px solid #00305b;padding:22px 24px">
+        <div style="font-size:11px;font-weight:700;color:#D96F12;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 8px">Ein Angebot noch</div>
+        <div style="font-size:18px;font-weight:700;color:#00305b;margin:0 0 12px">30 Minuten Klarheits-Gespräch, kostenfrei</div>
+        <div style="font-size:14px;line-height:1.6;color:#161616;margin:0 0 12px">Wir gehen deinen Score gemeinsam durch, sortieren, was dich aktuell am meisten frisst, und arbeiten heraus, wo dein größter Hebel liegt. Am Ende hast du Klarheit und entscheidest völlig frei, wie du weitergehen möchtest.</div>
+        <div style="font-size:14px;line-height:1.6;color:#00305b;font-weight:700;margin:0 0 18px">Keine Verkaufsschleife, kein Nachfassen ohne dein OK.</div>
+        <table cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+          <tr><td align="center" style="background:#F18423;padding:13px 24px">
+            <a href="https://sprint.trust-unternehmer.de/#gespraech" style="color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;display:inline-block">Gespräch anfragen &rarr;</a>
+          </td></tr>
+        </table>
+        <div style="font-size:12px;line-height:1.5;color:#54595F;margin:12px 0 0">Ein kurzes Formular, vier Klicks. Ich melde mich innerhalb von 24 Stunden mit zwei Terminvorschlägen.</div>
+      </td></tr>
+    </table>
 
     <p style="font-size:15px;line-height:1.6;margin:20px 0 0">
       Bei Rückfragen erreichst du mich jederzeit unter <a href="mailto:tb@trust-unternehmer.de" style="color:#F18423">tb@trust-unternehmer.de</a> oder telefonisch unter 0151 2525 4853.
@@ -356,7 +403,7 @@ function buildCoachMail(lead, summary) {
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,48,91,.08)">
   <tr><td style="background:#00305b;padding:24px 32px">
     <div style="color:#F18423;font-size:11px;font-weight:700;letter-spacing:2px">TRUST · NEUER SCORE-EINGANG</div>
-    <div style="color:#fff;font-size:22px;font-weight:700;margin-top:4px">${escapeHtml(lead.vorname)} ${escapeHtml(lead.name)}</div>
+    <div style="color:#fff;font-size:22px;font-weight:700;margin-top:4px">${escapeHtml(vollerName(lead))}</div>
     <div style="color:rgba(255,255,255,.75);font-size:14px;margin-top:2px">${lead.firma ? escapeHtml(lead.firma) : ''}${(lead.plz || lead.ort) ? ' · ' + escapeHtml((lead.plz || '') + ' ' + (lead.ort || '')) : ''}</div>
   </td></tr>
   <tr><td style="padding:28px 32px">
@@ -381,6 +428,8 @@ function buildCoachMail(lead, summary) {
           <td style="padding:6px 0;font-size:12px;color:#54595F">${escapeHtml(percentList)}</td></tr>
       <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Bearbeitungszeit</td>
           <td style="padding:6px 0;font-size:13px">${s.elapsedMin ?? '–'} Min</td></tr>
+      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Newsletter</td>
+          <td style="padding:6px 0;font-size:13px;font-weight:700;color:${lead.newsletter ? '#27AE60' : '#54595F'}">${lead.newsletter ? 'Ja · eingewilligt am ' + escapeHtml(String(lead.newsletterAt || '').slice(0, 10)) : 'Nein'}</td></tr>
     </table>
 
     <div style="background:#FFF5EB;border-left:4px solid #F18423;padding:14px 18px;border-radius:0 8px 8px 0;margin:18px 0">
@@ -409,6 +458,20 @@ function zgFarbe(status) {
     peer: '#00305b',
     suchfeld: '#54595F',
   })[status] || '#54595F';
+}
+
+/* Setzt Vor- und Nachname zusammen, ohne zu doppeln. Noetig, weil Nutzer
+   im Feld "Nachname" gelegentlich den vollstaendigen Namen eintragen.
+   Gleiche Logik wie fullName() in pdf.js. */
+function vollerName(lead) {
+  const v = String((lead && lead.vorname) || '').trim().replace(/\s+/g, ' ');
+  const n = String((lead && lead.name) || '').trim().replace(/\s+/g, ' ');
+  if (!v) return n;
+  if (!n) return v;
+  if (n.toLowerCase() === v.toLowerCase()) return n;
+  if (n.toLowerCase().startsWith(v.toLowerCase() + ' ')) return n;
+  if (n.toLowerCase().endsWith(' ' + v.toLowerCase())) return n;
+  return v + ' ' + n;
 }
 
 function escapeHtml(str) {
