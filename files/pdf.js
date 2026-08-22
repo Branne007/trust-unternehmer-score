@@ -154,6 +154,21 @@ const commonStyles = {
   tableCell: { fontSize: 9, color: '#222', margin: [4, 3, 4, 3] },
 };
 
+/* ---------- Namensaufbereitung ----------
+   Schützt gegen Doppelungen, wenn im Feld "Name" bereits der
+   vollständige Name steht (z. B. Vorname "Thomas", Name "Thomas Brandenburger").
+   Ergebnis ist immer genau ein vollständiger Name. */
+function fullName(lead) {
+  var v = String((lead && lead.vorname) || '').trim().replace(/\s+/g, ' ');
+  var n = String((lead && lead.name) || '').trim().replace(/\s+/g, ' ');
+  if (!v) return n;
+  if (!n) return v;
+  if (n.toLowerCase() === v.toLowerCase()) return n;
+  if (n.toLowerCase().indexOf(v.toLowerCase() + ' ') === 0) return n;
+  if (n.toLowerCase().lastIndexOf(' ' + v.toLowerCase()) === n.length - v.length - 1) return n;
+  return v + ' ' + n;
+}
+
 /* ---------- Kunden-PDF ---------- */
 async function generateCustomerPdf(scores, lead) {
   const kern = STUFEN_KERNAUSSAGE[scores.dom];
@@ -164,7 +179,7 @@ async function generateCustomerPdf(scores, lead) {
 
   // Empfänger-Zeile
   content.push({
-    text: fix('Für: ' + lead.vorname + ' ' + lead.name + (lead.firma ? ', ' + lead.firma : '')),
+    text: fix('Für: ' + fullName(lead) + (lead.firma ? ', ' + lead.firma : '')),
     style: 'body',
     margin: [0, 0, 0, 12],
   });
@@ -363,11 +378,11 @@ async function generateCustomerPdf(scores, lead) {
     content: content,
     styles: commonStyles,
     defaultStyle: { font: 'Roboto', fontSize: 10, color: '#222' },
-    footer: footer('Für ' + lead.vorname + ' ' + lead.name),
+    footer: footer('Für ' + fullName(lead)),
     info: {
       title: 'TRUST Unternehmer-Score',
       author: 'Thomas Brandenburger',
-      subject: 'Reifegrad-Auswertung für ' + lead.vorname + ' ' + lead.name,
+      subject: 'Reifegrad-Auswertung für ' + fullName(lead),
     },
   };
 
@@ -388,7 +403,7 @@ async function generateCoachPdf(scores, lead, answers) {
     table: {
       widths: ['*'],
       body: [[{
-        text: fix('COACH-VERSION – vertraulich\nKunde: ' + lead.vorname + ' ' + lead.name +
+        text: fix('COACH-VERSION – vertraulich\nKunde: ' + fullName(lead) +
               (lead.firma ? ' · ' + lead.firma : '') +
               (lead.email ? ' · ' + lead.email : '') +
               (lead.plz || lead.ort ? '\n' + (lead.plz ? lead.plz + ' ' : '') + (lead.ort || '') : '')),
@@ -585,7 +600,7 @@ async function generateCoachPdf(scores, lead, answers) {
     'p:' + scores.percent.join(',') + '|' +
     'em:' + (scores.elapsedMin ? Math.round(scores.elapsedMin * 10) / 10 : 0) + '|' +
     'ans:' + answers.map(a => a === null ? 'x' : a).join('') + '|' +
-    'lead:' + encodeURIComponent(lead.vorname + ' ' + lead.name) + '|' +
+    'lead:' + encodeURIComponent(fullName(lead)) + '|' +
     'firma:' + encodeURIComponent(lead.firma || '') + '|' +
     'email:' + encodeURIComponent(lead.email || '') + '|' +
     'rolle:' + (lead.rolle || '') + '|' +
@@ -601,11 +616,11 @@ async function generateCoachPdf(scores, lead, answers) {
     content: content,
     styles: commonStyles,
     defaultStyle: { font: 'Roboto', fontSize: 10, color: '#222' },
-    footer: footer('COACH · ' + lead.vorname + ' ' + lead.name),
+    footer: footer('COACH · ' + fullName(lead)),
     info: {
       title: 'TRUST Unternehmer-Score Coach-Version',
       author: 'Thomas Brandenburger',
-      subject: 'Coach-Auswertung für ' + lead.vorname + ' ' + lead.name,
+      subject: 'Coach-Auswertung für ' + fullName(lead),
       keywords: metadata,  // ← Metadaten hier drin, unsichtbar
     },
   };

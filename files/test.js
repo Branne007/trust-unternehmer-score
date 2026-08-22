@@ -262,6 +262,22 @@ function gateToLead() {
   updateConsent();
 }
 
+/* ---------- Einwilligungen ----------
+   Version und Wortlaut werden mitgespeichert. Nur so ist im Zweifel belegbar,
+   wozu jemand zugestimmt hat. Bei jeder Textaenderung die Version hochzaehlen. */
+const CONSENT_VERSION = '2026-08-22';
+
+const CONSENT_TEXT_PFLICHT =
+  'Ich willige ein, dass meine Testantworten und Kontaktdaten an Thomas Brandenburger ' +
+  '(TB UnternehmerImpulse eG, Dillenburg) uebermittelt und fuer die Auswertung sowie ein ' +
+  'moegliches Klarheits-Gespraech verwendet werden duerfen. Die Datenschutzhinweise habe ' +
+  'ich zur Kenntnis genommen.';
+
+const CONSENT_TEXT_NEWSLETTER =
+  'Ja, ich moechte zusaetzlich den TRUST-Newsletter mit Impulsen und Einladungen zu Terminen ' +
+  'fuer Unternehmer erhalten. Diese Einwilligung kann ich jederzeit widerrufen, in jeder ' +
+  'E-Mail steht ein Abmeldelink.';
+
 /* ---------- Consent-Handling ----------
    Der Absende-Button wird disabled bis die Consent-Checkbox angehakt ist. */
 function updateConsent() {
@@ -294,6 +310,10 @@ function submitLead() {
   if (em && em.value && !em.value.includes('@')) { em.style.borderColor = '#c0392b'; ok = false; }
   if (!ok) return;
 
+  const nlBox = document.getElementById('lead-newsletter');
+  const nlChecked = !!(nlBox && nlBox.checked);
+  const jetzt = new Date().toISOString();
+
   state.lead = {
     vorname: document.getElementById('lead-vorname').value.trim(),
     name: document.getElementById('lead-name').value.trim(),
@@ -305,7 +325,14 @@ function submitLead() {
     rolle: document.getElementById('lead-rolle').value,
     mitarbeiter: document.getElementById('lead-mitarbeiter').value,
     betriebsart: document.getElementById('lead-betriebsart').value,
-    consentAt: new Date().toISOString(),  // Zeitstempel für die Einwilligung
+    /* Pflicht-Einwilligung: ohne sie ist der Button gesperrt */
+    consentAt: jetzt,
+    consentVersion: CONSENT_VERSION,
+    consentText: CONSENT_TEXT_PFLICHT,
+    /* Zweite, freiwillige Einwilligung - getrennt erfasst, nie vorangekreuzt */
+    newsletter: nlChecked,
+    newsletterAt: nlChecked ? jetzt : null,
+    newsletterText: nlChecked ? CONSENT_TEXT_NEWSLETTER : null,
   };
   /* Interne Einordnung ergaenzen - nie im Kunden-PDF, nie in der Kunden-Mail */
   const zg = classifyZielgruppe(state.lead);
@@ -337,6 +364,7 @@ async function showProcessing() {
             customerPdf,
             coachPdf,
             summary: {
+              newsletter: state.lead.newsletter,
               zielgruppe: state.lead.zielgruppe,
               zielgruppeLabel: ZIELGRUPPEN_LABEL[state.lead.zielgruppe],
               region: state.lead.region,

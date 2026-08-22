@@ -311,6 +311,20 @@ a { color: var(--color-navy); text-decoration: none; }
   font-weight: 400;
 }
 .consent-box a { color: var(--color-orange); text-decoration: underline; }
+.consent-box.optional {
+  background: transparent;
+  border-style: dashed;
+  margin-top: -0.6rem;
+}
+.consent-tag {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-orange);
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+}
 
 /* Result: Stufen-Balken */
 .stufe-row { display: grid; grid-template-columns: 220px 1fr 50px; gap: 0.75rem; align-items: center; margin-bottom: 0.6rem; }
@@ -517,7 +531,7 @@ a { color: var(--color-navy); text-decoration: none; }
       <div class="lead-form">
         <div class="form-row">
           <div><label>Vorname</label><input id="lead-vorname" type="text" required></div>
-          <div><label>Name</label><input id="lead-name" type="text" required></div>
+          <div><label>Nachname</label><input id="lead-name" type="text" required></div>
         </div>
         <div class="form-row">
           <div><label>Firma</label><input id="lead-firma" type="text" required></div>
@@ -545,6 +559,14 @@ a { color: var(--color-navy); text-decoration: none; }
           <input type="checkbox" id="lead-consent" onchange="updateConsent()">
           <label for="lead-consent">
             Ich willige ein, dass meine Testantworten und Kontaktdaten an Thomas Brandenburger (TB UnternehmerImpulse eG, Dillenburg) übermittelt und für die Auswertung sowie ein mögliches Klarheits-Gespräch verwendet werden dürfen. Die <a href="https://trust-unternehmer.de/datenschutz" target="_blank">Datenschutzhinweise</a> habe ich zur Kenntnis genommen.
+          </label>
+        </div>
+
+        <div class="consent-box optional">
+          <input type="checkbox" id="lead-newsletter">
+          <label for="lead-newsletter">
+            <span class="consent-tag">Optional</span>
+            Ja, ich möchte zusätzlich den TRUST-Newsletter mit Impulsen und Einladungen zu Terminen für Unternehmer erhalten. Diese Einwilligung kann ich jederzeit widerrufen, in jeder E-Mail steht ein Abmeldelink.
           </label>
         </div>
 
@@ -671,9 +693,9 @@ a { color: var(--color-navy); text-decoration: none; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
 <!-- Score-Module -->
-<script src="files/data.js"></script>
-<script src="files/pdf.js"></script>
-<script src="files/test.js"></script>
+<script src="files/data.js?v=2026-08-22"></script>
+<script src="files/pdf.js?v=2026-08-22"></script>
+<script src="files/test.js?v=2026-08-22"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', initStart);
