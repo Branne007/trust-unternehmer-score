@@ -330,7 +330,9 @@ a { color: var(--color-navy); text-decoration: none; }
 .stufe-row { display: grid; grid-template-columns: 220px 1fr 50px; gap: 0.75rem; align-items: center; margin-bottom: 0.6rem; }
 .stufe-label { font-size: 0.9rem; color: var(--color-navy); }
 .tag-dom { background: var(--color-orange); color: var(--color-white); font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 999px; margin-left: 0.35rem; font-weight: 700; }
-.stufe-bar-bg { height: 10px; background: #EEEEEE; border-radius: 999px; overflow: hidden; }
+.stufe-bar-bg { position: relative; height: 10px; background: #EEEEEE; border-radius: 999px; overflow: hidden; }
+.stufe-schwelle { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--color-navy); opacity: 0.55; }
+.stufen-legende { margin: 1rem 0 0; font-size: 0.95rem; color: #54595F; }
 .stufe-bar-fill { height: 100%; border-radius: 999px; transition: width 0.5s; }
 .stufe-pct { font-size: 0.9rem; font-weight: 700; color: var(--color-navy); text-align: right; }
 @media (max-width: 640px) { .stufe-row { grid-template-columns: 1fr; gap: 0.25rem; } .stufe-pct { text-align: left; } }
@@ -483,7 +485,7 @@ a { color: var(--color-navy); text-decoration: none; }
           <div class="treppe-step-name">Gestaltender Unternehmer</div>
         </div>
       </div>
-      <p>Du erhältst kein starres Etikett, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe? Dazu deine dominante Stufe und deinen größten Hebel für den nächsten Entwicklungsschritt.</p>
+      <p>Du erhältst kein starres Etikett, sondern ein <strong>probabilistisches Profil</strong>: Wie viel Prozent deiner Verhaltensweisen gehören zu welcher Entwicklungsstufe? Dazu die Stufe, auf der dein Engpass liegt, und deinen größten Hebel für den nächsten Entwicklungsschritt.</p>
     </div>
 
     <div class="card">
@@ -521,7 +523,7 @@ a { color: var(--color-navy); text-decoration: none; }
           <div class="donut-num-max">von 100</div>
         </div>
       </div>
-      <div class="stage-badge" id="teaser-stage">Deine stärkste Stufe: –</div>
+      <div class="stage-badge" id="teaser-stage">Dein Engpass: –</div>
     </div>
 
     <div class="card">
@@ -615,7 +617,7 @@ a { color: var(--color-navy); text-decoration: none; }
           <div class="donut-num-max">von 100</div>
         </div>
       </div>
-      <div class="stage-badge" id="result-stage">Deine stärkste Stufe: –</div>
+      <div class="stage-badge" id="result-stage">Dein Engpass: –</div>
     </div>
 
     <div class="card">
@@ -693,9 +695,9 @@ a { color: var(--color-navy); text-decoration: none; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
 <!-- Score-Module -->
-<script src="files/data.js?v=2026-08-22"></script>
-<script src="files/pdf.js?v=2026-08-22"></script>
-<script src="files/test.js?v=2026-08-22"></script>
+<script src="files/data.js?v=2026-11-19"></script>
+<script src="files/pdf.js?v=2026-11-19"></script>
+<script src="files/test.js?v=2026-11-19"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', initStart);

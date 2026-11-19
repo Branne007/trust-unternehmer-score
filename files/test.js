@@ -180,17 +180,25 @@ function computeScores() {
   const rawOverall = percent.reduce((s, v, i) => s + v * GEWICHTUNG[i], 0) / totalWeight;
   const overall = isNaN(rawOverall) ? 0 : Math.round(rawOverall);
 
-  let dom = 0, strongest = 0, weakest = 0;
+  let strongest = 0, weakest = 0;
   for (let i = 1; i < 5; i++) {
-    if (percent[i] >= percent[dom]) dom = i;
     if (percent[i] > percent[strongest]) strongest = i;
     if (percent[i] < percent[weakest]) weakest = i;
   }
 
+  /* Treppenlogik: Engpass = unterste Stufe unter SCHWELLE_GEFESTIGT.
+     engpass 5 = alle Stufen gefestigt. dom bleibt als Stufen-Index (0–4)
+     für Anzeige und Metadaten erhalten. */
+  let engpass = 5;
+  for (let i = 0; i < 5; i++) {
+    if (percent[i] < SCHWELLE_GEFESTIGT) { engpass = i; break; }
+  }
+  const dom = Math.min(engpass, 4);
+
   const elapsedMin = state.startedAt ? Math.max(0.1, (Date.now() - state.startedAt) / 60000) : null;
 
   return {
-    percent, overall, dom, strongest, weakest, elapsedMin,
+    percent, overall, dom, engpass, strongest, weakest, elapsedMin,
   };
 }
 
@@ -253,7 +261,7 @@ function gateToLead() {
   const teaserStage = document.getElementById('teaser-stage');
   const teaserArc = document.getElementById('teaser-arc');
   if (teaserNum) teaserNum.textContent = scores.overall;
-  if (teaserStage) teaserStage.textContent = 'Deine stärkste Stufe: ' + STUFEN[scores.strongest];
+  if (teaserStage) teaserStage.textContent = 'Dein Engpass: ' + engpassText(scores);
   if (teaserArc) {
     const c = 534.07;
     teaserArc.style.strokeDashoffset = c - c * scores.overall / 100;
@@ -369,9 +377,9 @@ async function showProcessing() {
               zielgruppeLabel: ZIELGRUPPEN_LABEL[state.lead.zielgruppe],
               region: state.lead.region,
               overall: scores.overall,
-              domStufeName: STUFEN[scores.dom],
+              domStufeName: engpassText(scores),
               strongestName: STUFEN[scores.strongest],
-              weakestName: STUFEN[scores.weakest],
+              weakestName: KERNAUSSAGE_ENGPASS[scores.engpass].hebel,
               percent: scores.percent,
               elapsedMin: scores.elapsedMin ? Math.round(scores.elapsedMin * 10) / 10 : null,
             },
@@ -422,28 +430,29 @@ function showResults(scores, mailSent) {
     arc.style.strokeDashoffset = c - c * scores.overall / 100;
   }
   const stage = document.getElementById('result-stage');
-  if (stage) stage.textContent = 'Deine stärkste Stufe: ' + STUFEN[scores.strongest];
+  if (stage) stage.textContent = 'Dein Engpass: ' + engpassText(scores);
 
   const barContainer = document.getElementById('stufen-bars');
   if (barContainer) {
     barContainer.innerHTML = scores.percent.map((p, i) => {
-      const isDom = i === scores.dom;
+      const isEng = i === scores.engpass;
       return '<div class="stufe-row">' +
-        '<div class="stufe-label">Stufe ' + (i + 1) + ': ' + STUFEN[i] + (isDom ? ' <span class="tag-dom">dominant</span>' : '') + '</div>' +
-        '<div class="stufe-bar-bg"><div class="stufe-bar-fill" style="width:' + p + '%;background:' + STUFEN_FARBEN[i] + '"></div></div>' +
+        '<div class="stufe-label">Stufe ' + (i + 1) + ': ' + STUFEN[i] + (isEng ? ' <span class="tag-dom">dein Engpass</span>' : '') + '</div>' +
+        '<div class="stufe-bar-bg"><div class="stufe-bar-fill" style="width:' + p + '%;background:' + STUFEN_FARBEN[i] + '"></div><div class="stufe-schwelle" style="left:' + SCHWELLE_GEFESTIGT + '%"></div></div>' +
         '<div class="stufe-pct">' + p + '%</div>' +
       '</div>';
-    }).join('');
+    }).join('') +
+    '<p class="stufen-legende">Ab ' + SCHWELLE_GEFESTIGT + ' % gilt eine Stufe als gefestigt (senkrechte Linie). Dein Engpass ist die unterste Stufe darunter – dort setzt dein nächster Schritt an.</p>';
   }
 
   const rec = document.getElementById('result-kernaussage');
-  if (rec) rec.textContent = STUFEN_KERNAUSSAGE[scores.dom].lang;
+  if (rec) rec.textContent = KERNAUSSAGE_ENGPASS[scores.engpass].lang;
   const hebel = document.getElementById('result-hebel');
-  if (hebel) hebel.textContent = STUFEN_KERNAUSSAGE[scores.dom].hebel;
+  if (hebel) hebel.textContent = KERNAUSSAGE_ENGPASS[scores.engpass].hebel;
 
   const steps = document.getElementById('result-steps');
   if (steps) {
-    steps.innerHTML = STUFEN_SCHRITTE[scores.dom].map((s, i) =>
+    steps.innerHTML = SCHRITTE_ENGPASS[scores.engpass].map((s, i) =>
       '<div class="step-row"><div class="step-num">' + (i + 1) + '</div><div class="step-text">' + s + '</div></div>'
     ).join('');
   }

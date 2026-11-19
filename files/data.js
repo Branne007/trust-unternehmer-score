@@ -11,6 +11,11 @@ const STUFEN = ['Getriebener Macher', 'Alltagsgestalter', 'Leader', 'Systembauer
    trägt mehr zum Gesamtwert bei. */
 const GEWICHTUNG = [1, 1.5, 2, 2.5, 3];
 
+/* Treppenlogik (seit 19.11.2026): Eine Stufe gilt ab dieser Erfüllung
+   in Prozent als gefestigt. Der Engpass ist die unterste Stufe, die
+   darunter liegt. Sind alle Stufen gefestigt, ist der Engpass-Index 5. */
+const SCHWELLE_GEFESTIGT = 60;
+
 /* ---------- 40 Fragen (ci = Cluster-Index 0-4, inv = invertiert) ---------- */
 const QUESTIONS = [
   /* Stufe 1 · Getriebener Macher (9 Fragen) */
@@ -177,7 +182,7 @@ const ZIELGRUPPEN_LABEL = {
    Limburg-Weilburg. Bei Bedarf hier erweitern. */
 const REGION_PLZ = ['35', '56', '57', '65'];
 
-/* ---------- Coach-Hinweise pro dominanter Stufe (nur im Coach-PDF) ---------- */
+/* ---------- Coach-Hinweise (Index = Stufe; Zuordnung zum Engpass siehe unten) ---------- */
 const COACH_HINWEISE = [
   {
     fokus: 'Der Kunde ist im Feuerwehr-Modus. Klarheits-Gespräch nutzt sich am besten, wenn er selbst benennen kann, was ihn im Alltag am meisten frisst.',
@@ -205,3 +210,58 @@ const COACH_HINWEISE = [
     warnhinweis: 'Der Score kann bei dieser Gruppe artifiziell hoch sein (Selbstbild). Im Gespräch prüfen: Ist der Score echt oder ist da noch ein blinder Fleck?',
   },
 ];
+
+
+/* ============================================================
+   Texte nach Engpass-Stufe (seit 19.11.2026)
+   Index 0–4 = Engpass auf Stufe 1–5, Index 5 = alle Stufen gefestigt.
+   Die Arrays oben beschreiben jeweils, wer eine Stufe GEFESTIGT hat.
+   Deshalb verschiebt sich die Zuordnung ab Stufe 3 um eins, und für
+   den Engpass auf Stufe 3 (Leader) gibt es eigene Texte.
+   ============================================================ */
+const KERNAUSSAGE_ENGPASS = [
+  STUFEN_KERNAUSSAGE[0],
+  STUFEN_KERNAUSSAGE[1],
+  {
+    kurz: 'Dein Alltag ist sortiert – jetzt muss Führung tragen.',
+    lang: 'Du hast Struktur in deinen Alltag gebracht, und die schlimmsten Feuer sind aus. Was noch fehlt, ist Führung, die ohne dich trägt: klare Rollen, Gespräche mit Zielen und Kennzahlen, die dein Team kennt. Der Hebel liegt darin, Verantwortung wirklich zu übergeben.',
+    hebel: 'Führung verankern',
+  },
+  STUFEN_KERNAUSSAGE[2],
+  STUFEN_KERNAUSSAGE[3],
+  STUFEN_KERNAUSSAGE[4],
+];
+
+const SCHRITTE_ENGPASS = [
+  STUFEN_SCHRITTE[0],
+  STUFEN_SCHRITTE[1],
+  STUFEN_SCHRITTE[2],
+  STUFEN_SCHRITTE[3],
+  STUFEN_SCHRITTE[4],
+  STUFEN_SCHRITTE[4],
+];
+
+const COACH_ENGPASS = [
+  COACH_HINWEISE[0],
+  COACH_HINWEISE[1],
+  {
+    fokus: 'Alltag sortiert, aber Führung trägt noch nicht: Es fehlen Rollen, Zielgespräche und Kennzahlen. Der Hebel liegt in der Führungsarbeit, nicht in Werkzeugen.',
+    formatvorschlag: 'Monatsgruppe bei Kernzielgruppe. INQA-Projekt mit Schwerpunkt Führung.',
+    warnhinweis: 'Prüfen, ob es Führungskräfte gibt, denen der Kunde Verantwortung übertragen kann. Sonst rutscht er auf Stufe 2 zurück.',
+  },
+  COACH_HINWEISE[2],
+  COACH_HINWEISE[3],
+  COACH_HINWEISE[4],
+];
+
+/* Anzeige-Texte zur Engpass-Stufe */
+function engpassText(scores) {
+  return scores.engpass > 4
+    ? 'Alle fünf Stufen gefestigt'
+    : 'Stufe ' + (scores.engpass + 1) + ': ' + STUFEN[scores.engpass];
+}
+function gefestigtText(scores) {
+  if (scores.engpass === 0) return 'noch keine Stufe';
+  if (scores.engpass > 4) return 'Stufe 5';
+  return 'bis Stufe ' + scores.engpass + ' (' + STUFEN[scores.engpass - 1] + ')';
+}

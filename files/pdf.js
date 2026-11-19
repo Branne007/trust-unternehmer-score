@@ -77,13 +77,15 @@ function stufenBars(scores) {
 
   const rows = scores.percent.map((p, i) => {
     const filled = Math.max(2, Math.round(p / 100 * BAR_WIDTH));
-    const isDom = i === scores.dom;
+    const isEng = i === scores.engpass;
+    const sx = Math.round(SCHWELLE_GEFESTIGT / 100 * BAR_WIDTH);
     return [
-      { text: fix('Stufe ' + (i + 1) + ': ' + STUFEN[i]), fontSize: 10, color: NAVY, bold: isDom, margin: [0, 4, 0, 0] },
+      { text: fix('Stufe ' + (i + 1) + ': ' + STUFEN[i]), fontSize: 10, color: isEng ? ORANGE : NAVY, bold: isEng, margin: [0, 4, 0, 0] },
       {
         canvas: [
           { type: 'rect', x: 0, y: 6, w: BAR_WIDTH, h: BAR_HEIGHT, r: 6, color: '#EEEEEE' },
           { type: 'rect', x: 0, y: 6, w: filled, h: BAR_HEIGHT, r: 6, color: STUFEN_FARBEN[i] },
+          { type: 'line', x1: sx, y1: 3, x2: sx, y2: 21, lineWidth: 1, lineColor: NAVY, dash: { length: 2 } },
         ],
       },
       { text: p + '%', fontSize: 10, bold: true, color: NAVY, alignment: 'right', margin: [0, 4, 0, 0] },
@@ -171,8 +173,8 @@ function fullName(lead) {
 
 /* ---------- Kunden-PDF ---------- */
 async function generateCustomerPdf(scores, lead) {
-  const kern = STUFEN_KERNAUSSAGE[scores.dom];
-  const schritte = STUFEN_SCHRITTE[scores.dom];
+  const kern = KERNAUSSAGE_ENGPASS[scores.engpass];
+  const schritte = SCHRITTE_ENGPASS[scores.engpass];
   const content = [];
 
   content.push(pageHeader('Reifegrad deiner Unternehmensführung'));
@@ -205,10 +207,10 @@ async function generateCustomerPdf(scores, lead) {
       { width: 130, stack: [scoreBlock(scores.overall)] },
       {
         stack: [
-          { text: fix('Dominante Stufe'), style: 'metaLabel' },
-          { text: fix('Stufe ' + (scores.dom + 1) + ': ' + STUFEN[scores.dom]), style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 12] },
+          { text: fix('Dein Engpass'), style: 'metaLabel' },
+          { text: fix(engpassText(scores)), style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 12] },
           { text: fix('Größter Hebel'), style: 'metaLabel' },
-          { text: fix(STUFEN[scores.weakest]), style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
+          { text: fix(kern.hebel), style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
         ],
         width: '*',
         margin: [16, 15, 0, 0],
@@ -223,7 +225,7 @@ async function generateCustomerPdf(scores, lead) {
   content.push({ text: '', margin: [0, 0, 0, 8] });
 
   content.push({
-    text: fix('Was diese Grafik zeigt: Wie viel Prozent deiner Verhaltensweisen fallen in welche Entwicklungsstufe. Deine dominante Stufe ist orange hervorgehoben – dort findet aktuell dein Alltag hauptsächlich statt.'),
+    text: fix('Was diese Grafik zeigt: Wie weit du die Verhaltensweisen jeder Stufe heute schon lebst. Ab ' + SCHWELLE_GEFESTIGT + ' % gilt eine Stufe als gefestigt (gestrichelte Linie). Die Stufen bauen aufeinander auf wie eine Treppe: Dein Engpass ist die unterste Stufe, die noch nicht gefestigt ist (orange markiert). Dort setzt dein nächster Schritt an.'),
     style: 'body',
     margin: [0, 0, 0, 16],
   });
@@ -393,8 +395,8 @@ async function generateCustomerPdf(scores, lead) {
 
 /* ---------- Coach-PDF ---------- */
 async function generateCoachPdf(scores, lead, answers) {
-  const kern = STUFEN_KERNAUSSAGE[scores.dom];
-  const hinweise = COACH_HINWEISE[scores.dom];
+  const kern = KERNAUSSAGE_ENGPASS[scores.engpass];
+  const hinweise = COACH_ENGPASS[scores.engpass];
   const content = [];
 
   content.push(pageHeader('COACH-VERSION · Reifegrad-Auswertung'));
@@ -452,9 +454,10 @@ async function generateCoachPdf(scores, lead, answers) {
       widths: [180, '*'],
       body: [
         [{ text: fix('Gesamtscore'), style: 'tableCell', color: GRAY }, { text: scores.overall + ' / 100', style: 'tableCell', bold: true, color: ORANGE }],
-        [{ text: fix('Dominante Stufe'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.dom + 1) + ' – ' + STUFEN[scores.dom]) + ' (' + scores.percent[scores.dom] + '%)', style: 'tableCell', bold: true }],
-        [{ text: fix('Stärkste Stufe'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.strongest + 1) + ' – ' + STUFEN[scores.strongest]) + ' (' + scores.percent[scores.strongest] + '%)', style: 'tableCell' }],
-        [{ text: fix('Größter Hebel (schwächste Stufe)'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.weakest + 1) + ' – ' + STUFEN[scores.weakest]) + ' (' + scores.percent[scores.weakest] + '%)', style: 'tableCell', bold: true, color: NAVY }],
+        [{ text: fix('Engpass-Stufe'), style: 'tableCell', color: GRAY }, { text: fix(engpassText(scores)) + (scores.engpass < 5 ? ' (' + scores.percent[scores.engpass] + '%)' : ''), style: 'tableCell', bold: true }],
+        [{ text: fix('Gefestigt (ab ' + SCHWELLE_GEFESTIGT + '%)'), style: 'tableCell', color: GRAY }, { text: fix(gefestigtText(scores)), style: 'tableCell' }],
+        [{ text: fix('Größter Hebel'), style: 'tableCell', color: GRAY }, { text: fix(kern.hebel), style: 'tableCell', bold: true, color: NAVY }],
+        [{ text: fix('Höchster Wert'), style: 'tableCell', color: GRAY }, { text: fix('Stufe ' + (scores.strongest + 1) + ' – ' + STUFEN[scores.strongest]) + ' (' + scores.percent[scores.strongest] + '%)', style: 'tableCell' }],
         [{ text: fix('Bearbeitungszeit'), style: 'tableCell', color: GRAY }, { text: scores.elapsedMin ? (Math.round(scores.elapsedMin * 10) / 10) + ' Min' : 'n/a', style: 'tableCell' }],
       ],
     }, layout: 'noBorders',
@@ -552,10 +555,10 @@ async function generateCoachPdf(scores, lead, answers) {
       { width: 130, stack: [scoreBlock(scores.overall)] },
       {
         stack: [
-          { text: fix('Dominante Stufe'), style: 'metaLabel' },
-          { text: fix('Stufe ' + (scores.dom + 1) + ': ' + STUFEN[scores.dom]), style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 12] },
+          { text: fix('Dein Engpass'), style: 'metaLabel' },
+          { text: fix(engpassText(scores)), style: { fontSize: 14, bold: true, color: ORANGE }, margin: [0, 2, 0, 12] },
           { text: fix('Größter Hebel'), style: 'metaLabel' },
-          { text: fix(STUFEN[scores.weakest]), style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
+          { text: fix(kern.hebel), style: { fontSize: 12, bold: true, color: NAVY }, margin: [0, 2, 0, 0] },
         ],
         width: '*',
         margin: [16, 15, 0, 0],
@@ -579,7 +582,7 @@ async function generateCoachPdf(scores, lead, answers) {
   });
 
   content.push({ text: fix('Drei nächste Schritte für den Kunden'), style: 'h3' });
-  STUFEN_SCHRITTE[scores.dom].forEach((s, i) => {
+  SCHRITTE_ENGPASS[scores.engpass].forEach((s, i) => {
     content.push({
       text: fix((i + 1) + '. ' + s),
       style: 'body',
@@ -595,6 +598,7 @@ async function generateCoachPdf(scores, lead, answers) {
   const metadata = 'TRUSTSCORE_META|' +
     'ov:' + scores.overall + '|' +
     'dom:' + scores.dom + '|' +
+    'eng:' + scores.engpass + '|' +
     'str:' + scores.strongest + '|' +
     'wk:' + scores.weakest + '|' +
     'p:' + scores.percent.join(',') + '|' +

@@ -418,9 +418,9 @@ function buildCoachMail(lead, summary) {
           <td style="padding:6px 0;font-size:13px">${escapeHtml(lead.rolle || '–')} · ${escapeHtml(lead.mitarbeiter || '–')} · ${escapeHtml(lead.betriebsart || '–')}</td></tr>
       <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Gesamtscore</td>
           <td style="padding:6px 0;font-size:13px;font-weight:700;color:#F18423">${s.overall ?? '–'} / 100</td></tr>
-      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Dominante Stufe</td>
+      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Engpass-Stufe</td>
           <td style="padding:6px 0;font-size:13px;font-weight:700">${escapeHtml(s.domStufeName || '–')}</td></tr>
-      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Stärkste Stufe</td>
+      <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Höchster Wert</td>
           <td style="padding:6px 0;font-size:13px">${escapeHtml(s.strongestName || '–')}</td></tr>
       <tr><td style="padding:6px 0;color:#54595F;font-size:13px">Größter Hebel</td>
           <td style="padding:6px 0;font-size:13px;color:#00305b;font-weight:700">${escapeHtml(s.weakestName || '–')}</td></tr>
