@@ -196,12 +196,12 @@ const COACH_HINWEISE = [
   },
   {
     fokus: 'Kunde hat Führung im Griff, jetzt geht es um Systemreife. Prozesse und Standards sind das Thema.',
-    formatvorschlag: 'Monatsgruppe für strategisches Sparring. Strategie-Sprint Kompakt oder Team, je nachdem ob ein Führungskreis vorhanden ist. Beratungs-Projekt bei konkretem Prozessthema.',
+    formatvorschlag: 'Monatsgruppe für strategisches Sparring. Strategietag Gruppe oder 1:1, Strategietag Team, wenn ein Führungskreis vorhanden ist. Beratungs-Projekt bei konkretem Prozessthema.',
     warnhinweis: 'Diese Kunden sind oft schon in anderen Netzwerken. Argumentiere den Peer-Group-Vorteil klar über die Qualität der Teilnehmer.',
   },
   {
     fokus: 'Kunde ist reif für strategische Arbeit AM Unternehmen. Das Sparring wird auf Augenhöhe – anspruchsvoll für dich, wertvoll für ihn.',
-    formatvorschlag: 'Strategie-Sprint Team, wenn ein Führungskreis existiert. Monatsgruppe nur bei Peer-Bereitschaft mit ähnlichem Reifegrad. Beratungs-Projekt für die Führungsteam-Entwicklung.',
+    formatvorschlag: 'Strategietag Team, wenn ein Führungskreis existiert, sonst Strategietag 1:1. Monatsgruppe nur bei Peer-Bereitschaft mit ähnlichem Reifegrad. Beratungs-Projekt für die Führungsteam-Entwicklung.',
     warnhinweis: 'Standardformate wirken hier schnell unterfordernd. Value-Frage besonders sauber führen – dieser Kunde zahlt gerne, aber nur für echten Mehrwert.',
   },
   {

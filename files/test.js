@@ -463,7 +463,7 @@ function showResults(scores, mailSent) {
 /* ---------- Abschluss der Ergebnisseite ----------
    Der Abschluss richtet sich nach dem Ring aus classifyZielgruppe().
    Kern, Kern-Einzelfall und Peer bekommen den Weg ins Klarheits-Gespräch
-   ueber das Anfrageformular der Sprint-Seite. Suchfeld bekommt den
+   ueber das Anfrageformular der Strategietag-Seite. Suchfeld bekommt den
    KI-Talk als niederschwelligen Einstieg – dort ist die Teilnahme
    bewusst breiter angelegt.
 
@@ -488,11 +488,12 @@ function renderCta() {
       '</div>' +
       '<div class="card" style="background:var(--color-bg)">' +
         '<span class="eyebrow">Wenn du weiter gehen willst</span>' +
-        '<h4 style="color:var(--color-navy);margin-top:0">Der TRUST Strategie-Sprint</h4>' +
-        '<p>Vier Wochen, neun Module, rund 15 Stunden deiner Zeit. Am Ende steht deine ' +
-        'Strategie auf einer Seite – geprüft nicht vom Berater, sondern von deinen eigenen Kunden.</p>' +
+        '<h4 style="color:var(--color-navy);margin-top:0">Der TRUST Strategietag</h4>' +
+        '<p>Deine individuelle Strategie für 2027 mit Ausblick auf 2030, an nur einem Tag. ' +
+        'Dein Score ist schon ein Teil der Vorbereitung. In der Unternehmergruppe, im 1:1 oder ' +
+        'mit deinem Führungskreis.</p>' +
         '<a href="https://sprint.trust-unternehmer.de" target="_blank" ' +
-        'style="color:var(--color-orange);font-weight:700">Zum Strategie-Sprint →</a>' +
+        'style="color:var(--color-orange);font-weight:700">Zum Strategietag →</a>' +
       '</div>';
   } else {
     ziel.innerHTML =
